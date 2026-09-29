@@ -71,3 +71,43 @@ export interface EventConfig {
     measurementId: string;
   };
 }
+
+export interface EventDocument {
+  editionId: string;
+  edition: number;
+  year: number;
+  name: string;
+  fullName: string;
+  date: {
+    start: FirestoreDateValue;
+    end: FirestoreDateValue;
+    display: EventConfig['date']['display'];
+  };
+  venue: EventConfig['venue'];
+  theme: string;
+  description: string;
+  registrationUrl: string;
+  contact: EventConfig['contact'];
+  impactStats: EventConfig['impactStats'];
+  engagementYear: number;
+  maxQuestionsPerUser: number;
+  isPublished?: boolean;
+}
+
+export type FirestoreDateValue = Date | { seconds: number; nanoseconds: number; toDate(): Date };
+
+export interface SiteSettings {
+  currentEditionId: string;
+  updatedAt?: unknown;
+}
+
+export interface EventPartner {
+  id: string;
+  name: string;
+  role: string;
+  quote?: string;
+  logo: string;
+  link?: string;
+  order?: number;
+  isPublished: boolean;
+}
