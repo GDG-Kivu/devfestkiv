@@ -48,27 +48,32 @@ service cloud.firestore {
             && quotaAfter.count == get(quotaPath).data.count + 1));
     }
 
+    // Roles are provisioned outside the client. No browser session may assign itself admin.
     match /users/{uid} {
       allow read: if signedIn() && (request.auth.uid == uid || admin());
       allow write: if false;
     }
 
+    // Global pointer to the event edition shown by the public site.
     match /siteSettings/{settingsId} {
       allow read: if settingsId == 'global';
       allow create, update: if admin() && settingsId == 'global';
       allow delete: if false;
     }
 
+    // Event root stores shared metadata and the per-edition question limit.
     match /events/{editionId} {
       allow read: if true;
       allow create, update: if admin() && validQuestionLimit(request.resource.data);
       allow delete: if false;
 
       match /sessions/{sessionId} {
+        // Visitors may query active sessions; only admins manage sessions.
         allow read: if signedIn() && (resource.data.isActive == true || admin());
         allow create, update, delete: if admin();
 
         match /questions/{questionId} {
+          // A public question is accepted only with the matching atomic quota increment.
           allow read: if signedIn()
             && (get(/databases/$(database)/documents/events/$(editionId)/sessions/$(sessionId)).data.isActive == true
               || admin());
@@ -97,6 +102,7 @@ service cloud.firestore {
       }
 
       match /questionQuotas/{uid} {
+        // The user can increment only their own quota as part of creating exactly one question.
         allow read: if admin() || (signedIn() && request.auth.uid == uid);
         allow create: if signedIn()
           && request.auth.uid == uid
@@ -131,6 +137,7 @@ service cloud.firestore {
         allow delete: if admin();
       }
 
+      // CMS documents are readable only after publication; all edits are admin-only.
       match /speakers/{speakerId} {
         allow read: if publicContent() || admin();
         allow write: if admin();
@@ -157,11 +164,13 @@ service cloud.firestore {
       }
 
       match /remote/{remoteId} {
+        // Live presentation controls are readable to signed-in clients and writable by admins.
         allow read: if signedIn();
         allow write: if admin();
       }
 
       match /emojis/{reactionId} {
+        // Signed-in clients can emit reactions; moderation/cleanup remains admin-only.
         allow read: if signedIn();
         allow create: if signedIn()
           && request.resource.data.keys().hasOnly([

@@ -1,3 +1,4 @@
+/** Static configuration used as a fallback before Firestore migration/reading. */
 export interface EventConfig {
   edition: number;
   year: number;
@@ -72,6 +73,7 @@ export interface EventConfig {
   };
 }
 
+/** Document racine events/{editionId}; les listes sont des sous-collections. */
 export interface EventDocument {
   editionId: string;
   edition: number;
@@ -90,24 +92,14 @@ export interface EventDocument {
   contact: EventConfig['contact'];
   impactStats: EventConfig['impactStats'];
   engagementYear: number;
-  maxQuestionsPerUser: number;
+  maxQuestionsPerUser?: number;
   isPublished?: boolean;
 }
 
 export type FirestoreDateValue = Date | { seconds: number; nanoseconds: number; toDate(): Date };
 
+/** Paramètres globaux de navigation, stockés dans siteSettings/global. */
 export interface SiteSettings {
   currentEditionId: string;
   updatedAt?: unknown;
-}
-
-export interface EventPartner {
-  id: string;
-  name: string;
-  role: string;
-  quote?: string;
-  logo: string;
-  link?: string;
-  order?: number;
-  isPublished: boolean;
 }

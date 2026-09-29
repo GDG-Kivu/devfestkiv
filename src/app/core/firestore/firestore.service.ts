@@ -12,6 +12,7 @@ import {
   serverTimestamp,
   setDoc,
   Timestamp,
+  updateDoc,
   where,
 } from '@angular/fire/firestore';
 import { AuthService } from '../auth/auth.service';
@@ -20,10 +21,14 @@ import {
   LiveQuestion,
 } from '../../features/live-question/models/live-question.model';
 import { LiveSession } from '../../features/live-question/models/live-session.model';
-import { EventDocument, EventPartner, SiteSettings } from '../../features/event/models/event.model';
+import { EventPartner } from '../../features/cms/models/partner.model';
+import { EventDocument, SiteSettings } from '../../features/event/models/event.model';
 import { EVENT_CONFIG } from '../../config/event.config';
 import { EventSubcollection, FIRESTORE_COLLECTIONS, firestorePaths } from './firestore-paths';
-import { firstValueFrom, map, Observable, of, switchMap } from 'rxjs';
+import { FirestoreResult } from '../../shared/models/firestore-result.model';
+import { FirestorePublicationFilter } from '../../shared/models/firestore-publication-filter.model';
+import { formattedTimestamp } from '../../shared/utils/formatted-timestamp';
+import { catchError, firstValueFrom, map, Observable, of, startWith, switchMap } from 'rxjs';
 
 export const DEFAULT_QUESTIONS_PER_USER = 5;
 export const MAX_CONFIGURABLE_QUESTIONS_PER_USER = 100;
@@ -50,6 +55,7 @@ export class FirestoreService {
   getCurrentEditionId(): Observable<string> {
     return this.getSiteSettings().pipe(
       map((settings) => settings?.currentEditionId || String(EVENT_CONFIG.edition)),
+      catchError(() => of(String(EVENT_CONFIG.edition))),
     );
   }
 
@@ -60,6 +66,23 @@ export class FirestoreService {
         docData(doc(this.fs, firestorePaths.event(editionId))) as Observable<
           EventDocument | undefined
         >,
+    );
+  }
+
+  /** Read an edition document and fall back to local config for the bundled edition. */
+  getEventWithFallback(editionId: string | number): Observable<EventDocument | undefined> {
+    const id = String(editionId);
+    const fallback = this.localEventFallback(id);
+    return this.getEvent(id).pipe(
+      map((event) => (event ? this.normalizeEventDates(event) : fallback)),
+      catchError(() => of(fallback)),
+    );
+  }
+
+  /** Resolve siteSettings/global.currentEditionId, then load Firestore or local fallback. */
+  getCurrentEventWithFallback(): Observable<EventDocument | undefined> {
+    return this.getCurrentEditionId().pipe(
+      switchMap((editionId) => this.getEventWithFallback(editionId)),
     );
   }
 
@@ -90,6 +113,96 @@ export class FirestoreService {
     );
   }
 
+  /** Query only published documents, as required by Firestore rules for public reads. */
+  getPublishedEventCollection<T>(
+    editionId: string | number,
+    collectionName: EventSubcollection,
+    publication: FirestorePublicationFilter = { field: 'isPublished', value: true },
+  ): Observable<T[]> {
+    return runInInjectionContext(this._injector, () => {
+      const publishedQuery = query(
+        collection(this.fs, firestorePaths.eventCollection(editionId, collectionName)),
+        where(publication.field, '==', publication.value),
+      );
+      return collectionData(publishedQuery, { idField: 'id' }) as Observable<T[]>;
+    });
+  }
+
+  getPublishedEventCollectionResult<T>(
+    editionId: string | number,
+    collectionName: EventSubcollection,
+    publication: FirestorePublicationFilter = { field: 'isPublished', value: true },
+    fallback?: T[],
+  ): Observable<FirestoreResult<T[]>> {
+    return this.getPublishedEventCollection<T>(editionId, collectionName, publication).pipe(
+      map((data): FirestoreResult<T[]> => ({ status: 'success', data, source: 'firestore' })),
+      startWith({ status: 'loading' } as FirestoreResult<T[]>),
+      catchError((error: unknown) =>
+        of({
+          status: 'error',
+          error,
+          ...(fallback === undefined ? {} : { fallback }),
+        } as FirestoreResult<T[]>),
+      ),
+    );
+  }
+
+  /** Read one document from an edition subcollection. */
+  getEventDocument<T>(
+    editionId: string | number,
+    collectionName: EventSubcollection,
+    documentId: string,
+  ): Observable<T | undefined> {
+    return runInInjectionContext(
+      this._injector,
+      () =>
+        docData(
+          doc(this.fs, firestorePaths.eventDocument(editionId, collectionName, documentId)),
+        ) as Observable<T | undefined>,
+    );
+  }
+
+  /** Emit loading, then success; on read failure expose the error and optional local fallback. */
+  getEventCollectionResult<T>(
+    editionId: string | number,
+    collectionName: EventSubcollection,
+    fallback?: T[],
+  ): Observable<FirestoreResult<T[]>> {
+    return this.getEventCollection<T>(editionId, collectionName).pipe(
+      map((data): FirestoreResult<T[]> => {
+        if (data.length === 0 && fallback !== undefined) {
+          return { status: 'success', data: fallback, source: 'fallback' };
+        }
+        return { status: 'success', data, source: 'firestore' };
+      }),
+      startWith({ status: 'loading' } as FirestoreResult<T[]>),
+      catchError((error: unknown) =>
+        of({
+          status: 'error',
+          error,
+          ...(fallback === undefined ? {} : { fallback }),
+        } as FirestoreResult<T[]>),
+      ),
+    );
+  }
+
+  /** Create a document with a supplied ID or a generated Firestore ID; writes its ID in the data. */
+  async createEventDocument<T extends object>(
+    editionId: string | number,
+    collectionName: EventSubcollection,
+    value: T & { id?: string },
+  ): Promise<string> {
+    return runInInjectionContext(this._injector, async () => {
+      const collectionRef = collection(
+        this.fs,
+        firestorePaths.eventCollection(editionId, collectionName),
+      );
+      const documentRef = value.id ? doc(collectionRef, value.id) : doc(collectionRef);
+      await setDoc(documentRef, { ...value, id: documentRef.id });
+      return documentRef.id;
+    });
+  }
+
   saveEventDocument<T extends { id: string }>(
     editionId: string | number,
     collectionName: EventSubcollection,
@@ -101,6 +214,32 @@ export class FirestoreService {
         value,
         { merge: true },
       ),
+    );
+  }
+
+  /** Update an existing edition document; unlike saveEventDocument this does not upsert. */
+  updateEventDocument<T extends object>(
+    editionId: string | number,
+    collectionName: EventSubcollection,
+    documentId: string,
+    changes: Partial<T>,
+  ) {
+    return runInInjectionContext(this._injector, () =>
+      updateDoc(
+        doc(this.fs, firestorePaths.eventDocument(editionId, collectionName, documentId)),
+        changes as never,
+      ),
+    );
+  }
+
+  /** Delete one document from an edition subcollection. Firestore does not cascade subcollections. */
+  deleteEventDocument(
+    editionId: string | number,
+    collectionName: EventSubcollection,
+    documentId: string,
+  ) {
+    return runInInjectionContext(this._injector, () =>
+      deleteDoc(doc(this.fs, firestorePaths.eventDocument(editionId, collectionName, documentId))),
     );
   }
 
@@ -260,5 +399,41 @@ export class FirestoreService {
     return editionId === undefined
       ? firstValueFrom(this.getCurrentEditionId())
       : Promise.resolve(String(editionId));
+  }
+
+  private localEventFallback(editionId: string): EventDocument | undefined {
+    if (editionId !== String(EVENT_CONFIG.edition)) return undefined;
+    return {
+      editionId,
+      edition: EVENT_CONFIG.edition,
+      year: EVENT_CONFIG.year,
+      name: EVENT_CONFIG.name,
+      fullName: EVENT_CONFIG.fullName,
+      date: EVENT_CONFIG.date,
+      venue: EVENT_CONFIG.venue,
+      theme: EVENT_CONFIG.theme,
+      description: EVENT_CONFIG.description,
+      registrationUrl: EVENT_CONFIG.registrationUrl,
+      contact: EVENT_CONFIG.contact,
+      impactStats: EVENT_CONFIG.impactStats,
+      engagementYear: EVENT_CONFIG.engagementYear,
+      maxQuestionsPerUser: DEFAULT_QUESTIONS_PER_USER,
+      isPublished: true,
+    };
+  }
+
+  private normalizeEventDates(event: EventDocument): EventDocument {
+    const normalize = (value: EventDocument['date']['start']): Date => {
+      if (value instanceof Date) return value;
+      return formattedTimestamp(value as Timestamp);
+    };
+    return {
+      ...event,
+      date: {
+        ...event.date,
+        start: normalize(event.date.start),
+        end: normalize(event.date.end),
+      },
+    };
   }
 }

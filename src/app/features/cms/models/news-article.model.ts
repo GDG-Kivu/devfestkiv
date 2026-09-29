@@ -1,3 +1,4 @@
+/** News article for an event, stored under events/{editionId}/news. */
 export interface NewsArticle {
   id: string;
   title: string;

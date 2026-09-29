@@ -6,7 +6,7 @@ export interface FloatingReaction {
   animationClass: string;
   uid?: string;
 }
-
+/** Live question submitted in events/{editionId}/sessions/{sessionId}/questions. */
 export interface LiveQuestion {
   id?: string;
   uid: string;

@@ -1,3 +1,4 @@
+/** Speaker for an event, stored under events/{editionId}/speakers. */
 export interface Speaker {
   name: string;
   title: string;

@@ -1,5 +1,6 @@
 import { FloatingReaction, LiveQuestion } from './live-question.model';
 
+/** Live session for an event, stored under events/{editionId}/sessions. */
 export interface LiveSession<T> {
   id: string;
   title: string;
