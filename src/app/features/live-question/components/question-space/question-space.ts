@@ -6,6 +6,7 @@ import {
   ElementRef,
   AfterViewChecked,
   OnDestroy,
+  OnInit,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LiveSession } from '../../models/live-session.model';
@@ -13,9 +14,9 @@ import { LiveQuestion } from '../../models/live-question.model';
 import { FirestoreService } from '../../../../core/firestore/firestore.service';
 import { Timestamp } from '@angular/fire/firestore';
 import { FormsModule } from '@angular/forms';
-import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/auth/auth.service';
+import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
 
 interface FloatingReaction {
   id: string;
@@ -28,23 +29,23 @@ interface FloatingReaction {
 @Component({
   selector: 'app-question-space',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, Skeleton],
   templateUrl: './question-space.component.html',
   styles: [
     `
-      /* Cadre avec les 4 couleurs Google */
+      /* Card with 4 Google brand colors */
       .question-card {
         border: 1px solid transparent;
         border-radius: 5px;
-        border-top: 2px solid #4285f4; /* bleu */
-        border-right: 2px solid #ea4335; /* rouge */
-        border-bottom: 2px solid #fbbc04; /* jaune */
-        border-left: 2px solid #34a853; /* vert */
+        border-top: 2px solid #4285f4;
+        border-right: 2px solid #ea4335;
+        border-bottom: 2px solid #fbbc04;
+        border-left: 2px solid #34a853;
       }
     `,
   ],
 })
-export default class QuestionSpace implements AfterViewChecked, OnDestroy {
+export default class QuestionSpace implements OnInit, AfterViewChecked, OnDestroy {
   private fs = inject(FirestoreService);
   private auth = inject(AuthService);
 
@@ -62,10 +63,14 @@ export default class QuestionSpace implements AfterViewChecked, OnDestroy {
   showReactionPicker = false;
   activeReactions = signal<FloatingReaction[]>([]);
 
-  // Emojis disponibles pour les réactions
+  // Loading states
+  sessionsLoading = signal(true);
+  questionsLoading = signal(false);
+
+  // Available emojis for reactions
   availableEmojis = ['👍', '👎', '❤️', '🔥', '🎉', '👀', '😄', '🤔', '🚀'];
 
-  // Animations disponibles pour les réactions flottantes
+  // Available floating reaction animation classes
   private animationClasses = [
     'animate-float-slow',
     'animate-float-medium',
@@ -78,8 +83,10 @@ export default class QuestionSpace implements AfterViewChecked, OnDestroy {
   private questionsSub?: Subscription;
 
   ngOnInit(): void {
+    this.sessionsLoading.set(true);
     this.speakersSub = this.fs.getActiveSessions().subscribe((sessions: any) => {
       this.sessions.set(sessions);
+      this.sessionsLoading.set(false);
     });
   }
 
@@ -100,9 +107,11 @@ export default class QuestionSpace implements AfterViewChecked, OnDestroy {
 
   private watchQuestions(session: LiveSession<Timestamp>): void {
     this.questionsSub?.unsubscribe();
-    this.questions.set(session.questions ?? []);
+    this.questions.set([]);
+    this.questionsLoading.set(true);
     this.questionsSub = this.fs.getQuestions(session.id).subscribe((questions: LiveQuestion[]) => {
       this.questions.set([...questions, ...(session.questions ?? [])]);
+      this.questionsLoading.set(false);
       this.shouldScrollToBottom.set(true);
     });
   }
@@ -130,15 +139,24 @@ export default class QuestionSpace implements AfterViewChecked, OnDestroy {
     const s = this.selectedSession();
     if (!s) return;
 
-    const user = await this.auth.ensureAuthenticated();
-    if (!user) return;
+    // Sign in anonymously only at submission if no session exists yet.
+    // Existing Google sessions are preserved by ensureAnonymousOrAuthenticated().
+    const user = await this.auth.ensureAnonymousOrAuthenticated();
+    if (!user) {
+      this.questionError.set('Impossible d\'envoyer votre question. Veuillez réessayer.');
+      return;
+    }
+
+    const authorName = user.isAnonymous
+      ? 'Participant Anonyme'
+      : (user.displayName || user.email?.split('@')[0] || 'Participant');
 
     const newQuestion: LiveQuestion = {
       uid: user.uid,
       contenu: content,
       time: Date.now().toString(),
       createdAt: new Date(),
-      displayName: user.displayName,
+      displayName: authorName,
       email: user.email,
       status: 'pending',
       reactions: [],
@@ -170,11 +188,9 @@ export default class QuestionSpace implements AfterViewChecked, OnDestroy {
   }
 
   triggerFloatingReaction(emoji: string): void {
-    // Position de départ aléatoire en bas de l'écran
     const startX = Math.random() * (window.innerWidth - 100) + 50;
-    const startY = 100; // Commence en bas
+    const startY = 100;
 
-    // Animation aléatoire
     const randomAnimation =
       this.animationClasses[Math.floor(Math.random() * this.animationClasses.length)];
 
@@ -188,10 +204,9 @@ export default class QuestionSpace implements AfterViewChecked, OnDestroy {
 
     this.fs.setEmojis(reaction);
 
-    // Ajouter la réaction
     this.activeReactions.update((reactions) => [...reactions, reaction]);
 
-    // Supprimer après l'animation (3-5 secondes)
+    // Remove after animation completes (3–5 seconds)
     setTimeout(
       () => {
         this.activeReactions.update((reactions) => reactions.filter((r) => r.id !== reaction.id));
@@ -213,7 +228,7 @@ export default class QuestionSpace implements AfterViewChecked, OnDestroy {
       question.reactions.push({ emoji, count: 1 });
     }
 
-    // Déclencher aussi une réaction flottante
+    // Also trigger a floating reaction overlay
     this.triggerFloatingReaction(emoji);
   }
 

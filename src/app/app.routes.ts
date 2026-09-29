@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from './core/auth/admin.guard';
-import { authGuard } from './core/auth/auth.guard';
+import { presenterGuard } from './core/auth/presenter.guard';
 
 export const routes: Routes = [
   {
@@ -37,7 +37,6 @@ export const routes: Routes = [
   {
     path: 'live_q',
     loadComponent: () => import('./features/live-question/live-question'),
-    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -52,18 +51,17 @@ export const routes: Routes = [
   },
   {
     path: 'question-space',
-    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/live-question/components/question-space/question-space'),
   },
   {
     path: 'presenter',
-    canActivate: [authGuard, adminGuard],
+    canActivate: [presenterGuard],
     loadComponent: () => import('./features/live-question/components/presentation/presentation'),
   },
   {
     path: 'remote',
-    canActivate: [authGuard, adminGuard],
+    canActivate: [presenterGuard],
     loadComponent: () => import('./features/live-question/remote/remote'),
   },
   { path: '**', redirectTo: '/' },

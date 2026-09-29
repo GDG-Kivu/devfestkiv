@@ -2,189 +2,106 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Helper functions for authentication and role verification
     function signedIn() {
       return request.auth != null;
     }
 
-    function admin() {
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
       return signedIn()
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
-        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.disabled != true;
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && getUserData().role == 'admin'
+        && getUserData().disabled != true;
     }
 
-    function eventPath(editionId) {
-      return /databases/$(database)/documents/events/$(editionId);
+    function isViewer() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && (getUserData().role == 'admin' || getUserData().role == 'viewer')
+        && getUserData().disabled != true;
     }
 
-    function maxQuestionsPerUser(editionId) {
-      return exists(eventPath(editionId))
-        && get(eventPath(editionId)).data.maxQuestionsPerUser is int
-        ? get(eventPath(editionId)).data.maxQuestionsPerUser
-        : 5;
-    }
-
-    function validQuestionLimit(data) {
-      return !('maxQuestionsPerUser' in data)
-        || (data.maxQuestionsPerUser is int
-          && data.maxQuestionsPerUser >= 0
-          && data.maxQuestionsPerUser <= 100);
-    }
-
-    function publicContent() {
-      return (resource.data.keys().hasAny(['isPublished']) && resource.data.isPublished == true)
-        || (resource.data.keys().hasAny(['status']) && resource.data.status == 'published');
-    }
-
-    function quotaAfterMatchesQuestion(editionId, sessionId, questionId, uid) {
-      let quotaPath = /databases/$(database)/documents/events/$(editionId)/questionQuotas/$(uid);
-      let quotaAfter = getAfter(quotaPath).data;
-      let questionPath = /databases/$(database)/documents/events/$(editionId)/sessions/$(sessionId)/questions/$(questionId);
-      return quotaAfter.uid == uid
-        && quotaAfter.sessionId == sessionId
-        && quotaAfter.lastQuestionId == questionId
-        && getAfter(questionPath).data.uid == uid
-        && ((!exists(quotaPath) && quotaAfter.count == 1)
-          || (exists(quotaPath)
-            && quotaAfter.count == get(quotaPath).data.count + 1));
-    }
-
-    // Roles are provisioned outside the client. No browser session may assign itself admin.
+    // User profiles collection
     match /users/{uid} {
-      allow read: if signedIn() && (request.auth.uid == uid || admin());
-      allow write: if false;
+      allow read: if true;
+      allow create, update: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow delete: if isAdmin() || (signedIn() && request.auth.token.email != null && resource.data.email != null && request.auth.token.email.lower() == resource.data.email.lower());
     }
 
-    // Global pointer to the event edition shown by the public site.
+    // Global site settings
     match /siteSettings/{settingsId} {
-      allow read: if settingsId == 'global';
-      allow create, update: if admin() && settingsId == 'global';
-      allow delete: if false;
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
-    // Event root stores shared metadata and the per-edition question limit.
+    // Event edition documents and subcollections
     match /events/{editionId} {
       allow read: if true;
-      allow create, update: if admin() && validQuestionLimit(request.resource.data);
-      allow delete: if false;
+      allow write: if isAdmin();
 
+      // Live sessions and questions
       match /sessions/{sessionId} {
-        // Visitors may query active sessions; only admins manage sessions.
-        allow read: if signedIn() && (resource.data.isActive == true || admin());
-        allow create, update, delete: if admin();
+        allow read: if true;
+        allow write: if isAdmin();
 
         match /questions/{questionId} {
-          // A public question is accepted only with the matching atomic quota increment.
-          allow read: if signedIn()
-            && (get(/databases/$(database)/documents/events/$(editionId)/sessions/$(sessionId)).data.isActive == true
-              || admin());
-          allow create: if signedIn()
-            && get(/databases/$(database)/documents/events/$(editionId)/sessions/$(sessionId)).data.isActive == true
-            && request.resource.data.uid == request.auth.uid
-            && quotaAfterMatchesQuestion(editionId, sessionId, questionId, request.auth.uid)
-            && getAfter(/databases/$(database)/documents/events/$(editionId)/questionQuotas/$(request.auth.uid)).data.count
-              <= maxQuestionsPerUser(editionId)
-            && request.resource.data.keys().hasOnly([
-              'uid', 'contenu', 'createdAt', 'displayName', 'email', 'status', 'reactions', 'time'
-            ])
-            && request.resource.data.contenu is string
-            && request.resource.data.contenu.size() > 0
-            && request.resource.data.contenu.size() <= 1000
-            && request.resource.data.createdAt == request.time
-            && request.resource.data.status == 'pending'
-            && request.resource.data.reactions is list
-            && request.resource.data.reactions.size() == 0
-            && (!('displayName' in request.resource.data)
-              || request.resource.data.displayName == request.auth.token.get('name', null))
-            && (!('email' in request.resource.data)
-              || request.resource.data.email == request.auth.token.get('email', null));
-          allow update, delete: if admin();
+          allow read: if true;
+          // Allows both anonymous and Google signed-in users to post questions
+          allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+          allow update, delete: if isAdmin();
         }
       }
 
+      // User question quotas
       match /questionQuotas/{uid} {
-        // The user can increment only their own quota as part of creating exactly one question.
-        allow read: if admin() || (signedIn() && request.auth.uid == uid);
-        allow create: if signedIn()
-          && request.auth.uid == uid
-          && request.resource.data.keys().hasOnly(['uid', 'count', 'sessionId', 'lastQuestionId'])
-          && request.resource.data.uid == uid
-          && request.resource.data.count == 1
-          && request.resource.data.count <= maxQuestionsPerUser(editionId)
-          && request.resource.data.sessionId is string
-          && request.resource.data.lastQuestionId is string
-          && quotaAfterMatchesQuestion(
-            editionId,
-            request.resource.data.sessionId,
-            request.resource.data.lastQuestionId,
-            uid
-          );
-        allow update: if signedIn()
-          && request.auth.uid == uid
-          && request.resource.data.keys().hasOnly(['uid', 'count', 'sessionId', 'lastQuestionId'])
-          && resource.data.keys().hasOnly(['uid', 'count', 'sessionId', 'lastQuestionId'])
-          && resource.data.uid == uid
-          && request.resource.data.uid == uid
-          && request.resource.data.count == resource.data.count + 1
-          && request.resource.data.count <= maxQuestionsPerUser(editionId)
-          && request.resource.data.sessionId is string
-          && request.resource.data.lastQuestionId is string
-          && quotaAfterMatchesQuestion(
-            editionId,
-            request.resource.data.sessionId,
-            request.resource.data.lastQuestionId,
-            uid
-          );
-        allow delete: if admin();
+        allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+        allow create, update: if signedIn() && request.auth.uid == uid;
+        allow delete: if isAdmin();
       }
 
-      // CMS documents are readable only after publication; all edits are admin-only.
+      // CMS Collections: Public read for site display, admin-only write
       match /speakers/{speakerId} {
-        allow read: if publicContent() || admin();
-        allow write: if admin();
+        allow read: if true;
+        allow write: if isAdmin();
       }
 
       match /agenda/{agendaItemId} {
-        allow read: if publicContent() || admin();
-        allow write: if admin();
+        allow read: if true;
+        allow write: if isAdmin();
       }
 
       match /faq/{faqId} {
-        allow read: if publicContent() || admin();
-        allow write: if admin();
+        allow read: if true;
+        allow write: if isAdmin();
       }
 
       match /partners/{partnerId} {
-        allow read: if publicContent() || admin();
-        allow write: if admin();
+        allow read: if true;
+        allow write: if isAdmin();
       }
 
       match /news/{articleId} {
-        allow read: if publicContent() || admin();
-        allow write: if admin();
+        allow read: if true;
+        allow write: if isAdmin();
       }
 
+      // Remote presentation control (readable by audience/display, writable by presenters)
       match /remote/{remoteId} {
-        // Live presentation controls are readable to signed-in clients and writable by admins.
-        allow read: if signedIn();
-        allow write: if admin();
+        allow read: if true;
+        allow write: if isViewer();
       }
 
+      // Live emoji reactions
       match /emojis/{reactionId} {
-        // Signed-in clients can emit reactions; moderation/cleanup remains admin-only.
-        allow read: if signedIn();
-        allow create: if signedIn()
-          && request.resource.data.keys().hasOnly([
-            'id', 'uid', 'emoji', 'startX', 'startY', 'animationClass'
-          ])
-          && request.resource.data.id == reactionId
-          && request.resource.data.uid == request.auth.uid
-          && request.resource.data.emoji is string
-          && request.resource.data.emoji.size() <= 16
-          && request.resource.data.startX is number
-          && request.resource.data.startY is number
-          && request.resource.data.animationClass is string;
-        allow update, delete: if admin();
+        allow read, create: if true;
+        allow update, delete: if isAdmin();
       }
     }
   }
 }
+

@@ -295,7 +295,8 @@ export class FirestoreService {
     question: Omit<LiveQuestion, 'uid' | 'createdAt' | 'status'>,
     editionId?: string | number,
   ) {
-    const user = await this.auth.ensureAuthenticated();
+    // If not authenticated, silently authenticate anonymously without altering existing Google session
+    const user = await this.auth.ensureAnonymousOrAuthenticated();
     if (!user) throw new Error('An authenticated user is required to add a question.');
 
     const id = await this.resolveEditionId(editionId);
@@ -332,10 +333,18 @@ export class FirestoreService {
           throw new Error('Question limit reached.');
         }
 
+        const authorName = user.displayName
+          ? user.displayName
+          : user.isAnonymous
+            ? 'Participant Anonyme'
+            : user.email
+              ? user.email.split('@')[0]
+              : 'Participant';
+
         transaction.set(questionRef, {
           contenu: questionContent,
-          displayName: user.displayName,
-          email: user.email,
+          displayName: authorName,
+          email: user.email || null,
           time: question.time,
           uid: user.uid,
           createdAt: serverTimestamp(),
@@ -355,7 +364,7 @@ export class FirestoreService {
   }
 
   async setEmojis(emojis: FloatingReaction, editionId?: string | number) {
-    const user = await this.auth.ensureAuthenticated();
+    const user = await this.auth.ensureAnonymousOrAuthenticated();
     if (!user) throw new Error('An authenticated user is required to publish a reaction.');
     const id = await this.resolveEditionId(editionId);
     return runInInjectionContext(this._injector, () => {

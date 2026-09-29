@@ -4,8 +4,7 @@ import {
   Auth,
   authState,
   GoogleAuthProvider,
-  linkWithPopup,
-  signInAnonymously,
+  signInAnonymously as firebaseSignInAnonymously,
   signInWithPopup,
   signOut as firebaseSignOut,
   User,
@@ -33,30 +32,61 @@ export class AuthService {
     }
   }
 
+  /**
+   * Ensures the initial auth state is resolved.
+   */
   async ensureAuthenticated(): Promise<User | null> {
     if (!this.browser) return null;
     await this.initializedPromise;
-    if (this.auth.currentUser) return this.auth.currentUser;
-    return (await signInAnonymously(this.auth)).user;
+    return this.auth.currentUser;
   }
 
+  /**
+   * Returns current authenticated user or signs in anonymously in background.
+   * If already signed in with Google or an existing session, preserves it without disturbance.
+   */
+  async ensureAnonymousOrAuthenticated(): Promise<User | null> {
+    if (!this.browser) return null;
+    await this.initializedPromise;
+    if (this.auth.currentUser) {
+      return this.auth.currentUser;
+    }
+    return this.signInAnonymously();
+  }
+
+  /**
+   * Signs in anonymously in the background for frictionless participation.
+   */
+  async signInAnonymously(): Promise<User | null> {
+    if (!this.browser) return null;
+    try {
+      const result = await firebaseSignInAnonymously(this.auth);
+      return result.user;
+    } catch (err) {
+      console.error('Anonymous sign-in error:', err);
+      return null;
+    }
+  }
+
+  /**
+   * Signs in with Google popup.
+   */
   async signInWithGoogle(): Promise<User | null> {
     if (!this.browser) return null;
-    const currentUser = await this.ensureAuthenticated();
     const provider = new GoogleAuthProvider();
-
-    if (currentUser?.isAnonymous) {
-      try {
-        return (await linkWithPopup(currentUser, provider)).user;
-      } catch (error: any) {
-        if (error?.code !== 'auth/credential-already-in-use') throw error;
-      }
-    }
-
-    return (await signInWithPopup(this.auth, provider)).user;
+    provider.setCustomParameters({ prompt: 'select_account' });
+    const result = await signInWithPopup(this.auth, provider);
+    return result.user;
   }
 
+  /**
+   * Signs out the current user session.
+   */
   async signOut(): Promise<void> {
-    if (this.browser) await firebaseSignOut(this.auth);
+    if (this.browser) {
+      await firebaseSignOut(this.auth);
+      this.user.set(null);
+    }
   }
 }
+

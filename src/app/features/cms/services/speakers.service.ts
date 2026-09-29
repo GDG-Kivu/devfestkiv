@@ -28,7 +28,7 @@ export class SpeakersService {
         github: `https://github.com/speaker${i + 1}`,
       },
       day: i < 5 ? 'jour1' : 'jour2',
-      color: colors[i % colors.length], // ✅ Couleurs cycliques
+      color: colors[i % colors.length], // Cyclic badge colors
     }));
 
     this.speakers[0] = {
@@ -58,13 +58,18 @@ export class SpeakersService {
     this.speakers[9].photo = './assets/IMG-20220625-WA0013.jpg';
   }
 
-  // Méthode pour récupérer tous les speakers
+  /**
+   * Retrieves all speakers list.
+   */
   getSpeakers(): Speaker[] {
     return this.speakers;
   }
 
-  // Méthode pour récupérer uniquement ceux d’un jour
+  /**
+   * Retrieves speakers filtered by day.
+   */
   getSpeakersByDay(day: 'jour1' | 'jour2'): Speaker[] {
     return this.speakers.filter((s) => s.day === day);
   }
 }
+
