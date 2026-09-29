@@ -242,7 +242,7 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
                   type="text"
                   name="viewerName"
                   [(ngModel)]="newViewerName"
-                  placeholder="Ex: Jean Dupont"
+                  placeholder="Ex: Merlin Lubambo"
                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40 focus:border-[#4285F4] transition placeholder:text-gray-400"
                 />
               </div>

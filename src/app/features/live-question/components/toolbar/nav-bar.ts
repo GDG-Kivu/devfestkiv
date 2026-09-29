@@ -74,12 +74,12 @@ import { RoleService } from '../../../../core/auth/role.service';
 
             <!-- Role verification loading state -->
             @if (roles.isLoadingProfile()) {
-              <div class="flex items-center gap-2 px-3 py-1.5 bg-blue-50/80 border border-blue-100 rounded-lg text-xs font-semibold text-[#4285F4] animate-pulse">
-                <svg class="w-3.5 h-3.5 animate-spin text-[#4285F4]" fill="none" viewBox="0 0 24 24">
+              <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium text-gray-500 animate-pulse">
+                <svg class="w-3.5 h-3.5 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <span class="hidden sm:inline">Vérification des accès...</span>
+                <span class="hidden sm:inline">Chargement...</span>
               </div>
             }
 
@@ -87,7 +87,7 @@ import { RoleService } from '../../../../core/auth/role.service';
             @if (roles.isPresenterOrAdmin()) {
               <a
                 routerLink="/live_q"
-                routerLinkActive="!bg-green-50 !border-[#34A853] !text-[#2e7d32] shadow-xs"
+                routerLinkActive="!bg-emerald-50 !border-[#34A853] !text-[#34A853] shadow-xs"
                 [routerLinkActiveOptions]="{ exact: true }"
                 class="flex items-center gap-1.5 border border-[#34A853]/30 text-gray-700
                        hover:bg-[#34A853]/10 hover:border-[#34A853] bg-white rounded-lg px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition cursor-pointer"
@@ -111,7 +111,7 @@ import { RoleService } from '../../../../core/auth/role.service';
 
               <a
                 routerLink="/presenter"
-                routerLinkActive="!bg-blue-50 !border-[#4285F4] !text-[#1a73e8] shadow-xs"
+                routerLinkActive="!bg-blue-50 !border-[#4285F4] !text-[#4285F4] shadow-xs"
                 class="flex items-center gap-1.5 border border-[#4285F4]/30 text-gray-700
                        hover:bg-[#4285F4]/10 hover:border-[#4285F4] bg-white rounded-lg px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition cursor-pointer"
               >
@@ -136,7 +136,7 @@ import { RoleService } from '../../../../core/auth/role.service';
             @if (roles.isAdmin()) {
               <a
                 routerLink="/live_q/admin"
-                routerLinkActive="!bg-red-50 !border-[#EA4335] !text-[#d93025] shadow-xs"
+                routerLinkActive="!bg-red-50 !border-[#EA4335] !text-[#EA4335] shadow-xs"
                 class="flex items-center gap-1.5 border border-[#EA4335]/30 text-gray-700
                        hover:bg-[#EA4335]/10 hover:border-[#EA4335] bg-white rounded-lg px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition cursor-pointer"
               >
@@ -203,7 +203,7 @@ import { RoleService } from '../../../../core/auth/role.service';
                   }
                 </div>
 
-                <!-- Clean Dropdown Menu on Click (No redundant links) -->
+                <!-- Clean Dropdown Menu on Click (No redundant photo) -->
                 @if (isUserMenuOpen()) {
                   <div
                     class="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 animate-pop-in"
@@ -211,50 +211,35 @@ import { RoleService } from '../../../../core/auth/role.service';
                   >
                     <!-- User Header -->
                     <div class="px-4 py-3 border-b border-gray-100">
-                      <div class="flex items-center gap-3">
-                        @if (userPhotoURL() && !photoLoadError()) {
-                          <img
-                            [src]="userPhotoURL()"
-                            [alt]="userDisplayName()"
-                            (error)="onPhotoError()"
-                            class="w-10 h-10 rounded-full object-cover border border-gray-200"
-                            referrerpolicy="no-referrer"
-                          />
-                        } @else {
-                          <div class="w-10 h-10 rounded-full bg-blue-100 text-[#4285F4] flex items-center justify-center font-bold text-sm">
-                            {{ getInitials(userDisplayName()) }}
-                          </div>
-                        }
-                        <div class="flex-1 min-w-0">
-                          <p class="text-sm font-semibold text-gray-900 truncate">
-                            {{ userDisplayName() }}
+                      <div class="min-w-0">
+                        <p class="text-sm font-bold text-gray-900 truncate">
+                          {{ userDisplayName() }}
+                        </p>
+                        @if (user.email) {
+                          <p class="text-[11px] text-gray-500 font-mono truncate mt-0.5">
+                            {{ user.email }}
                           </p>
-                          @if (user.email) {
-                            <p class="text-[11px] text-gray-400 font-mono truncate">
-                              {{ user.email }}
-                            </p>
-                          }
-                          @if (roles.isLoadingProfile()) {
-                            <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-[10px] font-medium text-blue-600 bg-blue-50 rounded-full animate-pulse">
-                              <span class="w-1.5 h-1.5 rounded-full bg-[#4285F4] animate-ping"></span>
-                              Vérification...
-                            </span>
-                          } @else if (roles.isAdmin()) {
-                            <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-[10px] font-bold text-[#EA4335] bg-[#EA4335]/10 rounded-full">
-                              <span class="w-1.5 h-1.5 rounded-full bg-[#EA4335]"></span>
-                              Administrateur
-                            </span>
-                          } @else if (roles.isViewer()) {
-                            <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-[10px] font-bold text-[#4285F4] bg-[#4285F4]/10 rounded-full">
-                              <span class="w-1.5 h-1.5 rounded-full bg-[#4285F4]"></span>
-                              Présentateur
-                            </span>
-                          } @else {
-                            <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-[10px] font-medium text-gray-600 bg-gray-100 rounded-full">
-                              {{ user.isAnonymous ? 'Participant (Anonyme)' : 'Participant' }}
-                            </span>
-                          }
-                        </div>
+                        }
+                        @if (roles.isLoadingProfile()) {
+                          <span class="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 text-[10px] font-medium text-gray-600 bg-gray-100 rounded-full animate-pulse">
+                            <span class="w-1.5 h-1.5 rounded-full bg-gray-400 animate-ping"></span>
+                            Chargement...
+                          </span>
+                        } @else if (roles.isAdmin()) {
+                          <span class="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 text-[10px] font-bold text-[#EA4335] bg-[#EA4335]/10 rounded-full">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#EA4335]"></span>
+                            Administrateur
+                          </span>
+                        } @else if (roles.isViewer()) {
+                          <span class="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 text-[10px] font-bold text-[#4285F4] bg-[#4285F4]/10 rounded-full">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#4285F4]"></span>
+                            Présentateur
+                          </span>
+                        } @else {
+                          <span class="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 text-[10px] font-medium text-gray-600 bg-gray-100 rounded-full">
+                            {{ user.isAnonymous ? 'Participant (Anonyme)' : 'Participant' }}
+                          </span>
+                        }
                       </div>
                     </div>
 
