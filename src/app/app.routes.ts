@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './core/auth/admin.guard';
+import { authGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   {
@@ -8,65 +10,61 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        loadComponent: () => import('./pages/home/home'),
+        loadComponent: () => import('./features/event/pages/home/home'),
       },
       {
         path: 'agenda',
-        loadComponent: () => import('./pages/agenda/agenda'),
+        loadComponent: () => import('./features/event/pages/agenda/agenda'),
       },
       {
         path: 'speakers',
-        loadComponent: () => import('./pages/speakers/speakers'),
+        loadComponent: () => import('./features/cms/pages/speakers/speakers'),
       },
       {
         path: 'sponsor',
-        loadComponent: () => import('./pages/sponsor/sponsor'),
+        loadComponent: () => import('./features/cms/pages/sponsors/sponsor'),
       },
       {
         path: 'qa',
-        loadComponent: () => import('./pages/qa/qa'),
+        loadComponent: () => import('./features/cms/pages/faq/qa'),
       },
       {
         path: 'dp-generator',
-        loadComponent: () => import('./pages/dp-generator/dp-generator'),
+        loadComponent: () => import('./features/event/pages/dp-generator/dp-generator'),
       },
     ],
   },
   {
     path: 'live_q',
-    loadComponent: () => import('./live-question/live-question'),
+    loadComponent: () => import('./features/live-question/live-question'),
+    canActivate: [authGuard],
     children: [
       {
         path: '',
-        loadComponent: () => import('./live-question/components/home/home'),
-      },
-    ],
-  },
-  {
-    path: 'live_q',
-    loadComponent: () => import('./live-question/live-question'),
-    children: [
-      {
-        path: '',
-        loadComponent: () => import('./live-question/components/home/home'),
+        loadComponent: () => import('./features/live-question/pages/live-home/home'),
       },
       {
         path: 'admin',
-        loadComponent: () => import('./live-question/components/admin/admin'),
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/live-question/components/admin/admin'),
       },
     ],
   },
   {
     path: 'question-space',
-    loadComponent: () => import('./live-question/components/question-space/question-space'),
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/live-question/components/question-space/question-space'),
   },
   {
     path: 'presenter',
-    loadComponent: () => import('./live-question/components/presentation/presentation'),
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () => import('./features/live-question/components/presentation/presentation'),
   },
   {
     path: 'remote',
-    loadComponent: () => import('./live-question/remote/remote'),
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () => import('./features/live-question/remote/remote'),
   },
   { path: '**', redirectTo: '/' },
 ];

@@ -1,0 +1,115 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function admin() {
+      return signedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.disabled != true;
+    }
+
+    function maxQuestionsPerUser() {
+      return 5;
+    }
+
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || admin());
+      allow write: if false;
+    }
+
+    match /questionQuotas/{uid} {
+      allow read: if admin() || (signedIn() && request.auth.uid == uid);
+      allow create: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['uid', 'count', 'sessionId', 'lastQuestionId'])
+        && request.resource.data.uid == uid
+        && request.resource.data.count == 1
+        && request.resource.data.count <= maxQuestionsPerUser()
+        && request.resource.data.sessionId is string
+        && request.resource.data.lastQuestionId is string
+        && existsAfter(/databases/$(database)/documents/sessions/$(request.resource.data.sessionId)/questions/$(request.resource.data.lastQuestionId))
+        && getAfter(/databases/$(database)/documents/sessions/$(request.resource.data.sessionId)/questions/$(request.resource.data.lastQuestionId)).data.uid == uid;
+      allow update: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['uid', 'count', 'sessionId', 'lastQuestionId'])
+        && resource.data.keys().hasOnly(['uid', 'count', 'sessionId', 'lastQuestionId'])
+        && resource.data.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.count == resource.data.count + 1
+        && request.resource.data.count <= maxQuestionsPerUser()
+        && request.resource.data.sessionId is string
+        && request.resource.data.lastQuestionId is string
+        && existsAfter(/databases/$(database)/documents/sessions/$(request.resource.data.sessionId)/questions/$(request.resource.data.lastQuestionId))
+        && getAfter(/databases/$(database)/documents/sessions/$(request.resource.data.sessionId)/questions/$(request.resource.data.lastQuestionId)).data.uid == uid;
+      allow delete: if admin();
+    }
+
+    match /sessions/{sessionId} {
+      allow read: if signedIn() && (resource.data.isActive == true || admin());
+      allow create, update, delete: if admin();
+
+      match /questions/{questionId} {
+        allow read: if signedIn()
+          && (get(/databases/$(database)/documents/sessions/$(sessionId)).data.isActive == true || admin());
+        allow create: if signedIn()
+          && get(/databases/$(database)/documents/sessions/$(sessionId)).data.isActive == true
+          && request.resource.data.uid == request.auth.uid
+          && getAfter(/databases/$(database)/documents/questionQuotas/$(request.auth.uid)).data.uid == request.auth.uid
+          && getAfter(/databases/$(database)/documents/questionQuotas/$(request.auth.uid)).data.sessionId == sessionId
+          && getAfter(/databases/$(database)/documents/questionQuotas/$(request.auth.uid)).data.lastQuestionId == questionId
+          && ((!exists(/databases/$(database)/documents/questionQuotas/$(request.auth.uid))
+            && getAfter(/databases/$(database)/documents/questionQuotas/$(request.auth.uid)).data.count == 1)
+            || (exists(/databases/$(database)/documents/questionQuotas/$(request.auth.uid))
+              && getAfter(/databases/$(database)/documents/questionQuotas/$(request.auth.uid)).data.count
+                == get(/databases/$(database)/documents/questionQuotas/$(request.auth.uid)).data.count + 1))
+          && getAfter(/databases/$(database)/documents/questionQuotas/$(request.auth.uid)).data.count > 0
+          && getAfter(/databases/$(database)/documents/questionQuotas/$(request.auth.uid)).data.count <= maxQuestionsPerUser()
+          && request.resource.data.keys().hasOnly([
+            'uid', 'contenu', 'createdAt', 'displayName', 'email', 'status', 'reactions', 'time'
+          ])
+          && request.resource.data.contenu is string
+          && request.resource.data.contenu.size() > 0
+          && request.resource.data.contenu.size() <= 1000
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.status == 'pending'
+          && request.resource.data.reactions is list
+          && request.resource.data.reactions.size() == 0
+          && (!('displayName' in request.resource.data)
+            || request.resource.data.displayName == request.auth.token.get('name', null))
+          && (!('email' in request.resource.data)
+            || request.resource.data.email == request.auth.token.get('email', null));
+        allow update, delete: if admin();
+      }
+    }
+
+    match /remote/{documentId} {
+      allow read: if signedIn();
+      allow write: if admin();
+    }
+
+    match /emojis/{documentId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly([
+          'uid', 'emoji', 'startX', 'startY', 'animationClass'
+        ])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.emoji is string
+        && request.resource.data.emoji.size() <= 16
+        && request.resource.data.startX is number
+        && request.resource.data.startY is number
+        && request.resource.data.animationClass is string;
+      allow update, delete: if admin();
+    }
+
+    match /cms/{document=**} {
+      allow read: if signedIn();
+      allow write: if admin();
+    }
+
+  }
+}
