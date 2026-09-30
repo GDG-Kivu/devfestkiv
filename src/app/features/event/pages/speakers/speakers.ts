@@ -92,10 +92,9 @@ import { FirestoreService } from '../../../../core/firestore/firestore.service';
               </div>
               <h3 class="text-lg font-semibold text-gray-900 mb-1">Date & Heure</h3>
               <p class="text-gray-600">
-                {{ eventConfig.date.display.start }} {{ eventConfig.date.display.month }}
-                {{ eventConfig.date.display.year }}
+                {{ eventConfig.getFormattedDateRange() }}
               </p>
-              <p class="text-sm text-gray-500">10h30 - 18h00</p>
+              <p class="text-sm text-gray-500">09h00 - 18h00</p>
             </div>
 
             <div

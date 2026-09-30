@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, HostListener, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-questions-slides',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule, DatePipe],
   template: `
     <div
       class="relative mx-auto mt-8 p-6 rounded-2xl overflow-hidden shadow-2xl
@@ -35,80 +35,48 @@ import { FormsModule } from '@angular/forms';
         class="relative h-full flex items-center justify-center overflow-visible perspective-1000"
       >
         @if (questions.length > 0) {
-          <div
-            *ngFor="let q of questions; let i = index"
-            class="absolute w-[90%] transition-all duration-700 ease-in-out transform origin-center rounded-xl"
-            [ngStyle]="{
-              'z-index': questions.length - i,
-              transform: getTransform(i),
-              opacity: i < currentIndex - 2 ? 0 : 1,
-              'background-color': cardColors[i],
-            }"
-          >
+          @for (q of questions; track q; let i = $index) {
             <div
-              class="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-8 text-center border border-gray-200"
+              class="absolute w-[90%] transition-all duration-700 ease-in-out transform origin-center rounded-xl"
+              [style.z-index]="questions.length - i"
+              [style.transform]="getTransform(i)"
+              [style.opacity]="i < currentIndex - 2 ? 0 : 1"
+              [style.background-color]="cardColors[i]"
             >
-              <!-- Index de la question -->
-              <!-- <span
-              [ngStyle]="{
-                color: cardColors[i]
-              }"
-              class="rounded-full flex items-center justify-center w-14 h-14 bg-white text-white
-                 font-bold text-2xl border-[4px] border-t-[#4285F4] border-r-[#DB4437]
-                 border-b-[#F4B400] border-l-[#0F9D58] mb-4 mx-auto"
-            >
-              {{ i + 1 }}
-            </span> -->
-              <div class="flex items-center justify-center gap-10 ">
-                <!-- Bouton précédent -->
-                <!-- <button
-                (click)="prevSlide()"
-                [disabled]="currentIndex === 0"
-                class="px-6 py-3 text-lg font-semibold text-white bg-[#4285F4] rounded-lg shadow hover:bg-[#3367D6] transition disabled:opacity-40"
+              <div
+                class="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-8 text-center border border-gray-200"
               >
-                ◀
-              </button> -->
+                <div class="flex items-center justify-center gap-10">
+                  <input
+                    type="number"
+                    [(ngModel)]="inputIndex"
+                    (keyup.enter)="inputIndex !== null && goToSlide(inputIndex - 1)"
+                    class="w-24 text-center text-2xl font-bold p-3 rounded-lg border-4 border-t-[#4285F4] border-r-[#DB4437] border-b-[#F4B400] border-l-[#0F9D58] shadow-md focus:outline-none"
+                    [min]="1"
+                    [max]="questions.length"
+                    placeholder="{{ currentIndex + 1 }}"
+                  />
+                </div>
+                <br />
 
-                <!-- Champ d'index -->
-                <input
-                  type="number"
-                  [(ngModel)]="inputIndex"
-                  (keyup.enter)="inputIndex !== null && goToSlide(inputIndex - 1)"
-                  class="w-24 text-center text-2xl font-bold p-3 rounded-lg border-4 border-t-[#4285F4] border-r-[#DB4437] border-b-[#F4B400] border-l-[#0F9D58] shadow-md focus:outline-none"
-                  [min]="1"
-                  [max]="questions.length"
-                  placeholder="{{ currentIndex + 1 }}"
-                />
+                <!-- Question -->
+                <p class="text-3xl font-bold text-gray-900 leading-snug">
+                  <span class="text-[#4285F4]">'</span>
+                  {{ q.contenu }}
+                  <span class="text-[#0F9D58]">'</span>
+                </p>
 
-                <!-- Bouton suivant -->
-                <!-- <button
-                (click)="nextSlide()"
-                [disabled]="currentIndex === questions.length - 1"
-                class="px-6 py-3 text-lg font-semibold text-white bg-[#0F9D58] rounded-lg shadow hover:bg-[#0C7A43] transition disabled:opacity-40"
-              >
-                ▶
-              </button> -->
+                <span class="text-lg text-gray-700 italic mt-4 block">
+                  {{ q.time | date: 'medium' }}
+                </span>
+                <br />
+                <p class="text-lg font-bold mb-1">
+                  Live Question : <span class="font-extrabold">{{ session.theme }}</span>
+                </p>
+                <p class="text-md">Speaker : {{ session.speaker }}</p>
               </div>
-              <br />
-
-              <!-- Question avec apostrophes stylées -->
-              <p class="text-3xl font-bold text-gray-900 leading-snug">
-                <span class="text-[#4285F4]">'</span>
-                {{ q.contenu }}
-                <span class="text-[#0F9D58]">'</span>
-              </p>
-
-              <!-- Date/heure -->
-              <span class="text-lg text-gray-700 italic mt-4 block">
-                {{ q.time | date: 'medium' }}
-              </span>
-              <br />
-              <p class="text-lg font-bold mb-1">
-                Live Question : <span class="font-extrabold">{{ session.theme }}</span>
-              </p>
-              <p class="text-md">Speaker : {{ session.speaker }}</p>
             </div>
-          </div>
+          }
         } @else {
           <div
             class="absolute w-[90%] transition-all duration-700 ease-in-out transform origin-center rounded-xl top-60"
@@ -168,13 +136,10 @@ export class QuestionsSlides {
   }
 
   ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
     if (this.session != null) {
       this.questions = this.session.questions;
       this.assignRandomColors();
     }
-    console.log(this.session);
   }
   inputIndex: number | null = null;
 
@@ -186,7 +151,6 @@ export class QuestionsSlides {
   }
 
   nextSlide() {
-    console.log('click');
     if (this.currentIndex < this.questions.length - 1) {
       this.currentIndex++;
     }

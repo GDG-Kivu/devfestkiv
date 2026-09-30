@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit, signal, inject, PLATFORM_ID, effect } fro
 import PastEventsGallery from '../../components/past-events-gallery/past-events-gallery';
 import { RouterLink } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
-import { EventConfigService } from '../../services/event-config.service';
+import { EventConfigService, FestivalDaySchedule } from '../../services/event-config.service';
+import { FirestoreService } from '../../../../core/firestore/firestore.service';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
@@ -14,7 +15,7 @@ import { isPlatformBrowser } from '@angular/common';
       aspect-ratio: 16 / 9;
     }
 
-    /* Hero Section Animations */
+    /* Hero Section Animations - smooth entrance without initial hiding flash */
     .animate-fade-in {
       animation: fadeIn 1s ease-out forwards;
       opacity: 0;
@@ -103,6 +104,7 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export default class HomeComponent implements OnInit, OnDestroy {
   public eventConfig = inject(EventConfigService);
+  private fs = inject(FirestoreService, { optional: true });
   private platformId = inject(PLATFORM_ID);
 
   seconde = signal(0);
@@ -115,11 +117,20 @@ export default class HomeComponent implements OnInit, OnDestroy {
   isEventPast = signal(false);
   isEventOngoing = signal(false);
 
+  // Successive & Multi-day Context Signals
+  targetTitle = signal("L'événement commence dans");
+  targetSubTitle = signal('');
+  targetBadge = signal<string | null>(null);
+  activeDayBadge = signal('En direct');
+  activeDayLocation = signal('');
+
   private countdownInterval: any;
   private endTime = 0;
   private readonly STORAGE_KEY = 'countdown_end_time';
 
   constructor() {
+    this.evaluateEventStatus();
+
     effect(() => {
       // Re-evaluate whenever the event document changes
       this.eventConfig.eventDocument();
@@ -137,11 +148,10 @@ export default class HomeComponent implements OnInit, OnDestroy {
 
   evaluateEventStatus(): void {
     const config = this.eventConfig.getConfig();
-    const startDate = config.date?.start ? new Date(config.date.start) : null;
-    const endDate = config.date?.end ? new Date(config.date.end) : null;
+    const festivalDays: FestivalDaySchedule[] = this.eventConfig.getFestivalDays(config);
     const now = Date.now();
 
-    if (!startDate || isNaN(startDate.getTime())) {
+    if (!festivalDays || festivalDays.length === 0) {
       this.isEventPast.set(true);
       this.isEventOngoing.set(false);
       this.countdownRunning.set(false);
@@ -149,38 +159,58 @@ export default class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const startMs = startDate.getTime();
-    let endMs = endDate && !isNaN(endDate.getTime()) ? endDate.getTime() : startMs + 24 * 3600 * 1000;
-    if (endMs <= startMs) {
-      endMs = startMs + 24 * 3600 * 1000;
-    }
-
-    this.targetDateTimeString.set(startDate.toISOString().slice(0, 19));
-    this.updateEventDayFromTarget();
-
-    if (now < startMs) {
-      // Événement futur : compte à rebours actif
-      this.isEventPast.set(false);
-      this.isEventOngoing.set(false);
-      this.countdownRunning.set(true);
-      this.endTime = startMs;
-      this.updateTimeDisplay();
-      this.startInterval();
-    } else if (now >= startMs && now <= endMs) {
-      // Événement en cours : a démarré mais date de fin pas encore atteinte
+    // 1. Check if ANY day of the current edition is currently active (ongoing)
+    const activeDay = festivalDays.find((d) => now >= d.startMs && now <= d.endMs);
+    if (activeDay) {
       this.stopInterval();
       this.isEventPast.set(false);
       this.isEventOngoing.set(true);
       this.countdownRunning.set(false);
+      this.activeDayBadge.set(festivalDays.length > 1 ? `${activeDay.name} en direct` : 'Événement en direct');
+      this.activeDayLocation.set(activeDay.location);
       this.resetTimeSignals();
-    } else {
-      // Événement clôturé : date de fin dépassée
-      this.stopInterval();
-      this.isEventPast.set(true);
-      this.isEventOngoing.set(false);
-      this.countdownRunning.set(false);
-      this.resetTimeSignals();
+      return;
     }
+
+    // 2. Check if there is an upcoming day in the CURRENT event edition
+    const nextUpcomingDay = festivalDays.find((d) => d.startMs > now);
+    if (nextUpcomingDay) {
+      this.isEventPast.set(false);
+      this.isEventOngoing.set(false);
+      this.countdownRunning.set(true);
+      this.endTime = nextUpcomingDay.startMs;
+
+      if (nextUpcomingDay.dayNumber === 1) {
+        this.targetTitle.set(
+          festivalDays.length > 1 ? 'Le Jour 1 commence dans' : "L'événement commence dans",
+        );
+        this.targetSubTitle.set(
+          festivalDays.length > 1 ? `Jour 1 sur ${festivalDays.length}` : 'Rendez-vous pour une expérience technologique unique.',
+        );
+        this.targetBadge.set(
+          festivalDays.length > 1 ? `Jour 1 / ${festivalDays.length}` : 'Bientôt disponible',
+        );
+      } else {
+        // Successive Day in Multi-day Festival (e.g. Day 1 has ended, Day 2 is next!)
+        this.targetTitle.set(`Le ${nextUpcomingDay.name} commence dans`);
+        this.targetSubTitle.set(
+          `Suite du festival • ${nextUpcomingDay.name}`,
+        );
+        this.targetBadge.set(`Jour ${nextUpcomingDay.dayNumber} / ${festivalDays.length}`);
+      }
+
+      this.targetDateTimeString.set(nextUpcomingDay.startTime.toISOString().slice(0, 19));
+      this.updateTimeDisplay();
+      this.startInterval();
+      return;
+    }
+
+    // 3. All days of current edition have finished -> Event is past / completed for this edition
+    this.stopInterval();
+    this.isEventPast.set(true);
+    this.isEventOngoing.set(false);
+    this.countdownRunning.set(false);
+    this.resetTimeSignals();
   }
 
   private startInterval(): void {
@@ -237,38 +267,9 @@ export default class HomeComponent implements OnInit, OnDestroy {
   NowDate = new Date();
   eventDay = this.eventConfig.getEventDay();
 
-  updateEventDayFromTarget(): void {
-    const dateValue = this.targetDateTimeString();
-    if (!dateValue) return;
-
-    const date = new Date(dateValue);
-
-    const months = [
-      'Janvier',
-      'Février',
-      'Mars',
-      'Avril',
-      'Mai',
-      'Juin',
-      'Juillet',
-      'Août',
-      'Septembre',
-      'Octobre',
-      'Novembre',
-      'Décembre',
-    ];
-
-    this.eventDay.start.set(date.getDate());
-    this.eventDay.end.set(date.getDate() + 1);
-    this.eventDay.month.set(months[date.getMonth()]);
-    this.eventDay.year.set(date.getFullYear());
-  }
-
   engagementYear = this.eventConfig.engagementYear;
-
   impactStats = this.eventConfig.impactStats;
-
   supports = this.eventConfig.supports;
-
   registrationUrl = this.eventConfig.registrationUrl;
 }
+

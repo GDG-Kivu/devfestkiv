@@ -8,7 +8,7 @@ import { Footer } from '../shared/components/footer/footer';
   imports: [Navbar, Footer, RouterOutlet],
   template: `
     <app-navbar />
-    <router-outlet />
+      <router-outlet />
     <app-footer />
   `,
   styles: ``,

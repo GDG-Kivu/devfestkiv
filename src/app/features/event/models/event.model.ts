@@ -60,6 +60,8 @@ export interface EventConfig {
       fullDate: string;
       location: string;
       isActive: boolean;
+      startsAt?: string;
+      endsAt?: string;
     }>;
   };
   firebase: {

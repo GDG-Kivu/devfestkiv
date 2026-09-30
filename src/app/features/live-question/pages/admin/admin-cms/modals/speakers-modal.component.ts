@@ -246,8 +246,11 @@ import { Speaker } from '../../../../../event/models/speaker.model';
                   [(ngModel)]="activeSpeaker.day"
                   class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
                 >
-                  <option value="jour1">Jour 1</option>
-                  <option value="jour2">Jour 2</option>
+                  @for (d of availableDays(); track d.id) {
+                    <option [value]="d.id">
+                      {{ d.name }} {{ d.date ? '(' + d.date + ')' : '' }}
+                    </option>
+                  }
                 </select>
               </div>
 
@@ -319,6 +322,10 @@ export class SpeakersModalComponent implements OnInit {
   private fs = inject(FirestoreService);
 
   speakers = signal<Speaker[]>([]);
+  availableDays = signal<Array<{ id: string; name: string; date?: string }>>([
+    { id: 'day1', name: 'Jour 1' },
+    { id: 'day2', name: 'Jour 2' },
+  ]);
   isLoading = signal(true);
   showForm = signal(false);
   isEditing = signal(false);
@@ -337,7 +344,24 @@ export class SpeakersModalComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.loadEventDays();
     this.loadSpeakers();
+  }
+
+  private loadEventDays(): void {
+    this.fs.getEvent(this.editionId).subscribe({
+      next: (event) => {
+        if (event?.agenda?.days && event.agenda.days.length > 0) {
+          this.availableDays.set(
+            event.agenda.days.map((d) => ({
+              id: d.id,
+              name: d.name,
+              date: d.date,
+            })),
+          );
+        }
+      },
+    });
   }
 
   private loadSpeakers(): void {

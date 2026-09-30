@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FirestoreService } from '../../../../../../core/firestore/firestore.service';
 import { AgendaFormat, AgendaItem } from '../../../../../event/models/agenda-item.model';
+import { EventConfigService, FestivalDaySchedule } from '../../../../../event/services/event-config.service';
 
 @Component({
   selector: 'app-agenda-modal',
@@ -21,7 +22,7 @@ import { AgendaFormat, AgendaItem } from '../../../../../event/models/agenda-ite
               </svg>
             </div>
             <div>
-              <h3 class="text-lg font-bold text-gray-900">Agenda & Planning du Festival</h3>
+              <h3 class="text-lg font-bold text-gray-900">Agenda & Planning</h3>
               <p class="text-xs text-gray-500">Édition : {{ editionId }} • {{ agendaItems().length }} créneau(x)</p>
             </div>
           </div>
@@ -29,12 +30,12 @@ import { AgendaFormat, AgendaItem } from '../../../../../event/models/agenda-ite
 
         @if (!showForm()) {
           <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6">
-            <div class="flex items-center justify-between gap-4">
-              <span class="text-xs text-gray-500">Organisez les sessions, keynotes, ateliers et pauses.</span>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <span class="text-xs text-gray-500">Organisez les sessions, keynotes, ateliers et pauses par journée.</span>
               <button
                 type="button"
                 (click)="openCreateForm()"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-[#34A853] hover:bg-[#2d9248] text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-[#34A853] hover:bg-[#2d9248] text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer self-start sm:self-auto"
               >
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -42,6 +43,40 @@ import { AgendaFormat, AgendaItem } from '../../../../../event/models/agenda-ite
                 <span>Ajouter un créneau</span>
               </button>
             </div>
+
+            <!-- Day Tabs Filter (Multi-day support) -->
+            @if (availableDays().length > 1) {
+              <div class="flex items-center gap-2 border-b border-gray-100 pb-2 overflow-x-auto">
+                <button
+                  type="button"
+                  (click)="selectedDayFilter.set('all')"
+                  class="px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer whitespace-nowrap"
+                  [class.bg-gray-900]="selectedDayFilter() === 'all'"
+                  [class.text-white]="selectedDayFilter() === 'all'"
+                  [class.bg-gray-100]="selectedDayFilter() !== 'all'"
+                  [class.text-gray-600]="selectedDayFilter() !== 'all'"
+                >
+                  Tous les jours ({{ agendaItems().length }})
+                </button>
+
+                @for (d of availableDays(); track d.id) {
+                  <button
+                    type="button"
+                    (click)="selectedDayFilter.set(d.id)"
+                    class="px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer whitespace-nowrap flex items-center gap-1.5"
+                    [class.bg-[#34A853]]="selectedDayFilter() === d.id"
+                    [class.text-white]="selectedDayFilter() === d.id"
+                    [class.bg-gray-100]="selectedDayFilter() !== d.id"
+                    [class.text-gray-600]="selectedDayFilter() !== d.id"
+                  >
+                    <span>{{ d.name }}</span>
+                    @if (d.date) {
+                      <span class="text-[10px] opacity-80">({{ d.date }})</span>
+                    }
+                  </button>
+                }
+              </div>
+            }
 
             <!-- Loading State -->
             @if (isLoading()) {
@@ -52,14 +87,14 @@ import { AgendaFormat, AgendaItem } from '../../../../../event/models/agenda-ite
               </svg>
               <span class="text-xs font-semibold">Chargement de l'agenda...</span>
             </div>
-          } @else if (agendaItems().length === 0) {
+          } @else if (filteredAgendaItems().length === 0) {
             <div class="text-center py-12 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200 text-gray-500 space-y-3">
               <p class="text-sm font-semibold text-gray-700">Aucun créneau d'agenda configuré</p>
               <p class="text-xs text-gray-400">Cliquez sur « Ajouter un créneau » pour structurer le déroulement de la journée.</p>
             </div>
           } @else {
             <div class="space-y-3">
-              @for (item of agendaItems(); track item.id || item.title) {
+              @for (item of filteredAgendaItems(); track item.id || item.title) {
                 <div class="bg-gray-50/70 hover:bg-gray-50 rounded-2xl p-4 border border-gray-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition">
                   <div class="flex items-start gap-3.5 min-w-0">
                     <div class="px-2.5 py-1.5 rounded-xl bg-white border border-gray-200 font-mono text-xs font-bold text-gray-700 whitespace-nowrap shadow-2xs">
@@ -69,9 +104,17 @@ import { AgendaFormat, AgendaItem } from '../../../../../event/models/agenda-ite
                     <div class="min-w-0 space-y-1">
                       <div class="flex items-center gap-2 flex-wrap">
                         <h4 class="text-sm font-bold text-gray-900 truncate">{{ item.title }}</h4>
+                        
                         <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase" [class]="getFormatBadgeClass(item.format)">
                           {{ item.format }}
                         </span>
+
+                        @if (item.dayId) {
+                          <span class="text-[10px] font-bold text-gray-600 bg-gray-200/70 px-2 py-0.5 rounded-md uppercase">
+                            {{ getDayLabel(item.dayId) }}
+                          </span>
+                        }
+
                         @if (item.room) {
                           <span class="text-[11px] text-gray-500 bg-white border border-gray-200 px-2 py-0.5 rounded-md">
                             📍 {{ item.room }}
@@ -172,28 +215,33 @@ import { AgendaFormat, AgendaItem } from '../../../../../event/models/agenda-ite
               </div>
             </div>
 
+            <!-- Time Inputs with Validation -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label class="block text-xs font-semibold text-gray-700 mb-1">Heure de début *</label>
                 <input
-                  type="text"
+                  type="time"
                   name="startsAt"
                   [(ngModel)]="activeItem.startsAt"
+                  (ngModelChange)="onTimeChange()"
                   required
-                  placeholder="Ex: 11:00"
-                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#34A853]/40"
+                  class="w-full px-3.5 py-2.5 border rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#34A853]/40"
+                  [class.border-red-400]="isTimeRangeInvalid()"
+                  [class.border-gray-300]="!isTimeRangeInvalid()"
                 />
               </div>
 
               <div>
                 <label class="block text-xs font-semibold text-gray-700 mb-1">Heure de fin *</label>
                 <input
-                  type="text"
+                  type="time"
                   name="endsAt"
                   [(ngModel)]="activeItem.endsAt"
+                  (ngModelChange)="onTimeChange()"
                   required
-                  placeholder="Ex: 11:45"
-                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#34A853]/40"
+                  class="w-full px-3.5 py-2.5 border rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#34A853]/40"
+                  [class.border-red-400]="isTimeRangeInvalid()"
+                  [class.border-gray-300]="!isTimeRangeInvalid()"
                 />
               </div>
 
@@ -209,6 +257,21 @@ import { AgendaFormat, AgendaItem } from '../../../../../event/models/agenda-ite
               </div>
             </div>
 
+            <!-- Time validation feedback -->
+            @if (isTimeRangeInvalid()) {
+              <div class="p-3 bg-red-50 text-red-700 border border-red-200 rounded-xl text-xs flex items-center gap-2">
+                <svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span><strong>Erreur horaire :</strong> L'heure de fin doit être postérieure à l'heure de début.</span>
+              </div>
+            } @else if (calculatedDurationText()) {
+              <div class="text-[11px] text-gray-500 flex items-center gap-1.5 px-1">
+                <span>⏱️ Durée de la session :</span>
+                <strong class="text-gray-800 font-semibold">{{ calculatedDurationText() }}</strong>
+              </div>
+            }
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-semibold text-gray-700 mb-1">Intervenants (séparés par des virgules)</label>
@@ -222,14 +285,18 @@ import { AgendaFormat, AgendaItem } from '../../../../../event/models/agenda-ite
               </div>
 
               <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1">Journée / Track</label>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Journée *</label>
                 <select
                   name="dayId"
                   [(ngModel)]="activeItem.dayId"
+                  (ngModelChange)="onDayChange($event)"
                   class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#34A853]/40"
                 >
-                  <option value="day1">Jour 1</option>
-                  <option value="day2">Jour 2</option>
+                  @for (d of availableDays(); track d.id) {
+                    <option [value]="d.id">
+                      {{ d.name }} {{ d.date ? '(' + d.date + ')' : '' }}
+                    </option>
+                  }
                 </select>
               </div>
             </div>
@@ -272,7 +339,7 @@ import { AgendaFormat, AgendaItem } from '../../../../../event/models/agenda-ite
 
             <button
               type="submit"
-              [disabled]="isSaving()"
+              [disabled]="isSaving() || isTimeRangeInvalid()"
               class="flex items-center gap-2 px-5 py-2.5 bg-[#34A853] hover:bg-[#2d9248] disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
             >
               @if (isSaving()) {
@@ -298,12 +365,20 @@ export class AgendaModalComponent implements OnInit {
   @Output() updated = new EventEmitter<void>();
 
   private fs = inject(FirestoreService);
+  private eventConfig = inject(EventConfigService);
 
   agendaItems = signal<AgendaItem[]>([]);
+  availableDays = signal<Array<{ id: string; name: string; date?: string; fullDate?: string }>>([
+    { id: 'day1', name: 'Jour 1', date: '29 Nov' },
+  ]);
+  selectedDayFilter = signal<string>('all');
+
   isLoading = signal(true);
   showForm = signal(false);
   isEditing = signal(false);
   isSaving = signal(false);
+  isTimeRangeInvalid = signal(false);
+  calculatedDurationText = signal('');
   feedbackMessage = signal<string | null>(null);
   feedbackType = signal<'success' | 'error'>('success');
   speakersInput = '';
@@ -323,8 +398,47 @@ export class AgendaModalComponent implements OnInit {
     isPublished: true,
   };
 
+  filteredAgendaItems = computed(() => {
+    const filter = this.selectedDayFilter();
+    const items = this.agendaItems();
+    if (filter === 'all') {
+      return [...items].sort((a, b) => (a.startsAt || '').localeCompare(b.startsAt || ''));
+    }
+    return items
+      .filter((it) => (it.dayId || 'day1') === filter)
+      .sort((a, b) => (a.startsAt || '').localeCompare(b.startsAt || ''));
+  });
+
   ngOnInit(): void {
+    this.loadEventDays();
     this.loadAgenda();
+  }
+
+  private loadEventDays(): void {
+    this.fs.getEvent(this.editionId).subscribe({
+      next: (event) => {
+        if (event?.agenda?.days && event.agenda.days.length > 0) {
+          this.availableDays.set(
+            event.agenda.days.map((d) => ({
+              id: d.id,
+              name: d.name,
+              date: d.date,
+              fullDate: d.fullDate,
+            })),
+          );
+        } else {
+          const days = this.eventConfig.getFestivalDays();
+          this.availableDays.set(
+            days.map((d) => ({
+              id: d.id,
+              name: d.name,
+              date: d.date,
+              fullDate: d.fullDate,
+            })),
+          );
+        }
+      },
+    });
   }
 
   private loadAgenda(): void {
@@ -340,16 +454,59 @@ export class AgendaModalComponent implements OnInit {
     });
   }
 
+  getDayLabel(dayId: string): string {
+    const found = this.availableDays().find((d) => d.id === dayId);
+    return found ? found.name : dayId;
+  }
+
+  onTimeChange(): void {
+    const s = this.activeItem.startsAt;
+    const e = this.activeItem.endsAt;
+
+    if (!s || !e) {
+      this.isTimeRangeInvalid.set(false);
+      this.calculatedDurationText.set('');
+      return;
+    }
+
+    const [sh, sm] = s.split(':').map((v) => parseInt(v, 10) || 0);
+    const [eh, em] = e.split(':').map((v) => parseInt(v, 10) || 0);
+
+    const sMinutes = sh * 60 + sm;
+    const eMinutes = eh * 60 + em;
+
+    if (eMinutes <= sMinutes) {
+      this.isTimeRangeInvalid.set(true);
+      this.calculatedDurationText.set('');
+      return;
+    }
+
+    this.isTimeRangeInvalid.set(false);
+    const diff = eMinutes - sMinutes;
+    const hours = Math.floor(diff / 60);
+    const mins = diff % 60;
+
+    if (hours > 0 && mins > 0) {
+      this.calculatedDurationText.set(`${hours}h ${mins}min (${diff} min)`);
+    } else if (hours > 0) {
+      this.calculatedDurationText.set(`${hours}h (${diff} min)`);
+    } else {
+      this.calculatedDurationText.set(`${mins} min`);
+    }
+  }
+
   openCreateForm(): void {
+    const defaultDay = this.availableDays().length > 0 ? this.availableDays()[0].id : 'day1';
+    const { startsAt, endsAt } = this.computeNextAvailableSlot(defaultDay);
     this.activeItem = {
       id: '',
       editionId: this.editionId,
-      dayId: 'day1',
+      dayId: defaultDay,
       title: '',
       description: '',
       speakerIds: [],
-      startsAt: '10:00',
-      endsAt: '10:30',
+      startsAt,
+      endsAt,
       room: 'Grand Amphi',
       track: 'General',
       format: 'talk',
@@ -358,7 +515,50 @@ export class AgendaModalComponent implements OnInit {
     this.speakersInput = '';
     this.isEditing.set(false);
     this.feedbackMessage.set(null);
+    this.onTimeChange();
     this.showForm.set(true);
+  }
+
+  /**
+   * Computes the next available start time for a given day,
+   * based on the latest endsAt time of existing sessions.
+   * Returns start + 45 min duration as a default.
+   */
+  private computeNextAvailableSlot(dayId: string): { startsAt: string; endsAt: string } {
+    const dayItems = this.agendaItems().filter((it) => (it.dayId || 'day1') === dayId);
+    const pad = (n: number) => String(n).padStart(2, '0');
+
+    if (dayItems.length === 0) {
+      return { startsAt: '09:00', endsAt: '09:45' };
+    }
+
+    // Find the latest end time
+    let latestEndMinutes = 0;
+    for (const item of dayItems) {
+      if (item.endsAt) {
+        const [h, m] = item.endsAt.split(':').map((v) => parseInt(v, 10) || 0);
+        const totalMin = h * 60 + m;
+        if (totalMin > latestEndMinutes) latestEndMinutes = totalMin;
+      }
+    }
+
+    // Suggest start at latest end, clamp to 18:00 max
+    const startMin = Math.min(latestEndMinutes, 17 * 60 + 15);
+    const endMin = Math.min(startMin + 45, 18 * 60);
+
+    return {
+      startsAt: `${pad(Math.floor(startMin / 60))}:${pad(startMin % 60)}`,
+      endsAt: `${pad(Math.floor(endMin / 60))}:${pad(endMin % 60)}`,
+    };
+  }
+
+  onDayChange(dayId: string): void {
+    if (!this.isEditing()) {
+      const { startsAt, endsAt } = this.computeNextAvailableSlot(dayId);
+      this.activeItem.startsAt = startsAt;
+      this.activeItem.endsAt = endsAt;
+      this.onTimeChange();
+    }
   }
 
   openEditForm(item: AgendaItem): void {
@@ -366,6 +566,7 @@ export class AgendaModalComponent implements OnInit {
     this.speakersInput = (item.speakerIds || []).join(', ');
     this.isEditing.set(true);
     this.feedbackMessage.set(null);
+    this.onTimeChange();
     this.showForm.set(true);
   }
 
@@ -390,6 +591,12 @@ export class AgendaModalComponent implements OnInit {
     if (!this.activeItem.title?.trim()) {
       this.feedbackType.set('error');
       this.feedbackMessage.set('Veuillez renseigner le titre du créneau au programme.');
+      return;
+    }
+
+    if (this.isTimeRangeInvalid()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('L\'heure de fin doit être postérieure à l\'heure de début.');
       return;
     }
 
