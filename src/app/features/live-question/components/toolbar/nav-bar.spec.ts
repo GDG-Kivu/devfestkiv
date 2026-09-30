@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
 import { NavBar } from './nav-bar';
-import { AuthService } from '../../../../core/auth/auth.service';
-import { RoleService } from '../../../../core/auth/role.service';
+import { AuthService } from '../../../../core/auth/services/auth.service';
+import { RoleService } from '../../../../core/auth/services/role.service';
 import { EventConfigService } from '../../../event/services/event-config.service';
 
 describe('NavBar', () => {

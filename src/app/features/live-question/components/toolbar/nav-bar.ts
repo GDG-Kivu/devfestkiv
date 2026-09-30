@@ -3,8 +3,8 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Auth } from '@angular/fire/auth';
 import { EventConfigService } from '../../../event/services/event-config.service';
-import { AuthService } from '../../../../core/auth/auth.service';
-import { RoleService } from '../../../../core/auth/role.service';
+import { AuthService } from '../../../../core/auth/services/auth.service';
+import { RoleService } from '../../../../core/auth/services/role.service';
 
 @Component({
   selector: 'app-nav-bar',

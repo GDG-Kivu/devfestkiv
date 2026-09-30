@@ -15,13 +15,13 @@ import {
   updateDoc,
   where,
 } from '@angular/fire/firestore';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../auth/services/auth.service';
 import {
   FloatingReaction,
   LiveQuestion,
 } from '../../features/live-question/models/live-question.model';
 import { LiveSession } from '../../features/live-question/models/live-session.model';
-import { EventPartner } from '../../features/cms/models/partner.model';
+import { EventPartner } from '../../features/event/models/partner.model';
 import { EventDocument, SiteSettings } from '../../features/event/models/event.model';
 import { EVENT_CONFIG } from '../../config/event.config';
 import { EventSubcollection, FIRESTORE_COLLECTIONS, firestorePaths } from './firestore-paths';

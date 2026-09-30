@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { LiveQuestion } from '../../models/live-question.model';
 import { FirestoreService } from '../../../../core/firestore/firestore.service';
-import { AuthService } from '../../../../core/auth/auth.service';
+import { AuthService } from '../../../../core/auth/services/auth.service';
 import { Subscription } from 'rxjs';
 import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
 

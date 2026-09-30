@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { adminGuard } from './core/auth/admin.guard';
-import { presenterGuard } from './core/auth/presenter.guard';
+import { adminGuard } from './core/auth/guards/admin.guard';
+import { presenterGuard } from './core/auth/guards/presenter.guard';
 
 export const routes: Routes = [
   {
@@ -18,15 +18,15 @@ export const routes: Routes = [
       },
       {
         path: 'speakers',
-        loadComponent: () => import('./features/cms/pages/speakers/speakers'),
+        loadComponent: () => import('./features/event/pages/speakers/speakers'),
       },
       {
         path: 'sponsor',
-        loadComponent: () => import('./features/cms/pages/sponsors/sponsor'),
+        loadComponent: () => import('./features/event/pages/sponsors/sponsor'),
       },
       {
         path: 'qa',
-        loadComponent: () => import('./features/cms/pages/faq/qa'),
+        loadComponent: () => import('./features/event/pages/faq/qa'),
       },
       {
         path: 'dp-generator',
@@ -36,7 +36,7 @@ export const routes: Routes = [
   },
   {
     path: 'live_q',
-    loadComponent: () => import('./features/live-question/live-question'),
+    loadComponent: () => import('./features/live-question/pages/live-question'),
     children: [
       {
         path: '',
@@ -45,24 +45,24 @@ export const routes: Routes = [
       {
         path: 'admin',
         canActivate: [adminGuard],
-        loadComponent: () => import('./features/live-question/components/admin/admin'),
+        loadComponent: () => import('./features/live-question/pages/admin/admin'),
       },
     ],
   },
   {
     path: 'question-space',
     loadComponent: () =>
-      import('./features/live-question/components/question-space/question-space'),
+      import('./features/live-question/pages/question-space/question-space'),
   },
   {
     path: 'presenter',
     canActivate: [presenterGuard],
-    loadComponent: () => import('./features/live-question/components/presentation/presentation'),
+    loadComponent: () => import('./features/live-question/pages/presentation/presentation'),
   },
   {
     path: 'remote',
     canActivate: [presenterGuard],
-    loadComponent: () => import('./features/live-question/remote/remote'),
+    loadComponent: () => import('./features/live-question/pages/remote/remote'),
   },
   { path: '**', redirectTo: '/' },
 ];
