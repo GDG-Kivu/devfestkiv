@@ -206,7 +206,7 @@ import { FaqCategory, FaqItem } from '../../../../../event/models/faq-item.model
 
               <button
                 type="submit"
-                [disabled]="isSaving() || !activeItem.question || !activeItem.answer"
+                [disabled]="isSaving()"
                 class="flex items-center gap-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
               >
                 @if (isSaving()) {
@@ -335,7 +335,6 @@ export class FaqModalComponent implements OnInit {
     this.isLoading.set(true);
     this.fs.getEventCollection<FaqItem>(this.editionId, 'faq').subscribe({
       next: (list) => {
-        // Utilise les FAQ par défaut si Firestore renvoie une liste vide
         this.faqList.set(list?.length ? list : this.DEFAULT_FAQ);
         this.isLoading.set(false);
       },
@@ -368,7 +367,19 @@ export class FaqModalComponent implements OnInit {
   }
 
   async saveItem(): Promise<void> {
-    if (!this.activeItem.question || !this.activeItem.answer || this.isSaving()) return;
+    if (this.isSaving()) return;
+
+    if (!this.activeItem.question?.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez renseigner l\'intitulé de la question.');
+      return;
+    }
+    if (!this.activeItem.answer?.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez renseigner la réponse à la question.');
+      return;
+    }
+
     this.isSaving.set(true);
     this.feedbackMessage.set(null);
 
@@ -381,7 +392,7 @@ export class FaqModalComponent implements OnInit {
       }
 
       this.feedbackType.set('success');
-      this.feedbackMessage.set('Question enregistrée avec succès dans Firestore !');
+      this.feedbackMessage.set('Question enregistrée avec succès !');
       this.updated.emit();
 
       setTimeout(() => {

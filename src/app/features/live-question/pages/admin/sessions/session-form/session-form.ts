@@ -3,9 +3,8 @@ import {
   Input,
   Output,
   EventEmitter,
-  OnChanges,
-  SimpleChanges,
   inject,
+  signal,
 } from '@angular/core';
 
 import { FormsModule, NgForm } from '@angular/forms';
@@ -112,14 +111,20 @@ import { LiveSession } from '../../../../models/live-session.model';
             <input type="checkbox" [(ngModel)]="session.isActive" name="isActive" id="isActive" />
             <label for="isActive" class="text-sm font-medium">Active</label>
           </div>
+
+          @if (errorMessage()) {
+            <div class="text-xs p-3 rounded-xl bg-red-50 text-red-700 border border-red-200">
+              {{ errorMessage() }}
+            </div>
+          }
         </form>
 
         <div class="flex justify-end gap-2 mt-4">
-          <button (click)="closeForm()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+          <button (click)="closeForm()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition cursor-pointer">
             Annuler
           </button>
           <button
-            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            class="px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition cursor-pointer shadow-xs"
             (click)="submitForm(sessionForm)"
           >
             {{ editingSession ? 'Mettre à jour' : 'Enregistrer' }}
@@ -136,6 +141,7 @@ export class SessionForm<T> {
 
   session: LiveSession<T> = this.getEmptySession();
   editingSession: boolean = false;
+  errorMessage = signal<string | null>(null);
   private fs = inject(FirestoreService);
 
   ngOnInit(): void {
@@ -164,15 +170,23 @@ export class SessionForm<T> {
   }
 
   submitForm(form: NgForm) {
-    if (form.valid) {
-      this.session.id = this.session.id != '' ? this.session.id : this.fs.createDocId(`sessions`);
-      this.session.createAt =
-        this.session.createAt != '' ? this.session.createAt : (new Date() as any);
-      this.session.updateAt = new Date() as any;
-      this.fs.setSession(this.session as LiveSession<FieldValue>);
-
-      this.closeForm();
+    if (!this.session.speaker?.trim()) {
+      this.errorMessage.set('Veuillez renseigner le nom de l\'intervenant / speaker.');
+      return;
     }
+    if (!this.session.title?.trim()) {
+      this.errorMessage.set('Veuillez renseigner le titre de la session.');
+      return;
+    }
+
+    this.errorMessage.set(null);
+    this.session.id = this.session.id != '' ? this.session.id : this.fs.createDocId(`sessions`);
+    this.session.createAt =
+      this.session.createAt != '' ? this.session.createAt : (new Date() as any);
+    this.session.updateAt = new Date() as any;
+    this.fs.setSession(this.session as LiveSession<FieldValue>);
+
+    this.closeForm();
   }
 
   closeForm() {

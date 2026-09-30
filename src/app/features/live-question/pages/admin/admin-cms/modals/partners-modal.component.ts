@@ -258,7 +258,7 @@ import { EventPartner } from '../../../../../event/models/partner.model';
 
               <button
                 type="submit"
-                [disabled]="isSaving() || !activePartner.name || !activePartner.role"
+                [disabled]="isSaving()"
                 class="flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
               >
                 @if (isSaving()) {
@@ -359,7 +359,19 @@ export class PartnersModalComponent implements OnInit {
   }
 
   async savePartner(): Promise<void> {
-    if (!this.activePartner.name || !this.activePartner.role || this.isSaving()) return;
+    if (this.isSaving()) return;
+
+    if (!this.activePartner.name?.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez renseigner le nom de l\'organisation ou du partenaire.');
+      return;
+    }
+    if (!this.activePartner.role?.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez renseigner le type ou rôle du partenariat (ex: Partenaire Or).');
+      return;
+    }
+
     this.isSaving.set(true);
     this.feedbackMessage.set(null);
 
@@ -372,7 +384,7 @@ export class PartnersModalComponent implements OnInit {
       }
 
       this.feedbackType.set('success');
-      this.feedbackMessage.set('Partenaire enregistré avec succès dans Firestore !');
+      this.feedbackMessage.set('Partenaire enregistré avec succès !');
       this.updated.emit();
 
       setTimeout(() => {

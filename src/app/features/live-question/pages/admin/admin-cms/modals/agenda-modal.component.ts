@@ -264,7 +264,7 @@ import { AgendaFormat, AgendaItem } from '../../../../../event/models/agenda-ite
 
               <button
                 type="submit"
-                [disabled]="isSaving() || !activeItem.title"
+                [disabled]="isSaving()"
                 class="flex items-center gap-2 px-5 py-2.5 bg-[#34A853] hover:bg-[#2d9248] disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
               >
                 @if (isSaving()) {
@@ -387,7 +387,14 @@ export class AgendaModalComponent implements OnInit {
   }
 
   async saveItem(): Promise<void> {
-    if (!this.activeItem.title || this.isSaving()) return;
+    if (this.isSaving()) return;
+
+    if (!this.activeItem.title?.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez renseigner le titre du créneau au programme.');
+      return;
+    }
+
     this.isSaving.set(true);
     this.feedbackMessage.set(null);
 
@@ -406,7 +413,7 @@ export class AgendaModalComponent implements OnInit {
       }
 
       this.feedbackType.set('success');
-      this.feedbackMessage.set('Créneau enregistré avec succès dans Firestore !');
+      this.feedbackMessage.set('Créneau d\'agenda enregistré avec succès !');
       this.updated.emit();
 
       setTimeout(() => {

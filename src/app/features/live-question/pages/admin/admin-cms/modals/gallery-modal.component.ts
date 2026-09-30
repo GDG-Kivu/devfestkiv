@@ -96,8 +96,7 @@ import { EventAlbum, EventGalleryItem } from '../../../../../event/models/event.
                 <button
                   type="button"
                   (click)="addPhoto()"
-                  [disabled]="!newPhotoUrl"
-                  class="inline-flex items-center gap-2 px-4 py-2 bg-pink-600 hover:bg-pink-700 disabled:bg-gray-300 text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer"
+                  class="inline-flex items-center gap-2 px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer"
                 >
                   <span>+ Ajouter l'image</span>
                 </button>
@@ -189,8 +188,7 @@ import { EventAlbum, EventGalleryItem } from '../../../../../event/models/event.
                 <button
                   type="button"
                   (click)="addAlbum()"
-                  [disabled]="!newAlbumTitle || !newAlbumUrl"
-                  class="inline-flex items-center gap-2 px-4 py-2 bg-pink-600 hover:bg-pink-700 disabled:bg-gray-300 text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer"
+                  class="inline-flex items-center gap-2 px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer"
                 >
                   <span>+ Ajouter l'album</span>
                 </button>
@@ -277,7 +275,7 @@ import { EventAlbum, EventGalleryItem } from '../../../../../event/models/event.
               </svg>
               <span>Enregistrement...</span>
             } @else {
-              <span>Enregistrer dans Firestore</span>
+              <span>Enregistrer les modifications</span>
             }
           </button>
         </div>
@@ -332,7 +330,11 @@ export class GalleryModalComponent implements OnInit {
   }
 
   addPhoto(): void {
-    if (!this.newPhotoUrl.trim()) return;
+    if (!this.newPhotoUrl.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez renseigner le lien (URL) de l\'image.');
+      return;
+    }
     const item: EventGalleryItem = {
       url: this.newPhotoUrl.trim(),
       caption: this.newPhotoCaption.trim(),
@@ -341,6 +343,7 @@ export class GalleryModalComponent implements OnInit {
     this.galleryImages.update((list) => [...list, item]);
     this.newPhotoUrl = '';
     this.newPhotoCaption = '';
+    this.feedbackMessage.set(null);
   }
 
   removePhoto(index: number): void {
@@ -348,7 +351,16 @@ export class GalleryModalComponent implements OnInit {
   }
 
   addAlbum(): void {
-    if (!this.newAlbumTitle.trim() || !this.newAlbumUrl.trim()) return;
+    if (!this.newAlbumTitle.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez renseigner le titre de l\'album.');
+      return;
+    }
+    if (!this.newAlbumUrl.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez renseigner le lien de l\'album public.');
+      return;
+    }
     const album: EventAlbum = {
       title: this.newAlbumTitle.trim(),
       url: this.newAlbumUrl.trim(),
@@ -360,6 +372,7 @@ export class GalleryModalComponent implements OnInit {
     this.newAlbumUrl = '';
     this.newAlbumCover = '';
     this.newAlbumDate = '';
+    this.feedbackMessage.set(null);
   }
 
   removeAlbum(index: number): void {
@@ -382,7 +395,7 @@ export class GalleryModalComponent implements OnInit {
       });
 
       this.feedbackType.set('success');
-      this.feedbackMessage.set('Galerie et albums sauvegardés avec succès dans Firestore !');
+      this.feedbackMessage.set('Galerie et albums sauvegardés avec succès !');
       this.updated.emit();
 
       setTimeout(() => {

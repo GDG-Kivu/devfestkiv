@@ -254,9 +254,14 @@ export class DpTemplateModalComponent implements OnInit {
   }
 
   addQuote(): void {
-    if (!this.newQuoteInput.trim()) return;
+    if (!this.newQuoteInput.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez saisir une citation avant de l\'ajouter.');
+      return;
+    }
     this.config.suggestedQuotes = [...(this.config.suggestedQuotes || []), this.newQuoteInput.trim()];
     this.newQuoteInput = '';
+    this.feedbackMessage.set(null);
   }
 
   removeQuote(index: number): void {
@@ -274,7 +279,7 @@ export class DpTemplateModalComponent implements OnInit {
       });
 
       this.feedbackType.set('success');
-      this.feedbackMessage.set('Template DP sauvegardé avec succès dans Firestore !');
+      this.feedbackMessage.set('Modèle de badge personnalisé sauvegardé avec succès !');
       this.updated.emit();
 
       setTimeout(() => {

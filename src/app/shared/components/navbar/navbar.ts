@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -28,10 +28,16 @@ import { CommonModule } from '@angular/common';
                   [routerLink]="item.path"
                   routerLinkActive="nav-active"
                   [routerLinkActiveOptions]="item.path === '/' ? { exact: true } : { exact: false }"
-                  class="nav-link lg:text-base text-gray-500"
+                  class="nav-link lg:text-base text-gray-500 inline-flex items-center gap-1.5"
                   [attr.aria-current]="item.path === '/' ? 'page' : null"
                 >
-                  {{ item.label }}
+                  @if (navigatingUrl() === item.path) {
+                    <svg class="w-3.5 h-3.5 animate-spin text-[#4285F4]" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  }
+                  <span>{{ item.label }}</span>
                 </a>
               }
             </div>
@@ -107,10 +113,16 @@ import { CommonModule } from '@angular/common';
               routerLinkActive="nav-active-mobile"
               [routerLinkActiveOptions]="item.path === '/' ? { exact: true } : { exact: false }"
               (click)="closeMobileMenu()"
-              class="block px-sm py-md text-base font-medium text-text hover:text-primary transition-all duration-300 border-l-4 border-transparent hover:translate-x-1 hover:border-primary"
+              class="flex items-center justify-between px-sm py-md text-base font-medium text-text hover:text-primary transition-all duration-300 border-l-4 border-transparent hover:translate-x-1 hover:border-primary"
               [style.transition-delay]="i * 50 + 'ms'"
             >
-              {{ item.label }}
+              <span>{{ item.label }}</span>
+              @if (navigatingUrl() === item.path) {
+                <svg class="w-4 h-4 animate-spin text-[#4285F4]" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              }
             </a>
           }
 
@@ -192,7 +204,24 @@ import { CommonModule } from '@angular/common';
   ],
 })
 export class Navbar {
+  private readonly router = inject(Router);
+
   isMobileMenuOpen = signal(false);
+  readonly navigatingUrl = signal<string | null>(null);
+
+  constructor() {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.navigatingUrl.set(event.url);
+      } else if (
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError
+      ) {
+        this.navigatingUrl.set(null);
+      }
+    });
+  }
 
   navItems = signal([
     { path: '/', label: 'Home' },

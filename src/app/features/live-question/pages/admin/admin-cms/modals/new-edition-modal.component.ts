@@ -99,7 +99,7 @@ import { FirestoreService } from '../../../../../../core/firestore/firestore.ser
 
             <button
               type="submit"
-              [disabled]="isSubmitting() || !editionId"
+              [disabled]="isSubmitting()"
               class="flex items-center gap-2 px-5 py-2.5 bg-[#4285F4] hover:bg-[#3367D6] disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
             >
               @if (isSubmitting()) {
@@ -133,7 +133,13 @@ export class NewEditionModalComponent {
 
   async submitNewEdition(): Promise<void> {
     const id = this.editionId.trim();
-    if (!id || this.isSubmitting()) return;
+    if (this.isSubmitting()) return;
+
+    if (!id) {
+      this.errorMessage.set('Veuillez renseigner un identifiant ou une année pour l\'édition (ex: 2026).');
+      return;
+    }
+
     this.isSubmitting.set(true);
     this.errorMessage.set(null);
 

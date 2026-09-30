@@ -384,6 +384,13 @@ export class EventConfigModalComponent implements OnInit {
 
   async saveConfig(): Promise<void> {
     if (this.isSaving()) return;
+
+    if (!this.formData.name?.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez renseigner le nom de l\'événement (ex: DevFest Kivu).');
+      return;
+    }
+
     this.isSaving.set(true);
     this.feedbackMessage.set(null);
 
@@ -397,7 +404,7 @@ export class EventConfigModalComponent implements OnInit {
       });
 
       this.feedbackType.set('success');
-      this.feedbackMessage.set('Configuration enregistrée avec succès dans Firestore !');
+      this.feedbackMessage.set('Configuration de l\'événement enregistrée avec succès !');
       this.updated.emit();
 
       setTimeout(() => {
@@ -405,7 +412,7 @@ export class EventConfigModalComponent implements OnInit {
       }, 1200);
     } catch (err: any) {
       this.feedbackType.set('error');
-      this.feedbackMessage.set(err?.message || 'Erreur lors de la sauvegarde dans Firestore.');
+      this.feedbackMessage.set(err?.message || 'Erreur lors de l\'enregistrement.');
     } finally {
       this.isSaving.set(false);
     }

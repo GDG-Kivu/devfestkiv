@@ -284,7 +284,7 @@ import { Speaker } from '../../../../../event/models/speaker.model';
 
               <button
                 type="submit"
-                [disabled]="isSaving() || !activeSpeaker.name"
+                [disabled]="isSaving()"
                 class="flex items-center gap-2 px-5 py-2.5 bg-[#4285F4] hover:bg-[#3367D6] disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
               >
                 @if (isSaving()) {
@@ -387,7 +387,14 @@ export class SpeakersModalComponent implements OnInit {
   }
 
   async saveSpeaker(): Promise<void> {
-    if (!this.activeSpeaker.name || this.isSaving()) return;
+    if (this.isSaving()) return;
+
+    if (!this.activeSpeaker.name?.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez renseigner le nom complet du speaker.');
+      return;
+    }
+
     this.isSaving.set(true);
     this.feedbackMessage.set(null);
 
@@ -400,7 +407,7 @@ export class SpeakersModalComponent implements OnInit {
       }
 
       this.feedbackType.set('success');
-      this.feedbackMessage.set('Speaker enregistré avec succès dans Firestore !');
+      this.feedbackMessage.set('Speaker enregistré avec succès !');
       this.updated.emit();
 
       setTimeout(() => {
