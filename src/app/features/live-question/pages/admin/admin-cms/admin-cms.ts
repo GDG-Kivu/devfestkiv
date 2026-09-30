@@ -357,7 +357,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                     <div class="flex items-center gap-2">
                       <h3 class="text-base font-bold text-gray-900">Galerie & Albums</h3>
                       <span class="text-xs font-bold bg-pink-100 text-pink-800 px-2.5 py-0.5 rounded-full">
-                        {{ galleryPhotosCount() }} photos
+                        {{ galleryPhotosCount() }} 
                       </span>
                     </div>
                     <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">

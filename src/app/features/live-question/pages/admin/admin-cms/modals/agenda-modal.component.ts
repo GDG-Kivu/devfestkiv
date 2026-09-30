@@ -121,7 +121,11 @@ import { AgendaFormat, AgendaItem } from '../../../../../event/models/agenda-ite
           <form (ngSubmit)="saveItem()" class="space-y-4">
             <div class="flex items-center justify-between pb-2 border-b border-gray-100">
               <h4 class="text-sm font-bold text-gray-900">
-                {{ isEditing() ? 'Modifier le créneau d\'agenda' : 'Nouveau créneau au programme' }}
+                @if (isEditing()) {
+                  Modifier le créneau d'agenda
+                } @else {
+                  Nouveau créneau au programme
+                }
               </h4>
               <button
                 type="button"
