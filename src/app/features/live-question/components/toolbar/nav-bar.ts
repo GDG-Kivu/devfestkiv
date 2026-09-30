@@ -87,10 +87,9 @@ import { RoleService } from '../../../../core/auth/role.service';
             @if (roles.isPresenterOrAdmin()) {
               <a
                 routerLink="/live_q"
-                routerLinkActive="!bg-emerald-50 !border-[#34A853] !text-[#34A853] shadow-xs"
+                routerLinkActive="!border-[#34A853] !text-[#34A853] !bg-emerald-50/80 shadow-xs"
                 [routerLinkActiveOptions]="{ exact: true }"
-                class="flex items-center gap-1.5 border border-[#34A853]/30 text-gray-700
-                       hover:bg-[#34A853]/10 hover:border-[#34A853] bg-white rounded-lg px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition cursor-pointer"
+                class="flex items-center gap-1.5 border border-gray-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50 bg-white rounded-lg px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition cursor-pointer"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +97,7 @@ import { RoleService } from '../../../../core/auth/role.service';
                   viewBox="0 0 24 24"
                   stroke-width="1.8"
                   stroke="currentColor"
-                  class="w-4 h-4 text-[#34A853]"
+                  class="w-4 h-4 text-current"
                 >
                   <path
                     stroke-linecap="round"
@@ -111,9 +110,8 @@ import { RoleService } from '../../../../core/auth/role.service';
 
               <a
                 routerLink="/presenter"
-                routerLinkActive="!bg-blue-50 !border-[#4285F4] !text-[#4285F4] shadow-xs"
-                class="flex items-center gap-1.5 border border-[#4285F4]/30 text-gray-700
-                       hover:bg-[#4285F4]/10 hover:border-[#4285F4] bg-white rounded-lg px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition cursor-pointer"
+                routerLinkActive="!border-[#4285F4] !text-[#4285F4] !bg-blue-50/80 shadow-xs"
+                class="flex items-center gap-1.5 border border-gray-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50 bg-white rounded-lg px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition cursor-pointer"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -121,7 +119,7 @@ import { RoleService } from '../../../../core/auth/role.service';
                   viewBox="0 0 24 24"
                   stroke-width="1.8"
                   stroke="currentColor"
-                  class="w-4 h-4 text-[#4285F4]"
+                  class="w-4 h-4 text-current"
                 >
                   <path
                     stroke-linecap="round"
@@ -136,9 +134,8 @@ import { RoleService } from '../../../../core/auth/role.service';
             @if (roles.isAdmin()) {
               <a
                 routerLink="/live_q/admin"
-                routerLinkActive="!bg-red-50 !border-[#EA4335] !text-[#EA4335] shadow-xs"
-                class="flex items-center gap-1.5 border border-[#EA4335]/30 text-gray-700
-                       hover:bg-[#EA4335]/10 hover:border-[#EA4335] bg-white rounded-lg px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition cursor-pointer"
+                routerLinkActive="!border-[#EA4335] !text-[#EA4335] !bg-red-50/80 shadow-xs"
+                class="flex items-center gap-1.5 border border-gray-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50 bg-white rounded-lg px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium transition cursor-pointer"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -146,7 +143,7 @@ import { RoleService } from '../../../../core/auth/role.service';
                   viewBox="0 0 24 24"
                   stroke-width="1.8"
                   stroke="currentColor"
-                  class="w-4 h-4 text-[#EA4335]"
+                  class="w-4 h-4 text-current"
                 >
                   <path
                     stroke-linecap="round"

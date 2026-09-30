@@ -10,10 +10,12 @@ import { Timestamp } from '@angular/fire/firestore';
 import { LiveSession } from '../../models/live-session.model';
 import { AuthService } from '../../../../core/auth/auth.service';
 
+import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
+
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, Card, SessionForm, AdminSettings, AdminCms],
+  imports: [CommonModule, Card, SessionForm, AdminSettings, AdminCms, Skeleton],
   template: `
     <div class="min-h-screen bg-gray-50/50 py-8 px-4 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto space-y-6">
@@ -113,26 +115,33 @@ import { AuthService } from '../../../../core/auth/auth.service';
               </button>
             </div>
 
-            @if (sessions.length === 0) {
-              <div class="bg-white rounded-2xl p-12 text-center border border-gray-100 space-y-4">
-                <div class="w-16 h-16 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mx-auto">
+            @if (sessionsLoading()) {
+              <app-skeleton variant="sessions" [count]="3" />
+            } @else if (sessions.length === 0) {
+              <div class="w-full bg-white rounded-2xl p-8 sm:p-12 border border-gray-100 shadow-xs text-center my-6 space-y-5">
+                <div class="w-16 h-16 rounded-2xl bg-blue-50 text-[#4285F4] inline-flex items-center justify-center shadow-xs">
                   <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                   </svg>
                 </div>
-                <div>
-                  <h3 class="text-base font-bold text-gray-900">Aucune session configurée</h3>
-                  <p class="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
-                    Créez votre première session live pour permettre aux participants de poser des questions.
+                <div class="space-y-2 mx-auto">
+                  <h3 class="text-lg sm:text-xl font-bold text-gray-900">Aucune session configurée</h3>
+                  <p class="text-xs sm:text-sm text-gray-500 leading-relaxed">
+                    Créez votre première session live pour permettre aux participants de poser des questions en direct.
                   </p>
                 </div>
-                <button
-                  type="button"
-                  (click)="openForm()"
-                  class="inline-flex items-center gap-2 bg-[#4285F4] text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-blue-600 transition cursor-pointer"
-                >
-                  Ajouter une session maintenant
-                </button>
+                <div class="pt-2">
+                  <button
+                    type="button"
+                    (click)="openForm()"
+                    class="inline-flex items-center gap-2 bg-[#4285F4] hover:bg-[#3367D6] text-white px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold shadow-xs transition cursor-pointer"
+                  >
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    <span>Ajouter une session maintenant</span>
+                  </button>
+                </div>
               </div>
             } @else {
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
