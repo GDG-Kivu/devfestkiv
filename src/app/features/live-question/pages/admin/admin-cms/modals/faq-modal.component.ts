@@ -2,11 +2,10 @@ import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FirestoreService } from '../../../../../../core/firestore/firestore.service';
-import { FaqCategory, FaqItem } from '../../../../../event/models/faq-item.model';
+import { FaqItem } from '../../../../../event/models/faq-item.model';
 
 @Component({
   selector: 'app-faq-modal',
-  standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs animate-fade-in">

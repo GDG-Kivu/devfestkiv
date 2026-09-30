@@ -15,7 +15,6 @@ import { LiveSession } from '../../../../models/live-session.model';
 
 @Component({
   selector: 'app-session-form',
-  standalone: true,
   imports: [FormsModule],
   template: `
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-xs animate-fade-in overflow-y-auto">

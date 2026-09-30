@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Auth } from '@angular/fire/auth';
@@ -8,8 +8,10 @@ import { RoleService } from '../../../../core/auth/services/role.service';
 
 @Component({
   selector: 'app-nav-bar',
-  standalone: true,
   imports: [RouterLink, RouterLinkActive, CommonModule],
+  host: {
+    '(document:click)': 'onDocumentClick($event)',
+  },
   template: `
     <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-xs border-b border-gray-100 transition-all duration-300">
       <div class="container mx-auto px-4 py-3 max-w-7xl">
@@ -416,7 +418,6 @@ export class NavBar {
     this.isUserMenuOpen.set(false);
   }
 
-  @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     if (this.isUserMenuOpen()) {
       const clickedInside = this.elementRef.nativeElement.querySelector('.user-dropdown-container')?.contains(event.target as Node);

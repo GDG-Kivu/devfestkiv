@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
     <!-- HERO SECTION -->
     <!-- ========================== -->
     <section
-      class="relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-gray-100 min-h-[90vh] flex items-center justify-center"
+      class="relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-gray-100 min-h-[90vh] flex items-center justify-center w-full max-w-full"
     >
       <!-- Background Deco -->
       <div class="absolute inset-0 overflow-hidden opacity-50 animate-fade-in">
@@ -96,7 +96,7 @@ import { Subscription } from 'rxjs';
     <!-- ========================== -->
     <!-- SPEAKERS SECTION -->
     <!-- ========================== -->
-    <main class="mx-auto px-4 py-16 relative z-10 bg-gradient-to-b">
+    <main class="w-full max-w-full overflow-x-hidden mx-auto px-4 py-16 relative z-10 bg-gradient-to-b">
       <div class="text-center mb-16">
         <h2 class="text-4xl md:text-5xl font-bold text-gray-900">
           🎤 Speakers en <span class="text-[#4285F4]">live</span>

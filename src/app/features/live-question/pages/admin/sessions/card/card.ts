@@ -9,7 +9,6 @@ import { LiveSession } from '../../../../models/live-session.model';
 
 @Component({
   selector: 'app-card',
-  standalone: true,
   imports: [CommonModule, FormsModule, SessionForm, Questions],
   template: `
     <div

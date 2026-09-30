@@ -4,7 +4,6 @@ import { EventConfig } from '../../../models/event.model';
 
 @Component({
   selector: 'app-generator',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './generator.html',
 })

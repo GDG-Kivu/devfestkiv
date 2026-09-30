@@ -8,9 +8,15 @@ import { Footer } from '../shared/components/footer/footer';
   imports: [Navbar, Footer, RouterOutlet],
   template: `
     <app-navbar />
+    <main class="site-main">
       <router-outlet />
+    </main>
     <app-footer />
   `,
-  styles: ``,
+  styles: `
+    .site-main {
+      min-height: calc(100dvh - 64px);
+    }
+  `,
 })
 export default class Site {}

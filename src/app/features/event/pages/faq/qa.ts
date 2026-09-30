@@ -13,7 +13,6 @@ type QaItem = {
 
 @Component({
   selector: 'app-qa',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './qa.html',
 })

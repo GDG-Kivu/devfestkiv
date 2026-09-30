@@ -1,11 +1,13 @@
 import { DatePipe } from '@angular/common';
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-questions-slides',
-  standalone: true,
   imports: [FormsModule, DatePipe],
+  host: {
+    '(window:keydown)': 'handleKeyboardEvent($event)',
+  },
   template: `
     <div
       class="relative mx-auto mt-8 p-6 rounded-2xl overflow-hidden shadow-2xl
@@ -168,7 +170,6 @@ export class QuestionsSlides {
     }
   }
   /** Navigation via touches fléchées */
-  @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'ArrowRight') {
       console.log('atta');

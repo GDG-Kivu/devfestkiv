@@ -10,7 +10,6 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
 
 @Component({
   selector: 'app-admin-settings',
-  standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
     <div class="space-y-6 animate-fade-in">

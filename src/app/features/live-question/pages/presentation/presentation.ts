@@ -1,11 +1,10 @@
 import {
   Component,
-  OnInit,
-  OnDestroy,
-  HostListener,
   inject,
   PLATFORM_ID,
   signal,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +20,11 @@ import { QuestionsSlides } from './quetsions-slides/quetsions-slides';
 @Component({
   selector: 'app-presentation',
   imports: [CommonModule, FormsModule, RouterLink, QuestionsSlides],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(document:mousemove)': 'onMouseMove($event)',
+    '(document:mouseup)': 'onMouseUp()',
+  },
   template: `
     <div class="relative min-h-screen " id="slidesContainer">
       <!-- Overlay pour les réactions animées -->
@@ -503,6 +507,7 @@ import { QuestionsSlides } from './quetsions-slides/quetsions-slides';
 export default class Presentation {
   sessions: any[] = [];
   private fs = inject(FirestoreService);
+  private cdr = inject(ChangeDetectorRef);
   eventConfig = inject(EventConfigService);
   speakersSub!: Subscription;
   selectedSlide: string = '';
@@ -644,17 +649,16 @@ export default class Presentation {
     });
   }
 
-  @HostListener('document:mousemove', ['$event'])
   onMouseMove(event: MouseEvent) {
     if (this.dragging && this.isMinimized) {
       this.position = {
         x: event.clientX - this.dragOffset.x,
         y: event.clientY - this.dragOffset.y,
       };
+      this.cdr.markForCheck();
     }
   }
 
-  @HostListener('document:mouseup')
   onMouseUp() {
     this.dragging = false;
   }

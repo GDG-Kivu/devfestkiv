@@ -9,7 +9,6 @@ import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
 
 @Component({
   selector: 'app-questions',
-  standalone: true,
   imports: [CommonModule, FormsModule, Skeleton],
   template: `
     <!-- Overlay Backdrop -->

@@ -21,7 +21,6 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
 
 @Component({
   selector: 'app-admin-cms',
-  standalone: true,
   imports: [
     CommonModule,
     RouterLink,

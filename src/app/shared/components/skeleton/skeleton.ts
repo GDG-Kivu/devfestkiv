@@ -10,7 +10,6 @@ import { CommonModule } from '@angular/common';
  */
 @Component({
   selector: 'app-skeleton',
-  standalone: true,
   imports: [CommonModule],
   template: `
     <!-- Question list skeleton (vertical cards) -->

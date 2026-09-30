@@ -3,7 +3,6 @@ import { CommonModule, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-profil',
-  standalone: true,
   imports: [CommonModule, NgClass],
   templateUrl: './profil.html',
 })

@@ -28,7 +28,6 @@ interface FloatingReaction {
 
 @Component({
   selector: 'app-question-space',
-  standalone: true,
   imports: [FormsModule, RouterLink, Skeleton],
   templateUrl: './question-space.component.html',
   styles: [

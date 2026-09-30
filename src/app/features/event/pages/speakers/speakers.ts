@@ -5,7 +5,6 @@ import { FirestoreService } from '../../../../core/firestore/firestore.service';
 
 @Component({
   selector: 'app-speakers',
-  standalone: true,
   imports: [CommonModule],
   template: `
     <div class="min-h-screen bg-white">

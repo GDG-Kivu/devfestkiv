@@ -20,7 +20,6 @@ export interface FormattedAgendaItem {
 @Component({
   selector: 'app-agenda',
   templateUrl: './agenda.html',
-  standalone: true,
   imports: [CommonModule],
   styles: [
     `

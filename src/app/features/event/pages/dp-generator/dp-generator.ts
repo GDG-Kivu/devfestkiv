@@ -17,7 +17,6 @@ import { EventConfigService } from '../../services/event-config.service';
 
 @Component({
   selector: 'app-dp-generator',
-  standalone: true,
   imports: [CommonModule, FormsModule, Profil, Generator, ImageCropperComponent],
   templateUrl: './dp-generator.html',
 })
