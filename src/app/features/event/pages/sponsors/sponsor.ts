@@ -1,6 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventConfigService } from '../../services/event-config.service';
+import { FirestoreService } from '../../../../core/firestore/firestore.service';
+import { EventPartner } from '../../models/partner.model';
 
 interface SponsorData {
   name: string;
@@ -321,14 +323,19 @@ interface SponsorData {
 })
 export default class Sponsor implements OnInit {
   eventConfig = inject(EventConfigService);
+  private fs = inject(FirestoreService);
 
-  sponsors: SponsorData[] = this.eventConfig.supports.map((support) => ({
-    name: support.name,
-    role: support.role,
-    quote: support.quote,
-    image: support.logo,
-    link: support.link,
-  }));
+  get initialFallbackSponsors(): SponsorData[] {
+    return this.eventConfig.supports.map((support) => ({
+      name: support.name,
+      role: support.role,
+      quote: support.quote,
+      image: support.logo,
+      link: support.link,
+    }));
+  }
+
+  sponsors: SponsorData[] = [];
 
   get mainSponsors(): SponsorData[] {
     return this.sponsors.filter((sponsor) => sponsor.role === 'Partenaire Principal');
@@ -339,7 +346,31 @@ export default class Sponsor implements OnInit {
   }
 
   ngOnInit(): void {
-    // Scroll to top when component initializes
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    this.sponsors = this.initialFallbackSponsors;
+
+    this.fs.getCurrentEditionId().subscribe((editionId) => {
+      this.fs.getPublishedEventCollection<EventPartner>(editionId, 'partners').subscribe({
+        next: (items) => {
+          if (items && items.length > 0) {
+            this.sponsors = items.map((p) => ({
+              name: p.name,
+              role: p.role,
+              quote: p.quote || '',
+              image: p.logo,
+              link: p.link || '',
+            }));
+          } else {
+            this.sponsors = this.initialFallbackSponsors;
+          }
+        },
+        error: () => {
+          this.sponsors = this.initialFallbackSponsors;
+        },
+      });
+    });
   }
 }

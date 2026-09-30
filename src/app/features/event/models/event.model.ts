@@ -73,6 +73,34 @@ export interface EventConfig {
   };
 }
 
+export interface EventGalleryItem {
+  id?: string;
+  url: string;
+  caption?: string;
+  category?: string;
+  order?: number;
+}
+
+export interface EventAlbum {
+  id?: string;
+  title: string;
+  url: string;
+  coverImage?: string;
+  photosCount?: number;
+  date?: string;
+}
+
+export interface DpTemplateConfig {
+  frameUrl?: string;
+  badgeLayout?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  defaultQuote?: string;
+  suggestedQuotes?: string[];
+  hashtag?: string;
+  theme?: string;
+}
+
 /** Document racine events/{editionId}; les listes sont des sous-collections. */
 export interface EventDocument {
   editionId: string;
@@ -94,6 +122,12 @@ export interface EventDocument {
   engagementYear: number;
   maxQuestionsPerUser?: number;
   isPublished?: boolean;
+  gallery?: EventGalleryItem[];
+  albums?: EventAlbum[];
+  dpTemplate?: DpTemplateConfig;
+  supports?: EventConfig['supports'];
+  pastEvents?: EventConfig['pastEvents'];
+  agenda?: EventConfig['agenda'];
 }
 
 export type FirestoreDateValue = Date | { seconds: number; nanoseconds: number; toDate(): Date };

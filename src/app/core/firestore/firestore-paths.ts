@@ -22,6 +22,8 @@ export type EventSubcollection =
   | 'news'
   | 'remote'
   | 'emojis'
+  | 'gallery'
+  | 'albums'
   | 'questionQuotas';
 
 const eventPath = (editionId: string | number) =>

@@ -42,6 +42,71 @@ export class FirestoreService {
   private readonly _injector: EnvironmentInjector = inject(EnvironmentInjector);
   createDocId = (colName: string) => doc(collection(this.fs, colName)).id;
 
+  getAllEvents(): Observable<EventDocument[]> {
+    return runInInjectionContext(
+      this._injector,
+      () =>
+        collectionData(collection(this.fs, FIRESTORE_COLLECTIONS.events), {
+          idField: 'editionId',
+        }) as Observable<EventDocument[]>,
+    );
+  }
+
+  getAvailableEditions(): Observable<string[]> {
+    const defaultEditions = ['2025', '2024', '2023', '2022', '2021', '2020', '2019'];
+    return this.getAllEvents().pipe(
+      map((events) => {
+        const firestoreIds = (events || [])
+          .map((e) => String(e.editionId || e.edition || e.year))
+          .filter(Boolean);
+        const combined = Array.from(new Set([...firestoreIds, ...defaultEditions]));
+        return combined.sort((a, b) => (Number(b) || 0) - (Number(a) || 0));
+      }),
+      catchError(() => of(defaultEditions)),
+    );
+  }
+
+  async createEdition(editionId: string, baseData?: Partial<EventDocument>): Promise<void> {
+    const year = parseInt(editionId, 10) || new Date().getFullYear();
+    const defaultData: Partial<EventDocument> = {
+      editionId,
+      edition: year,
+      year,
+      name: `DevFest Kivu ${year}`,
+      fullName: `DevFest Kivu ${year}`,
+      theme: 'Innovation & Tech',
+      description: `Rassemblement technologique annuel DevFest Kivu ${year}`,
+      registrationUrl: '',
+      contact: {
+        email: 'gdgkivu@gmail.com',
+        phone: '+243999537410',
+      },
+      venue: {
+        city: 'Bukavu',
+        country: 'RD Congo',
+        fullLocation: 'Bukavu, RD Congo',
+        conferenceCenter: 'Hotel Panorama Bukavu',
+      },
+      date: {
+        start: new Date(`${year}-11-29T09:00:00`),
+        end: new Date(`${year}-11-29T18:00:00`),
+        display: {
+          start: 29,
+          end: 29,
+          month: 'Novembre',
+          year,
+        },
+      },
+      impactStats: EVENT_CONFIG.impactStats,
+      engagementYear: 5,
+      maxQuestionsPerUser: DEFAULT_QUESTIONS_PER_USER,
+      isPublished: true,
+      ...baseData,
+    };
+
+    await this.saveEvent(editionId, defaultData);
+  }
+
   getSiteSettings(): Observable<SiteSettings | undefined> {
     return runInInjectionContext(
       this._injector,

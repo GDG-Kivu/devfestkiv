@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FirestoreService } from '../../../../core/firestore/firestore.service';
+import { FaqItem } from '../../models/faq-item.model';
 
 type QaItem = {
-  id: number;
+  id: number | string;
   question: string;
   answer: string;
   category?: 'Logistique' | 'Inscription' | 'Speakers' | 'Technique' | 'Autre';
@@ -16,15 +18,10 @@ type QaItem = {
   templateUrl: './qa.html',
 })
 export default class QaComponent implements OnInit {
-  // Only state we need for now
-  openId: number | null = null;
+  private fs = inject(FirestoreService);
+  openId: number | string | null = null;
 
-  ngOnInit(): void {
-    // Scroll to top when component initializes
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  qaItems: QaItem[] = [
+  initialFallbackItems: QaItem[] = [
     {
       id: 1,
       question: 'Le DevFest Kivu est-il gratuit ?',
@@ -80,24 +77,52 @@ export default class QaComponent implements OnInit {
     },
   ];
 
+  qaItems: QaItem[] = [...this.initialFallbackItems];
+
+  ngOnInit(): void {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    this.fs.getCurrentEditionId().subscribe((editionId) => {
+      this.fs.getPublishedEventCollection<FaqItem>(editionId, 'faq').subscribe({
+        next: (items) => {
+          if (items && items.length > 0) {
+            this.qaItems = items.map((f, idx) => ({
+              id: f.id || idx + 1,
+              question: f.question,
+              answer: f.answer,
+              category: f.category,
+            }));
+          } else {
+            this.qaItems = [...this.initialFallbackItems];
+          }
+        },
+        error: () => {
+          this.qaItems = [...this.initialFallbackItems];
+        },
+      });
+    });
+  }
+
   // Open only one card at a time
-  toggle(id: number) {
+  toggle(id: number | string) {
     this.openId = this.openId === id ? null : id;
   }
 
-  isOpen(id: number) {
+  isOpen(id: number | string) {
     return this.openId === id;
   }
 
   // Article click handler: ignore clicks on interactive elements
-  onArticleClick(event: MouseEvent, id: number) {
+  onArticleClick(event: MouseEvent, id: number | string) {
     const target = event.target as HTMLElement;
     if (this.isInteractiveElement(target)) return;
     this.toggle(id);
   }
 
   // Keyboard handler: Enter/Space on focused article should toggle
-  onArticleKeydown(event: KeyboardEvent, id: number) {
+  onArticleKeydown(event: KeyboardEvent, id: number | string) {
     const code = event.key;
     if (code === 'Enter' || code === ' ') {
       event.preventDefault();

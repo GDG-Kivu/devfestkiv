@@ -1,6 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventConfigService } from '../../services/event-config.service';
+import { FirestoreService } from '../../../../core/firestore/firestore.service';
+import { AgendaItem } from '../../models/agenda-item.model';
 
 @Component({
   selector: 'app-agenda',
@@ -29,151 +31,141 @@ import { EventConfigService } from '../../services/event-config.service';
 })
 export default class AgendaComponent implements OnInit {
   eventConfig = inject(EventConfigService);
-
-  ngOnInit(): void {
-    // Scroll to top when component initializes
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // Agenda data is coming soon - keeping minimal structure for future use
-  // eventsData and related methods are commented out until agenda is ready
-
-  /*
-  currentDayIndex = 0;
-  activeTab = signal<'web' | 'mobile'>('web');*/
+  private fs = inject(FirestoreService);
 
   days = this.eventConfig.agenda.days;
 
-  // Données avec colonnes Web/Mobile
+  initialFallbackAgenda = [
+    {
+      time: '11:00 - 11:30',
+      title: 'Check-in',
+      speaker: '',
+      minutes: '30',
+      room: '',
+      category: 'Conference',
+    },
+    {
+      time: '11:30 - 12:00',
+      title: 'Ice break + Keynote',
+      speaker: '',
+      minutes: '30',
+      room: '',
+      category: 'Keynote',
+    },
+    {
+      time: '12:00 - 12:30',
+      title: 'IA vs Local Guides : Comment votre contribution réécrit le futur de Google Maps',
+      speaker: 'Yannick S. / Nick King',
+      minutes: '30',
+      room: '',
+      category: 'Talk',
+    },
+    {
+      time: '12:30 - 13:00',
+      title: "Comment digitaliser les commerces locaux grâce à l'IA ?",
+      speaker: 'Fearless Alain',
+      minutes: ' 30',
+      room: '',
+      category: 'Talk',
+    },
+    {
+      time: '13:00 - 13:45',
+      title: 'Panel : Les réalités du métier de développeur en RDC',
+      speaker:
+        'Marie-Grâce Bahati, Heshima Magalabaha Ezra, Christian Rusipa Jerry, Raphael Amisi',
+      minutes: '45',
+      room: '',
+      category: 'Discussion',
+    },
+    {
+      time: '13:50 - 14:30',
+      title: 'Networking',
+      speaker: '',
+      minutes: ' 40',
+      room: '',
+      category: 'Break',
+    },
+    {
+      time: '14:45 - 15:15',
+      title: "Au-delà du Prompt : Les Enjeux Éthiques et Sociaux de la Création d'Images par IA",
+      speaker: 'Daniella Ansima',
+      minutes: '30',
+      room: '',
+      category: 'Talk',
+    },
+    {
+      time: '15:15 - 15:45',
+      title: 'Sponsor time',
+      speaker: '',
+      minutes: '30',
+      room: '',
+      category: 'Sponsor',
+    },
+    {
+      time: '15:45 - 16:15',
+      title: "Tirer le meilleur de l'IA en tant que développeur",
+      speaker: 'Amani Bisimwa',
+      minutes: '30',
+      room: '',
+      category: 'Talk',
+    },
+    {
+      time: '16:15 - 16:45',
+      title: "Construire de vraies compétences en dev : l'IA n'est pas un raccourci",
+      speaker: 'Jérémie Ndeke',
+      minutes: '30',
+      room: '',
+      category: 'Talk',
+    },
+    {
+      time: '17:00 - 17:30',
+      title: 'Ask Me Anything session',
+      speaker: 'Amani, Aksanti, Louis, Alain',
+      minutes: '40',
+      room: '',
+      category: 'Discussion',
+    },
+    {
+      time: '17:30 - 17:50',
+      title: 'Closing and feedback',
+      speaker: '',
+      minutes: '20',
+      room: '',
+      category: 'Closing',
+    },
+  ];
+
   eventsData = {
-    agendaEvents: <
-      Array<{
-        time: string;
-        title: string;
-        speaker?: string;
-        minutes?: string;
-        room?: string;
-        category: string;
-      }>
-    >[
-      {
-        time: '11:00 - 11:30',
-        title: 'Check-in',
-        speaker: '',
-        minutes: '30',
-        room: '',
-        category: 'Conference',
-      },
-      {
-        time: '11:30 - 12:00',
-        title: 'Ice break + Keynote',
-        speaker: '',
-        minutes: '30',
-        room: '',
-        category: 'Keynote',
-      },
-      {
-        time: '12:00 - 12:30',
-        title: 'IA vs Local Guides : Comment votre contribution réécrit le futur de Google Maps',
-        speaker: 'Yannick S. / Nick King',
-        minutes: '30',
-        room: '',
-        category: 'Talk',
-      },
-      {
-        time: '12:30 - 13:00',
-        title: "Comment digitaliser les commerces locaux grâce à l'IA ?",
-        speaker: 'Fearless Alain',
-        minutes: ' 30',
-        room: '',
-        category: 'Talk',
-      },
-      {
-        time: '13:00 - 13:45',
-        title: 'Panel : Les réalités du métier de développeur en RDC',
-        speaker:
-          'Marie-Grâce Bahati, Heshima Magalabaha Ezra, Christian Rusipa Jerry, Raphael Amisi',
-        minutes: '45',
-        room: '',
-        category: 'Discussion',
-      },
-      {
-        time: '13:50 - 14:30',
-        title: 'Networking',
-        speaker: '',
-        minutes: ' 40',
-        room: '',
-        category: 'Break',
-      },
-      {
-        time: '14:45 - 15:15',
-        title: "Au-delà du Prompt : Les Enjeux Éthiques et Sociaux de la Création d'Images par IA",
-        speaker: 'Daniella Ansima',
-        minutes: '30',
-        room: '',
-        category: 'Talk',
-      },
-      {
-        time: '15:15 - 15:45',
-        title: 'Sponsor time',
-        speaker: '',
-        minutes: '30',
-        room: '',
-        category: 'Sponsor',
-      },
-      {
-        time: '15:45 - 16:15',
-        title: "Tirer le meilleur de l'IA en tant que développeur",
-        speaker: 'Amani Bisimwa',
-        minutes: '30',
-        room: '',
-        category: 'Talk',
-      },
-      {
-        time: '16:15 - 16:45',
-        title: "Construire de vraies compétences en dev : l'IA n'est pas un raccourci",
-        speaker: 'Jérémie Ndeke',
-        minutes: '30',
-        room: '',
-        category: 'Talk',
-      },
-      {
-        time: '17:00 - 17:30',
-        title: 'Ask Me Anything session',
-        speaker: 'Amani, Aksanti, Louis, Alain',
-        minutes: '40',
-        room: '',
-        category: 'Discussion',
-      },
-      {
-        time: '17:30 - 17:50',
-        title: 'Closing and feedback',
-        speaker: '',
-        minutes: '20',
-        room: '',
-        category: 'Closing',
-      },
-    ],
-
-    /*
-    day1: {
-      Web: [
-        // Event data will be added here when agenda is ready
-      ],
-      Mobile: [
-        // Event data will be added here when agenda is ready
-      ],
-    },*/
+    agendaEvents: [...this.initialFallbackAgenda],
   };
-  /*
-  get currentDay() {
-    return this.days[this.currentDayIndex];
-  }
 
-  selectDay(index: number) {
-    this.currentDayIndex = 0;
-    this.days[0].isActive = true;
-  }*/
+  ngOnInit(): void {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    this.fs.getCurrentEditionId().subscribe((editionId) => {
+      this.fs.getPublishedEventCollection<AgendaItem>(editionId, 'agenda').subscribe({
+        next: (items) => {
+          if (items && items.length > 0) {
+            this.eventsData.agendaEvents = items.map((it) => ({
+              time: `${it.startsAt} - ${it.endsAt}`,
+              title: it.title,
+              speaker: (it.speakerIds || []).join(', '),
+              minutes: '30',
+              room: it.room,
+              category: it.format.charAt(0).toUpperCase() + it.format.slice(1),
+            }));
+          } else {
+            this.eventsData.agendaEvents = [...this.initialFallbackAgenda];
+          }
+        },
+        error: () => {
+          this.eventsData.agendaEvents = [...this.initialFallbackAgenda];
+        },
+      });
+    });
+  }
 
   getBadgeColor(category: string): string {
     const colors: { [key: string]: string } = {

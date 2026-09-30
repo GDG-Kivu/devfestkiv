@@ -1,12 +1,63 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { EVENT_CONFIG } from '../../../config/event.config';
-import { EventConfig } from '../models/event.model';
+import { EventConfig, EventDocument } from '../models/event.model';
+import { FirestoreService } from '../../../core/firestore/firestore.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventConfigService {
   private config = signal<EventConfig>(EVENT_CONFIG);
+  readonly eventDocument = signal<EventDocument | null>(null);
+
+  constructor() {
+    const fs = inject(FirestoreService, { optional: true });
+    if (fs) {
+      fs.getCurrentEventWithFallback().subscribe((eventDoc) => {
+        if (eventDoc) {
+          this.eventDocument.set(eventDoc);
+          this.syncFromDocument(eventDoc);
+        }
+      });
+    }
+  }
+
+  private syncFromDocument(doc: EventDocument): void {
+    const normalizeDate = (d: any, fallback: Date): Date => {
+      if (d instanceof Date) return d;
+      if (d && typeof d.toDate === 'function') return d.toDate();
+      if (d && typeof d.seconds === 'number') return new Date(d.seconds * 1000);
+      if (typeof d === 'string') return new Date(d);
+      return fallback;
+    };
+
+    const startDate = normalizeDate(doc.date?.start, EVENT_CONFIG.date.start);
+    const endDate = normalizeDate(doc.date?.end, EVENT_CONFIG.date.end);
+
+    const updated: EventConfig = {
+      ...EVENT_CONFIG,
+      edition: doc.edition || EVENT_CONFIG.edition,
+      year: doc.year || EVENT_CONFIG.year,
+      name: doc.name || EVENT_CONFIG.name,
+      fullName: doc.fullName || EVENT_CONFIG.fullName,
+      theme: doc.theme || EVENT_CONFIG.theme,
+      description: doc.description || EVENT_CONFIG.description,
+      registrationUrl: doc.registrationUrl ?? EVENT_CONFIG.registrationUrl,
+      venue: doc.venue || EVENT_CONFIG.venue,
+      contact: doc.contact || EVENT_CONFIG.contact,
+      impactStats: doc.impactStats || EVENT_CONFIG.impactStats,
+      engagementYear: doc.engagementYear || EVENT_CONFIG.engagementYear,
+      supports: doc.supports || EVENT_CONFIG.supports,
+      pastEvents: doc.pastEvents || EVENT_CONFIG.pastEvents,
+      agenda: doc.agenda || EVENT_CONFIG.agenda,
+      date: {
+        start: startDate,
+        end: endDate,
+        display: doc.date?.display || EVENT_CONFIG.date.display,
+      },
+    };
+    this.config.set(updated);
+  }
 
   getConfig(): EventConfig {
     return this.config();

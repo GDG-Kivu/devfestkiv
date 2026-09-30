@@ -90,6 +90,16 @@ service cloud.firestore {
         allow write: if isAdmin();
       }
 
+      match /gallery/{imageId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+
+      match /albums/{albumId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+
       // Remote presentation control (readable by audience/display, writable by presenters)
       match /remote/{remoteId} {
         allow read: if true;

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { EventConfigService } from '../../services/event-config.service';
+import { FirestoreService } from '../../../../core/firestore/firestore.service';
 
 @Component({
   selector: 'app-speakers',
@@ -148,7 +149,9 @@ import { EventConfigService } from '../../services/event-config.service';
 })
 export default class Speakers implements OnInit {
   eventConfig = inject(EventConfigService);
-  speakers = [
+  private fs = inject(FirestoreService);
+
+  initialFallbackSpeakers = [
     {
       owner: 'Daniella Ansima',
       title:
@@ -237,8 +240,35 @@ export default class Speakers implements OnInit {
     },
   ];
 
+  speakers = [...this.initialFallbackSpeakers];
+
   ngOnInit(): void {
-    // Scroll to top when component initializes
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Subscribe to Firestore published speakers for current edition
+    this.fs.getCurrentEditionId().subscribe((editionId) => {
+      this.fs.getPublishedEventCollection<any>(editionId, 'speakers', { field: 'status', value: 'published' }).subscribe({
+        next: (fsSpeakers) => {
+          if (fsSpeakers && fsSpeakers.length > 0) {
+            this.speakers = fsSpeakers.map((s) => ({
+              owner: s.name,
+              title: s.title || '',
+              description: s.bio || '',
+              TagLine: s.title || '',
+              bio: s.bio || '',
+              LinkedIn: s.socials?.linkedin || '',
+              profilePicture: s.photo || 'assets/logo.png',
+            }));
+          } else {
+            this.speakers = [...this.initialFallbackSpeakers];
+          }
+        },
+        error: () => {
+          this.speakers = [...this.initialFallbackSpeakers];
+        },
+      });
+    });
   }
 }
