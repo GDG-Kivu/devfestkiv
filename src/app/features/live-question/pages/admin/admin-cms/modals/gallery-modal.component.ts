@@ -9,11 +9,11 @@ import { EventAlbum, EventGalleryItem } from '../../../../../event/models/event.
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in">
-      <div class="relative bg-white rounded-3xl w-full max-w-4xl min-w-[320px] p-6 sm:p-8 shadow-2xl border border-gray-100 animate-pop-in space-y-6 my-auto max-h-[90vh] overflow-y-auto">
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs animate-fade-in">
+      <div class="relative bg-white rounded-3xl w-full max-w-4xl min-w-[320px] shadow-2xl border border-gray-100 animate-pop-in flex flex-col max-h-[90vh] overflow-hidden my-auto">
         
-        <!-- Header -->
-        <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+        <!-- Fixed Header -->
+        <div class="flex items-center px-6 py-5 border-b border-gray-100 flex-shrink-0 bg-white">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center flex-shrink-0">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -25,15 +25,10 @@ import { EventAlbum, EventGalleryItem } from '../../../../../event/models/event.
               <p class="text-xs text-gray-500">Édition : {{ editionId }} • {{ galleryImages().length }} photo(s) & {{ albums().length }} album(s)</p>
             </div>
           </div>
-          <button
-            type="button"
-            (click)="close.emit()"
-            class="text-gray-400 hover:text-gray-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition cursor-pointer text-base font-bold"
-            aria-label="Fermer"
-          >
-            ✕
-          </button>
         </div>
+
+        <!-- Scrollable Content -->
+        <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6">
 
         <!-- Tab Selection: Photos vs Albums -->
         <div class="flex items-center gap-2 border-b border-gray-100 pb-3">
@@ -252,8 +247,10 @@ import { EventAlbum, EventGalleryItem } from '../../../../../event/models/event.
           </div>
         }
 
-        <!-- Footer Actions -->
-        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+        </div>
+
+        <!-- Fixed Footer Actions -->
+        <div class="flex items-center justify-between px-6 py-4 border-t border-gray-100 flex-shrink-0 bg-white">
           <button
             type="button"
             (click)="close.emit()"

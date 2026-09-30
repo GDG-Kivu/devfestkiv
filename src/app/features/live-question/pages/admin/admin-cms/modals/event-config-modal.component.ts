@@ -10,11 +10,11 @@ import { EVENT_CONFIG } from '../../../../../../config/event.config';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in">
-      <div class="relative bg-white rounded-3xl w-full max-w-3xl min-w-[320px] p-6 sm:p-8 shadow-2xl border border-gray-100 animate-pop-in space-y-6 my-auto max-h-[90vh] overflow-y-auto">
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs animate-fade-in">
+      <div class="relative bg-white rounded-3xl w-full max-w-3xl min-w-[320px] shadow-2xl border border-gray-100 animate-pop-in flex flex-col max-h-[90vh] overflow-hidden my-auto">
         
-        <!-- Header -->
-        <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+        <!-- Fixed Header -->
+        <div class="flex items-center px-6 py-5 border-b border-gray-100 flex-shrink-0 bg-white">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#4285F4] flex items-center justify-center flex-shrink-0">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -27,18 +27,10 @@ import { EVENT_CONFIG } from '../../../../../../config/event.config';
               <p class="text-xs text-gray-500">Édition : {{ editionId }}</p>
             </div>
           </div>
-          <button
-            type="button"
-            (click)="close.emit()"
-            class="text-gray-400 hover:text-gray-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition cursor-pointer text-base font-bold"
-            aria-label="Fermer"
-          >
-            ✕
-          </button>
         </div>
 
         @if (isLoading()) {
-          <div class="py-12 text-center text-gray-400 flex flex-col items-center gap-3">
+          <div class="py-16 text-center text-gray-400 flex flex-col items-center justify-center flex-1 gap-3">
             <svg class="w-8 h-8 animate-spin text-[#4285F4]" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -46,8 +38,9 @@ import { EVENT_CONFIG } from '../../../../../../config/event.config';
             <span class="text-xs font-semibold">Chargement des données...</span>
           </div>
         } @else {
-          <!-- Form -->
-          <form (ngSubmit)="saveConfig()" class="space-y-6">
+          <!-- Form with scrollable body & fixed footer -->
+          <form (ngSubmit)="saveConfig()" class="flex flex-col flex-1 overflow-hidden min-h-0">
+            <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6">
             
             <!-- General Info -->
             <div class="space-y-4">
@@ -251,9 +244,10 @@ import { EVENT_CONFIG } from '../../../../../../config/event.config';
                 <span>{{ feedbackMessage() }}</span>
               </div>
             }
+            </div>
 
-            <!-- Footer Actions -->
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+            <!-- Fixed Footer Actions -->
+            <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 flex-shrink-0 bg-white">
               <button
                 type="button"
                 (click)="close.emit()"

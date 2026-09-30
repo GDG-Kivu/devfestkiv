@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, signal, inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal, inject, PLATFORM_ID, effect } from '@angular/core';
 import PastEventsGallery from '../../components/past-events-gallery/past-events-gallery';
 import { RouterLink } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
@@ -55,33 +55,27 @@ import { isPlatformBrowser } from '@angular/common';
     @keyframes slideDown {
       from {
         opacity: 0;
-        transform: translateY(-30px);
       }
       to {
         opacity: 1;
-        transform: translateY(0);
       }
     }
 
     @keyframes slideUp {
       from {
         opacity: 0;
-        transform: translateY(30px);
       }
       to {
         opacity: 1;
-        transform: translateY(0);
       }
     }
 
     @keyframes slideRight {
       from {
         opacity: 0;
-        transform: translateX(-50px);
       }
       to {
         opacity: 1;
-        transform: translateX(0);
       }
     }
 
@@ -100,17 +94,15 @@ import { isPlatformBrowser } from '@angular/common';
     @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateY(20px);
       }
       to {
         opacity: 1;
-        transform: translateY(0);
       }
     }
   `,
 })
 export default class HomeComponent implements OnInit, OnDestroy {
-  private eventConfig = inject(EventConfigService);
+  public eventConfig = inject(EventConfigService);
   private platformId = inject(PLATFORM_ID);
 
   seconde = signal(0);
@@ -120,59 +112,75 @@ export default class HomeComponent implements OnInit, OnDestroy {
 
   targetDateTimeString = signal(this.eventConfig.getTargetDateTimeString());
   countdownRunning = signal(false);
+  isEventPast = signal(false);
+  isEventOngoing = signal(false);
 
   private countdownInterval: any;
   private endTime = 0;
   private readonly STORAGE_KEY = 'countdown_end_time';
 
-  ngOnInit(): void {
-    // Scroll to top when component initializes
-
-    if (isPlatformBrowser(this.platformId)) {
-      this.initializeCountdown();
-      this.startCountdown();
-    }
-  }
-
-  private initializeCountdown(): void {
-    const storedEndTime = localStorage.getItem(this.STORAGE_KEY);
-    const now = Date.now();
-
-    if (storedEndTime) {
-      this.endTime = parseInt(storedEndTime, 10);
-      if (this.endTime <= now) {
-        this.finishCountdown();
-      } else {
-        this.countdownRunning.set(true);
-        this.updateTimeDisplay();
-        this.startInterval();
+  constructor() {
+    effect(() => {
+      // Re-evaluate whenever the event document changes
+      this.eventConfig.eventDocument();
+      if (isPlatformBrowser(this.platformId)) {
+        this.evaluateEventStatus();
       }
-    } else {
-      this.countdownRunning.set(false);
+    });
+  }
+
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.evaluateEventStatus();
     }
   }
 
-  startCountdown(): void {
+  evaluateEventStatus(): void {
+    const config = this.eventConfig.getConfig();
+    const startDate = config.date?.start ? new Date(config.date.start) : null;
+    const endDate = config.date?.end ? new Date(config.date.end) : null;
     const now = Date.now();
-    if (!this.targetDateTimeString()) {
-      alert('Veuillez choisir une date et une heure avant de démarrer !');
+
+    if (!startDate || isNaN(startDate.getTime())) {
+      this.isEventPast.set(true);
+      this.isEventOngoing.set(false);
+      this.countdownRunning.set(false);
+      this.resetTimeSignals();
       return;
     }
 
-    const target = new Date(this.targetDateTimeString()).getTime();
-    if (isNaN(target) || target <= now) {
-      alert('La date du jour J doit être dans le futur !');
-      return;
+    const startMs = startDate.getTime();
+    let endMs = endDate && !isNaN(endDate.getTime()) ? endDate.getTime() : startMs + 24 * 3600 * 1000;
+    if (endMs <= startMs) {
+      endMs = startMs + 24 * 3600 * 1000;
     }
-    this.endTime = target;
-    localStorage.setItem(this.STORAGE_KEY, this.endTime.toString());
 
+    this.targetDateTimeString.set(startDate.toISOString().slice(0, 19));
     this.updateEventDayFromTarget();
 
-    this.countdownRunning.set(true);
-
-    this.updateTimeDisplay();
-    this.startInterval();
+    if (now < startMs) {
+      // Événement futur : compte à rebours actif
+      this.isEventPast.set(false);
+      this.isEventOngoing.set(false);
+      this.countdownRunning.set(true);
+      this.endTime = startMs;
+      this.updateTimeDisplay();
+      this.startInterval();
+    } else if (now >= startMs && now <= endMs) {
+      // Événement en cours : a démarré mais date de fin pas encore atteinte
+      this.stopInterval();
+      this.isEventPast.set(false);
+      this.isEventOngoing.set(true);
+      this.countdownRunning.set(false);
+      this.resetTimeSignals();
+    } else {
+      // Événement clôturé : date de fin dépassée
+      this.stopInterval();
+      this.isEventPast.set(true);
+      this.isEventOngoing.set(false);
+      this.countdownRunning.set(false);
+      this.resetTimeSignals();
+    }
   }
 
   private startInterval(): void {
@@ -192,7 +200,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
     const remainingMs = this.endTime - now;
 
     if (remainingMs <= 0) {
-      this.finishCountdown();
+      this.evaluateEventStatus();
       return;
     }
 
@@ -208,16 +216,14 @@ export default class HomeComponent implements OnInit, OnDestroy {
     this.seconde.set(seconds);
   }
 
-  private finishCountdown(): void {
-    this.stopInterval();
-    this.countdownRunning.set(false);
-
+  private resetTimeSignals(): void {
     this.daysLeft.set(0);
     this.hours.set(0);
     this.minutes.set(0);
     this.seconde.set(0);
-
-    localStorage.removeItem(this.STORAGE_KEY);
+    try {
+      localStorage.removeItem(this.STORAGE_KEY);
+    } catch {}
   }
 
   formatTime(value: number): string {

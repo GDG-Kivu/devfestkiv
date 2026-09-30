@@ -193,7 +193,7 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in">
         <div class="relative bg-white rounded-3xl w-full max-w-lg min-w-[320px] sm:min-w-[500px] p-6 sm:p-8 shadow-2xl border border-gray-100 animate-pop-in space-y-5 my-auto">
           <!-- Modal Header -->
-          <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div class="flex items-center pb-3 border-b border-gray-100">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#4285F4] flex items-center justify-center flex-shrink-0">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -205,14 +205,6 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
                 <p class="text-xs text-gray-500">Accès au mode projection des questions</p>
               </div>
             </div>
-            <button
-              type="button"
-              (click)="showAddModal.set(false)"
-              class="text-gray-400 hover:text-gray-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition cursor-pointer text-base font-bold"
-              aria-label="Fermer"
-            >
-              ✕
-            </button>
           </div>
 
           <!-- Modal Body Form -->

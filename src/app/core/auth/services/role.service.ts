@@ -147,6 +147,10 @@ export class RoleService {
       this.isViewer.set(false);
       return false;
     }
+    if (this.profile() && this.profile()?.uid === user.uid) {
+      const isAccountActive = this.profile()?.disabled !== true;
+      return this.profile()?.role === 'admin' && isAccountActive;
+    }
     await this.ensureProfile(user);
     return this.isAdmin();
   }
@@ -160,6 +164,10 @@ export class RoleService {
       this.isAdmin.set(false);
       this.isViewer.set(false);
       return false;
+    }
+    if (this.profile() && this.profile()?.uid === user.uid) {
+      const isAccountActive = this.profile()?.disabled !== true;
+      return (this.profile()?.role === 'viewer' || this.profile()?.role === 'admin') && isAccountActive;
     }
     await this.ensureProfile(user);
     return this.isPresenterOrAdmin();

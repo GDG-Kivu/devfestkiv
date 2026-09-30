@@ -8,11 +8,11 @@ import { FirestoreService } from '../../../../../../core/firestore/firestore.ser
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in">
-      <div class="relative bg-white rounded-3xl w-full max-w-lg min-w-[320px] p-6 sm:p-8 shadow-2xl border border-gray-100 animate-pop-in space-y-6 my-auto">
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs animate-fade-in">
+      <div class="relative bg-white rounded-3xl w-full max-w-lg min-w-[320px] shadow-2xl border border-gray-100 animate-pop-in flex flex-col max-h-[90vh] overflow-hidden my-auto">
         
-        <!-- Header -->
-        <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+        <!-- Fixed Header -->
+        <div class="flex items-center px-6 py-5 border-b border-gray-100 flex-shrink-0 bg-white">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#4285F4] flex items-center justify-center flex-shrink-0">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -24,71 +24,66 @@ import { FirestoreService } from '../../../../../../core/firestore/firestore.ser
               <p class="text-xs text-gray-500">Créez une nouvelle édition pour piloter ses contenus</p>
             </div>
           </div>
-          <button
-            type="button"
-            (click)="close.emit()"
-            class="text-gray-400 hover:text-gray-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition cursor-pointer text-base font-bold"
-            aria-label="Fermer"
-          >
-            ✕
-          </button>
         </div>
 
-        <form (ngSubmit)="submitNewEdition()" class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 mb-1">Identifiant de l'Édition (Année) *</label>
-            <input
-              type="text"
-              name="editionId"
-              [(ngModel)]="editionId"
-              required
-              placeholder="Ex: 2026"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-            />
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 mb-1">Nom Complet de l'Événement</label>
-            <input
-              type="text"
-              name="fullName"
-              [(ngModel)]="fullName"
-              placeholder="Ex: DevFest Kivu 2026"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-            />
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 mb-1">Thème de l'Édition</label>
-            <input
-              type="text"
-              name="theme"
-              [(ngModel)]="theme"
-              placeholder="Ex: AI & Beyond"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
-            />
-          </div>
-
-          <div class="flex items-center gap-3 pt-2">
-            <input
-              type="checkbox"
-              id="setAsActive"
-              name="setAsActive"
-              [(ngModel)]="setAsActive"
-              class="w-4 h-4 text-[#4285F4] rounded border-gray-300 focus:ring-[#4285F4]"
-            />
-            <label for="setAsActive" class="text-xs font-semibold text-gray-700 cursor-pointer">
-              Définir immédiatement comme édition active du site public
-            </label>
-          </div>
-
-          @if (errorMessage()) {
-            <div class="text-xs font-semibold text-red-600 bg-red-50 p-3 rounded-xl border border-red-200">
-              {{ errorMessage() }}
+        <form (ngSubmit)="submitNewEdition()" class="flex flex-col flex-1 overflow-hidden min-h-0">
+          <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Identifiant de l'Édition (Année) *</label>
+              <input
+                type="text"
+                name="editionId"
+                [(ngModel)]="editionId"
+                required
+                placeholder="Ex: 2026"
+                class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+              />
             </div>
-          }
 
-          <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Nom Complet de l'Événement</label>
+              <input
+                type="text"
+                name="fullName"
+                [(ngModel)]="fullName"
+                placeholder="Ex: DevFest Kivu 2026"
+                class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Thème de l'Édition</label>
+              <input
+                type="text"
+                name="theme"
+                [(ngModel)]="theme"
+                placeholder="Ex: AI & Beyond"
+                class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+              />
+            </div>
+
+            <div class="flex items-center gap-3 pt-2">
+              <input
+                type="checkbox"
+                id="setAsActive"
+                name="setAsActive"
+                [(ngModel)]="setAsActive"
+                class="w-4 h-4 text-[#4285F4] rounded border-gray-300 focus:ring-[#4285F4]"
+              />
+              <label for="setAsActive" class="text-xs font-semibold text-gray-700 cursor-pointer">
+                Définir immédiatement comme édition active du site public
+              </label>
+            </div>
+
+            @if (errorMessage()) {
+              <div class="text-xs font-semibold text-red-600 bg-red-50 p-3 rounded-xl border border-red-200">
+                {{ errorMessage() }}
+              </div>
+            }
+          </div>
+
+          <!-- Fixed Footer -->
+          <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 flex-shrink-0 bg-white">
             <button
               type="button"
               (click)="close.emit()"

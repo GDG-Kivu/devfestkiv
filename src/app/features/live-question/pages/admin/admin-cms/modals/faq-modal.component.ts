@@ -9,11 +9,11 @@ import { FaqCategory, FaqItem } from '../../../../../event/models/faq-item.model
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in">
-      <div class="relative bg-white rounded-3xl w-full max-w-4xl min-w-[320px] p-6 sm:p-8 shadow-2xl border border-gray-100 animate-pop-in space-y-6 my-auto max-h-[90vh] overflow-y-auto">
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs animate-fade-in">
+      <div class="relative bg-white rounded-3xl w-full max-w-4xl min-w-[320px] shadow-2xl border border-gray-100 animate-pop-in flex flex-col max-h-[90vh] overflow-hidden my-auto">
         
-        <!-- Header -->
-        <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+        <!-- Fixed Header -->
+        <div class="flex items-center px-6 py-5 border-b border-gray-100 flex-shrink-0 bg-white">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -25,34 +25,27 @@ import { FaqCategory, FaqItem } from '../../../../../event/models/faq-item.model
               <p class="text-xs text-gray-500">Édition : {{ editionId }} • {{ faqList().length }} question(s)</p>
             </div>
           </div>
-          <button
-            type="button"
-            (click)="close.emit()"
-            class="text-gray-400 hover:text-gray-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition cursor-pointer text-base font-bold"
-            aria-label="Fermer"
-          >
-            ✕
-          </button>
         </div>
 
         @if (!showForm()) {
-          <div class="flex items-center justify-between gap-4">
-            <span class="text-xs text-gray-500">Rédigez les réponses aux questions courantes des participants.</span>
-            <button
-              type="button"
-              (click)="openCreateForm()"
-              class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer"
-            >
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-              </svg>
-              <span>Ajouter une question</span>
-            </button>
-          </div>
+          <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6">
+            <div class="flex items-center justify-between gap-4">
+              <span class="text-xs text-gray-500">Rédigez les réponses aux questions courantes des participants.</span>
+              <button
+                type="button"
+                (click)="openCreateForm()"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                <span>Ajouter une question</span>
+              </button>
+            </div>
 
-          <!-- Loading State -->
-          @if (isLoading()) {
-            <div class="py-12 text-center text-gray-400 flex flex-col items-center gap-3">
+            <!-- Loading State -->
+            @if (isLoading()) {
+              <div class="py-12 text-center text-gray-400 flex flex-col items-center gap-3">
               <svg class="w-8 h-8 animate-spin text-purple-600" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -99,9 +92,22 @@ import { FaqCategory, FaqItem } from '../../../../../event/models/faq-item.model
               }
             </div>
           }
-        } @else {
-          <!-- FAQ Form -->
-          <form (ngSubmit)="saveItem()" class="space-y-4">
+        </div>
+
+        <!-- List View Fixed Footer -->
+        <div class="flex items-center justify-end px-6 py-4 border-t border-gray-100 flex-shrink-0 bg-white">
+          <button
+            type="button"
+            (click)="close.emit()"
+            class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs sm:text-sm font-semibold rounded-xl transition cursor-pointer"
+          >
+            Fermer
+          </button>
+        </div>
+      } @else {
+        <!-- FAQ Form with Fixed Actions -->
+        <form (ngSubmit)="saveItem()" class="flex flex-col flex-1 overflow-hidden min-h-0">
+          <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-4">
             <div class="flex items-center justify-between pb-2 border-b border-gray-100">
               <h4 class="text-sm font-bold text-gray-900">
                 {{ isEditing() ? 'Modifier la question FAQ' : 'Nouvelle question FAQ' }}
@@ -194,46 +200,38 @@ import { FaqCategory, FaqItem } from '../../../../../event/models/faq-item.model
                 <span>{{ feedbackMessage() }}</span>
               </div>
             }
+          </div>
 
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
-              <button
-                type="button"
-                (click)="showForm.set(false)"
-                class="px-4 py-2.5 text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl transition cursor-pointer"
-              >
-                Annuler
-              </button>
+          <!-- Fixed Form Actions Footer -->
+          <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 flex-shrink-0 bg-white">
+            <button
+              type="button"
+              (click)="showForm.set(false)"
+              class="px-4 py-2.5 text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl transition cursor-pointer"
+            >
+              Annuler
+            </button>
 
-              <button
-                type="submit"
-                [disabled]="isSaving()"
-                class="flex items-center gap-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
-              >
-                @if (isSaving()) {
-                  <svg class="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  <span>Enregistrement...</span>
-                } @else {
-                  <span>{{ isEditing() ? 'Mettre à jour' : 'Ajouter la question' }}</span>
-                }
-              </button>
-            </div>
-          </form>
-        }
-
-        <div class="flex items-center justify-end pt-4 border-t border-gray-100">
-          <button
-            type="button"
-            (click)="close.emit()"
-            class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs sm:text-sm font-semibold rounded-xl transition cursor-pointer"
-          >
-            Fermer
-          </button>
-        </div>
-      </div>
+            <button
+              type="submit"
+              [disabled]="isSaving()"
+              class="flex items-center gap-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
+            >
+              @if (isSaving()) {
+                <svg class="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Enregistrement...</span>
+              } @else {
+                <span>{{ isEditing() ? 'Mettre à jour' : 'Ajouter la question' }}</span>
+              }
+            </button>
+          </div>
+        </form>
+      }
     </div>
+  </div>
   `,
 })
 export class FaqModalComponent implements OnInit {

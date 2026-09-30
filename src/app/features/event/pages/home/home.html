@@ -193,85 +193,140 @@
         </div>
     </div>
 </section>
-<!-- Countdown Section -->
-<section class="relative overflow-hidden bg-gray-900 py-12 md:py-16 lg:py-20">
+<!-- Countdown / Event Status Section -->
+<section class="relative overflow-hidden bg-gray-900 py-14 md:py-20 lg:py-24">
     <!-- Subtle background gradient -->
-    <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 opacity-50"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 opacity-60"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none"></div>
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 text-center relative z-10">
-        <!-- Header Text -->
-        <div class="mb-8 md:mb-12">
-            <p class="text-gray-400 text-xs sm:text-sm uppercase tracking-widest mb-2 md:mb-3">
-                Le compte à rebours est lancé
-            </p>
-            <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white">
-                @if (countdownRunning()) {
-                <span>L'événement commence dans</span>
-                } @else {
-                <span class="text-red-500">L'événement a commencé !</span>
-                }
-            </h2>
-        </div>
 
-        <!-- Countdown Display -->
-        <div class="flex justify-center items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-10 md:mb-14">
-            <!-- Days -->
-            <div class="flex flex-col items-center flex-1 max-w-[100px] sm:max-w-[120px] md:max-w-[140px]">
-                <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white font-mono tabular-nums leading-none mb-2 md:mb-3"
-                    [class.text-red-500]="!countdownRunning()">
-                    {{ formatTime(daysLeft()) }}
+        <!-- CAS 1: Événement Clôturé (Coming Soon pour la prochaine édition) -->
+        @if (isEventPast()) {
+            <div class="max-w-3xl mx-auto text-center animate-fade-in">
+
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4">
+                    Rendez-vous pour la prochaine édition !
+                </h2>
+
+                <p class="text-gray-300 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+                    Cette édition du {{ eventConfig.fullName || 'DevFest Kivu' }} est désormais clôturée. Un grand merci à toute la communauté, aux intervenants et aux partenaires qui ont fait de cet événement un succès !
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <a [routerLink]="'/agenda'" class="btn btn-primary group inline-flex items-center">
+                        <span>Revoir le programme</span>
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                    <a href="#impact" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/10 backdrop-blur-xs transition">
+                        <span>Découvrir l'impact</span>
+                    </a>
                 </div>
-                <div class="text-xs sm:text-sm md:text-base text-gray-400 uppercase tracking-wider">Jours</div>
+            </div>
+        }
+
+        <!-- CAS 2: Événement En Cours (L'événement a commencé !) -->
+        @else if (isEventOngoing()) {
+            <div class="max-w-3xl mx-auto text-center animate-fade-in">
+                <p class="text-emerald-400 text-xs sm:text-sm uppercase tracking-widest mb-2 md:mb-3 font-semibold flex items-center justify-center gap-2">
+                    <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    Le compte à rebours est lancé
+                </p>
+
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4">
+                    L'événement a commencé !
+                </h2>
+
+                <p class="text-gray-300 text-sm sm:text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed">
+                    Le festival est actuellement en cours. Rejoignez dès maintenant les sessions et suivez les interventions en direct !
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <a [routerLink]="'/agenda'" class="btn btn-primary group inline-flex items-center">
+                        <span>Accéder au programme</span>
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                    <a [routerLink]="'/live_q'" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/10 backdrop-blur-xs transition">
+                        <span>Poser des questions en direct</span>
+                    </a>
+                </div>
+            </div>
+        }
+
+        <!-- CAS 3: Événement Futur (Compte à rebours actif) -->
+        @else {
+            <!-- Header Text -->
+            <div class="mb-8 md:mb-12">
+                <p class="text-gray-400 text-xs sm:text-sm uppercase tracking-widest mb-2 md:mb-3">
+                    Le compte à rebours est lancé
+                </p>
+                <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white">
+                    <span>L'événement commence dans</span>
+                </h2>
             </div>
 
-            <!-- Separator -->
-            <div class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-600 font-bold -mt-6 md:-mt-8">:</div>
-
-            <!-- Hours -->
-            <div class="flex flex-col items-center flex-1 max-w-[100px] sm:max-w-[120px] md:max-w-[140px]">
-                <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white font-mono tabular-nums leading-none mb-2 md:mb-3"
-                    [class.text-red-500]="!countdownRunning()">
-                    {{ formatTime(hours()) }}
+            <!-- Countdown Display -->
+            <div class="flex justify-center items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-10 md:mb-14">
+                <!-- Days -->
+                <div class="flex flex-col items-center flex-1 max-w-[100px] sm:max-w-[120px] md:max-w-[140px]">
+                    <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white font-mono tabular-nums leading-none mb-2 md:mb-3">
+                        {{ formatTime(daysLeft()) }}
+                    </div>
+                    <div class="text-xs sm:text-sm md:text-base text-gray-400 uppercase tracking-wider">Jours</div>
                 </div>
-                <div class="text-xs sm:text-sm md:text-base text-gray-400 uppercase tracking-wider">Heures</div>
+
+                <!-- Separator -->
+                <div class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-600 font-bold -mt-6 md:-mt-8">:</div>
+
+                <!-- Hours -->
+                <div class="flex flex-col items-center flex-1 max-w-[100px] sm:max-w-[120px] md:max-w-[140px]">
+                    <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white font-mono tabular-nums leading-none mb-2 md:mb-3">
+                        {{ formatTime(hours()) }}
+                    </div>
+                    <div class="text-xs sm:text-sm md:text-base text-gray-400 uppercase tracking-wider">Heures</div>
+                </div>
+
+                <!-- Separator -->
+                <div class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-600 font-bold -mt-6 md:-mt-8">:</div>
+
+                <!-- Minutes -->
+                <div class="flex flex-col items-center flex-1 max-w-[100px] sm:max-w-[120px] md:max-w-[140px]">
+                    <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white font-mono tabular-nums leading-none mb-2 md:mb-3">
+                        {{ formatTime(minutes()) }}
+                    </div>
+                    <div class="text-xs sm:text-sm md:text-base text-gray-400 uppercase tracking-wider">Minutes</div>
+                </div>
+
+                <!-- Separator -->
+                <div class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-600 font-bold -mt-6 md:-mt-8">:</div>
+
+                <!-- Seconds -->
+                <div class="flex flex-col items-center flex-1 max-w-[100px] sm:max-w-[120px] md:max-w-[140px]">
+                    <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white font-mono tabular-nums leading-none mb-2 md:mb-3">
+                        {{ formatTime(seconde()) }}
+                    </div>
+                    <div class="text-xs sm:text-sm md:text-base text-gray-400 uppercase tracking-wider">Secondes</div>
+                </div>
             </div>
 
-            <!-- Separator -->
-            <div class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-600 font-bold -mt-6 md:-mt-8">:</div>
-
-            <!-- Minutes -->
-            <div class="flex flex-col items-center flex-1 max-w-[100px] sm:max-w-[120px] md:max-w-[140px]">
-                <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white font-mono tabular-nums leading-none mb-2 md:mb-3"
-                    [class.text-red-500]="!countdownRunning()">
-                    {{ formatTime(minutes()) }}
-                </div>
-                <div class="text-xs sm:text-sm md:text-base text-gray-400 uppercase tracking-wider">Minutes</div>
+            <!-- CTA Button -->
+            <div class="flex justify-center">
+                <a [routerLink]="'/agenda'" class="btn btn-primary group">
+                    <span>Voir le programme</span>
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
+                        </path>
+                    </svg>
+                </a>
             </div>
-
-            <!-- Separator -->
-            <div class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-600 font-bold -mt-6 md:-mt-8">:</div>
-
-            <!-- Seconds -->
-            <div class="flex flex-col items-center flex-1 max-w-[100px] sm:max-w-[120px] md:max-w-[140px]">
-                <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white font-mono tabular-nums leading-none mb-2 md:mb-3"
-                    [class.text-red-500]="!countdownRunning()">
-                    {{ formatTime(seconde()) }}
-                </div>
-                <div class="text-xs sm:text-sm md:text-base text-gray-400 uppercase tracking-wider">Secondes</div>
-            </div>
-        </div>
-
-        <!-- CTA Button -->
-        <div class="flex justify-center">
-            <a [routerLink]="'/agenda'" class="btn btn-primary group">
-                <span>Voir le programme</span>
-                <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
-                    </path>
-                </svg>
-            </a>
-        </div>
+        }
     </div>
 </section>
 <!-- Impact Section -->
