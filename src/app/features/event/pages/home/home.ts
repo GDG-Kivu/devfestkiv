@@ -15,7 +15,7 @@ import { isPlatformBrowser } from '@angular/common';
       aspect-ratio: 16 / 9;
     }
 
-    /* Hero Section Animations - smooth entrance without initial hiding flash */
+    /* Hero Section Animations */
     .animate-fade-in {
       animation: fadeIn 1s ease-out forwards;
       opacity: 0;
@@ -56,27 +56,33 @@ import { isPlatformBrowser } from '@angular/common';
     @keyframes slideDown {
       from {
         opacity: 0;
+        transform: translateY(-30px);
       }
       to {
         opacity: 1;
+        transform: translateY(0);
       }
     }
 
     @keyframes slideUp {
       from {
         opacity: 0;
+        transform: translateY(30px);
       }
       to {
         opacity: 1;
+        transform: translateY(0);
       }
     }
 
     @keyframes slideRight {
       from {
         opacity: 0;
+        transform: translateX(-50px);
       }
       to {
         opacity: 1;
+        transform: translateX(0);
       }
     }
 
@@ -95,9 +101,11 @@ import { isPlatformBrowser } from '@angular/common';
     @keyframes fadeInUp {
       from {
         opacity: 0;
+        transform: translateY(20px);
       }
       to {
         opacity: 1;
+        transform: translateY(0);
       }
     }
   `,
