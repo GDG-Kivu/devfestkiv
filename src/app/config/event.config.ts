@@ -1,79 +1,6 @@
-export interface EventConfig {
-  edition: number;
-  year: number;
-  name: string;
-  fullName: string;
-  date: {
-    start: Date;
-    end: Date;
-    display: {
-      start: number;
-      end: number;
-      month: string;
-      year: number;
-    };
-  };
-  venue: {
-    city: string;
-    country: string;
-    fullLocation: string;
-    conferenceCenter: string;
-  };
-  theme: string;
-  description: string;
-  registrationUrl: string;
-  contact: {
-    email: string;
-    phone: string;
-  };
-  impactStats: Array<{
-    number: string;
-    rawNumber: number;
-    label: string;
-    description: string;
-  }>;
-  engagementYear: number;
-  supports: Array<{
-    name: string;
-    role: string;
-    quote: string;
-    logo: string;
-    link:string
-  }>;
-  pastEvents: Array<{
-    title: string;
-    description: string;
-    date: string;
-    location: string;
-    category: string;
-    participants: string;
-    tags: string[];
-    badgeColor: string;
-    dotColor: string;
-  }>;
-  agenda: {
-    days: Array<{
-      id: string;
-      name: string;
-      date: string;
-      fullDate: string;
-      location: string;
-      isActive: boolean;
-    }>;
-  };
-  firebase: {
-    projectId: string;
-    appId: string;
-    storageBucket: string;
-    apiKey: string;
-    authDomain: string;
-    messagingSenderId: string;
-    measurementId: string;
-  };
-  liveQuestion: {
-    defaultPin: string;
-  };
-}
+import { EventConfig } from '../features/event/models/event.model';
+
+export type { EventConfig } from '../features/event/models/event.model';
 
 export const EVENT_CONFIG: EventConfig = {
   edition: 2025,
@@ -163,7 +90,7 @@ export const EVENT_CONFIG: EventConfig = {
       name: 'SIA RDC',
       role: 'Partenaire Principal',
       quote:
-        'SIA RDC est une entreprise technologique innovante spécialisée dans dans les technologies de l\'information et de la communication en RDC. ',
+        "SIA RDC est une entreprise technologique innovante spécialisée dans dans les technologies de l'information et de la communication en RDC. ",
       logo: 'assets/supports/support-6.jpg',
       link: 'https://sia-rdc.com/',
     },
@@ -336,8 +263,5 @@ export const EVENT_CONFIG: EventConfig = {
     authDomain: `devfestkivu${2025}.firebaseapp.com`,
     messagingSenderId: '142493229043',
     measurementId: 'G-JGFQPBQ6WY',
-  },
-  liveQuestion: {
-    defaultPin: `dev${2025}`,
   },
 };

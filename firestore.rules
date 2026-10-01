@@ -1,0 +1,117 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions for authentication and role verification
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && getUserData().role == 'admin'
+        && getUserData().disabled != true;
+    }
+
+    function isViewer() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && (getUserData().role == 'admin' || getUserData().role == 'viewer')
+        && getUserData().disabled != true;
+    }
+
+    // User profiles collection
+    match /users/{uid} {
+      allow read: if true;
+      allow create, update: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow delete: if isAdmin() || (signedIn() && request.auth.token.email != null && resource.data.email != null && request.auth.token.email.lower() == resource.data.email.lower());
+    }
+
+    // Global site settings
+    match /siteSettings/{settingsId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Event edition documents and subcollections
+    match /events/{editionId} {
+      allow read: if true;
+      allow write: if isAdmin();
+
+      // Live sessions and questions
+      match /sessions/{sessionId} {
+        allow read: if true;
+        allow write: if isAdmin();
+
+        match /questions/{questionId} {
+          allow read: if true;
+          // Allows both anonymous and Google signed-in users to post questions
+          allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+          allow update, delete: if isAdmin();
+        }
+      }
+
+      // User question quotas
+      match /questionQuotas/{uid} {
+        allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+        allow create, update: if signedIn() && request.auth.uid == uid;
+        allow delete: if isAdmin();
+      }
+
+      // CMS Collections: Public read for site display, admin-only write
+      match /speakers/{speakerId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+
+      match /agenda/{agendaItemId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+
+      match /faq/{faqId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+
+      match /partners/{partnerId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+
+      match /news/{articleId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+
+      match /gallery/{imageId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+
+      match /albums/{albumId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+
+      // Remote presentation control (readable by audience/display, writable by presenters)
+      match /remote/{remoteId} {
+        allow read: if true;
+        allow write: if isViewer();
+      }
+
+      // Live emoji reactions
+      match /emojis/{reactionId} {
+        allow read, create: if true;
+        allow update, delete: if isAdmin();
+      }
+    }
+  }
+}
+

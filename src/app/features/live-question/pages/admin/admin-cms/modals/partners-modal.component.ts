@@ -1,0 +1,409 @@
+import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { FirestoreService } from '../../../../../../core/firestore/firestore.service';
+import { EventPartner } from '../../../../../event/models/partner.model';
+
+@Component({
+  selector: 'app-partners-modal',
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs animate-fade-in">
+      <div class="relative bg-white rounded-3xl w-full max-w-4xl min-w-[320px] shadow-2xl border border-gray-100 animate-pop-in flex flex-col max-h-[90vh] overflow-hidden my-auto">
+        
+        <!-- Fixed Header -->
+        <div class="flex items-center px-6 py-5 border-b border-gray-100 flex-shrink-0 bg-white">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-50 text-[#FBBC04] flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900">Partenaires & Sponsors</h3>
+              <p class="text-xs text-gray-500">Édition : {{ editionId }} • {{ partners().length }} partenaire(s)</p>
+            </div>
+          </div>
+        </div>
+
+        @if (!showForm()) {
+          <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6">
+            <div class="flex items-center justify-between gap-4">
+            <span class="text-xs text-gray-500">Gérez les entreprises partenaires, leurs logos et niveaux de sponsoring.</span>
+            <button
+              type="button"
+              (click)="openCreateForm()"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer"
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              <span>Ajouter un partenaire</span>
+            </button>
+          </div>
+
+          <!-- Loading State -->
+          @if (isLoading()) {
+            <div class="py-12 text-center text-gray-400 flex flex-col items-center gap-3">
+              <svg class="w-8 h-8 animate-spin text-amber-500" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span class="text-xs font-semibold">Chargement des partenaires...</span>
+            </div>
+          } @else if (partners().length === 0) {
+            <div class="text-center py-12 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200 text-gray-500 space-y-3">
+              <p class="text-sm font-semibold text-gray-700">Aucun partenaire configuré pour cette édition</p>
+              <p class="text-xs text-gray-400">Cliquez sur « Ajouter un partenaire » pour valoriser vos sponsors.</p>
+            </div>
+          } @else {
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              @for (p of partners(); track p.id || p.name) {
+                <div class="bg-gray-50/70 hover:bg-gray-50 rounded-2xl p-4 border border-gray-200/80 flex items-start gap-4 transition">
+                  <div class="w-16 h-16 rounded-xl overflow-hidden bg-white border border-gray-200 flex-shrink-0 p-2 flex items-center justify-center">
+                    <img
+                      [src]="p.logo || 'assets/logo.png'"
+                      [alt]="p.name"
+                      class="max-w-full max-h-full object-contain"
+                      (error)="handleImageError($event)"
+                    />
+                  </div>
+
+                  <div class="min-w-0 flex-1 space-y-1">
+                    <div class="flex items-center justify-between gap-2">
+                      <h4 class="text-sm font-bold text-gray-900 truncate">{{ p.name }}</h4>
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-amber-100 text-amber-800">
+                        {{ p.role }}
+                      </span>
+                    </div>
+
+                    @if (p.quote) {
+                      <p class="text-xs text-gray-500 italic line-clamp-2">"{{ p.quote }}"</p>
+                    }
+
+                    <div class="pt-2 flex items-center justify-between">
+                      @if (p.link) {
+                        <a [href]="p.link" target="_blank" rel="noopener noreferrer" class="text-xs text-[#4285F4] hover:underline truncate">
+                          Visiter le site ↗
+                        </a>
+                      } @else {
+                        <span></span>
+                      }
+
+                      <div class="flex items-center gap-2">
+                        <button
+                          type="button"
+                          (click)="openEditForm(p)"
+                          class="px-2.5 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-50 rounded-lg transition cursor-pointer"
+                        >
+                          Modifier
+                        </button>
+                        <button
+                          type="button"
+                          (click)="deletePartner(p)"
+                          class="px-2.5 py-1 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg transition cursor-pointer"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- List View Fixed Footer -->
+        <div class="flex items-center justify-end px-6 py-4 border-t border-gray-100 flex-shrink-0 bg-white">
+          <button
+            type="button"
+            (click)="close.emit()"
+            class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs sm:text-sm font-semibold rounded-xl transition cursor-pointer"
+          >
+            Fermer
+          </button>
+        </div>
+      } @else {
+        <!-- Partner Form with Fixed Actions -->
+        <form (ngSubmit)="savePartner()" class="flex flex-col flex-1 overflow-hidden min-h-0">
+          <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-4">
+            <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+              <h4 class="text-sm font-bold text-gray-900">
+                {{ isEditing() ? 'Modifier la fiche partenaire' : 'Nouveau partenaire / sponsor' }}
+              </h4>
+              <button
+                type="button"
+                (click)="showForm.set(false)"
+                class="text-xs text-gray-500 hover:text-gray-800 font-semibold cursor-pointer"
+              >
+                ← Retour à la liste
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Nom de l'entreprise *</label>
+                <input
+                  type="text"
+                  name="name"
+                  [(ngModel)]="activePartner.name"
+                  required
+                  placeholder="Ex: Google, Wikisuite..."
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Rôle / Catégorie de sponsoring *</label>
+                <input
+                  type="text"
+                  name="role"
+                  [(ngModel)]="activePartner.role"
+                  required
+                  placeholder="Ex: Partenaire Principal, Partenaire Média..."
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Logo URL *</label>
+                <div class="flex gap-3 items-center">
+                  <input
+                    type="url"
+                    name="logo"
+                    [(ngModel)]="activePartner.logo"
+                    required
+                    placeholder="https://... ou assets/..."
+                    class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                  />
+                  @if (activePartner.logo) {
+                    <img
+                      [src]="activePartner.logo"
+                      alt="Logo"
+                      class="w-10 h-10 object-contain p-1 border border-gray-200 rounded-lg flex-shrink-0 bg-white"
+                      (error)="handleImageError($event)"
+                    />
+                  }
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Site Web / Lien officiel</label>
+                <input
+                  type="url"
+                  name="link"
+                  [(ngModel)]="activePartner.link"
+                  placeholder="https://..."
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Citation / Description du partenariat</label>
+              <textarea
+                name="quote"
+                rows="3"
+                [(ngModel)]="activePartner.quote"
+                placeholder="Message du partenaire ou présentation courte..."
+                class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40 resize-none"
+              ></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Ordre d'affichage</label>
+                <input
+                  type="number"
+                  name="order"
+                  [(ngModel)]="activePartner.order"
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                />
+              </div>
+
+              <div class="flex items-center gap-3 pt-6">
+                <input
+                  type="checkbox"
+                  id="partnerIsPublished"
+                  name="isPublished"
+                  [(ngModel)]="activePartner.isPublished"
+                  class="w-4 h-4 text-amber-500 rounded border-gray-300 focus:ring-amber-500"
+                />
+                <label for="partnerIsPublished" class="text-xs font-semibold text-gray-700 cursor-pointer">
+                  Publié sur le site
+                </label>
+              </div>
+            </div>
+
+            @if (feedbackMessage()) {
+              <div
+                class="text-xs p-3 rounded-xl border flex items-center gap-2"
+                [class.bg-green-50]="feedbackType() === 'success'"
+                [class.text-green-800]="feedbackType() === 'success'"
+                [class.border-green-200]="feedbackType() === 'success'"
+                [class.bg-red-50]="feedbackType() === 'error'"
+                [class.text-red-800]="feedbackType() === 'error'"
+                [class.border-red-200]="feedbackType() === 'error'"
+              >
+                <span>{{ feedbackMessage() }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Fixed Form Actions Footer -->
+          <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 flex-shrink-0 bg-white">
+            <button
+              type="button"
+              (click)="showForm.set(false)"
+              class="px-4 py-2.5 text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl transition cursor-pointer"
+            >
+              Annuler
+            </button>
+
+            <button
+              type="submit"
+              [disabled]="isSaving()"
+              class="flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
+            >
+              @if (isSaving()) {
+                <svg class="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Enregistrement...</span>
+              } @else {
+                <span>{{ isEditing() ? 'Mettre à jour' : 'Ajouter le partenaire' }}</span>
+              }
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+  `,
+})
+export class PartnersModalComponent implements OnInit {
+  @Input({ required: true }) editionId!: string;
+  @Output() close = new EventEmitter<void>();
+  @Output() updated = new EventEmitter<void>();
+
+  private fs = inject(FirestoreService);
+
+  partners = signal<EventPartner[]>([]);
+  isLoading = signal(true);
+  showForm = signal(false);
+  isEditing = signal(false);
+  isSaving = signal(false);
+  feedbackMessage = signal<string | null>(null);
+  feedbackType = signal<'success' | 'error'>('success');
+
+  activePartner: EventPartner = {
+    id: '',
+    name: '',
+    role: 'Partenaire Principal',
+    logo: '',
+    link: '',
+    quote: '',
+    order: 1,
+    isPublished: true,
+  };
+
+  ngOnInit(): void {
+    this.loadPartners();
+  }
+
+  private loadPartners(): void {
+    this.isLoading.set(true);
+    this.fs.getEventCollection<EventPartner>(this.editionId, 'partners').subscribe({
+      next: (list) => {
+        this.partners.set(list || []);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  openCreateForm(): void {
+    this.activePartner = {
+      id: '',
+      name: '',
+      role: 'Partenaire Principal',
+      logo: '',
+      link: '',
+      quote: '',
+      order: this.partners().length + 1,
+      isPublished: true,
+    };
+    this.isEditing.set(false);
+    this.feedbackMessage.set(null);
+    this.showForm.set(true);
+  }
+
+  openEditForm(partner: EventPartner): void {
+    this.activePartner = { ...partner };
+    this.isEditing.set(true);
+    this.feedbackMessage.set(null);
+    this.showForm.set(true);
+  }
+
+  handleImageError(event: Event): void {
+    (event.target as HTMLImageElement).src = 'assets/logo.png';
+  }
+
+  async savePartner(): Promise<void> {
+    if (this.isSaving()) return;
+
+    if (!this.activePartner.name?.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez renseigner le nom de l\'organisation ou du partenaire.');
+      return;
+    }
+    if (!this.activePartner.role?.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez renseigner le type ou rôle du partenariat (ex: Partenaire Or).');
+      return;
+    }
+
+    this.isSaving.set(true);
+    this.feedbackMessage.set(null);
+
+    try {
+      if (this.isEditing() && this.activePartner.id) {
+        await this.fs.saveEventDocument(this.editionId, 'partners', this.activePartner);
+      } else {
+        const id = await this.fs.createEventDocument(this.editionId, 'partners', this.activePartner);
+        this.activePartner.id = id;
+      }
+
+      this.feedbackType.set('success');
+      this.feedbackMessage.set('Partenaire enregistré avec succès !');
+      this.updated.emit();
+
+      setTimeout(() => {
+        this.showForm.set(false);
+      }, 1000);
+    } catch (err: any) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set(err?.message || 'Erreur lors de l\'enregistrement.');
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
+  async deletePartner(partner: EventPartner): Promise<void> {
+    if (!partner.id) return;
+    if (!confirm(`Supprimer le partenaire "${partner.name}" ?`)) return;
+
+    try {
+      await this.fs.deleteEventDocument(this.editionId, 'partners', partner.id);
+      this.updated.emit();
+    } catch (err: any) {
+      alert(err?.message || 'Erreur lors de la suppression.');
+    }
+  }
+}

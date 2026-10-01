@@ -1,0 +1,565 @@
+<!-- Hero Section -->
+<section class="hero-section relative overflow-hidden bg-white min-h-[85vh] flex items-center">
+    <!-- Subtle background decoration -->
+    <div class="absolute inset-0 overflow-hidden opacity-40 animate-fade-in">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse-slow">
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 relative z-10 w-full py-12 md:py-16">
+        <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+
+            <!-- Left Content -->
+            <div class="text-center lg:text-left space-y-6 md:space-y-8">
+                <!-- Event Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium animate-slide-down"
+                    style="animation-delay: 0.1s;">
+                    <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                    <span>{{ eventConfig.getFormattedDateBadge() }}</span>
+                </div>
+
+                <!-- Main Heading -->
+                <div class="animate-slide-up" style="animation-delay: 0.2s;">
+                    <h1 class="text-5xl sm:text-6xl md:text-6xl lg:text-7xl font-bold text-text leading-tight mb-4">
+                        DevFest Kivu
+                        <span class="block text-primary mt-2">{{ eventConfig.year }}</span>
+                    </h1>
+                    <p
+                        class="text-base sm:text-lg md:text-xl lg:text-2xl text-text/70 font-light leading-relaxed px-2 sm:px-0">
+                        Le plus grand rassemblement tech de la région des Grands Lacs, réunissant développeurs,
+                        étudiants, élèves, entrepreneurs, etc.
+                    </p>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up"
+                    style="animation-delay: 0.4s;">
+                    <a href="{{ registrationUrl }}" target="_blank" class="btn btn-primary group w-fit mx-auto lg:mx-0">
+                        <span>Voir les details</span>
+                        <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Technology Tags -->
+                <div class="flex flex-wrap justify-center lg:justify-start gap-2 pt-4 animate-fade-in"
+                    style="animation-delay: 0.6s;">
+                    <span class="px-3 py-1 text-xs font-medium text-text/70 bg-gray-100 rounded-full">Web</span>
+                    <span class="px-3 py-1 text-xs font-medium text-text/70 bg-gray-100 rounded-full">Mobile</span>
+                    <span class="px-3 py-1 text-xs font-medium text-text/70 bg-gray-100 rounded-full">AI</span>
+                    <span class="px-3 py-1 text-xs font-medium text-text/70 bg-gray-100 rounded-full">Cloud</span>
+                    <span class="px-3 py-1 text-xs font-medium text-text/70 bg-gray-100 rounded-full">Firebase</span>
+                </div>
+            </div>
+
+            <!-- Right Visual - Image Album -->
+            <div class="mt-12 lg:mt-0 animate-slide-right" style="animation-delay: 0.3s;">
+                <!-- Mobile View - Album Effect (Scaled Down) -->
+                <div class="lg:hidden relative h-[380px] w-full max-w-lg mx-auto px-4">
+                    <!-- Image 1 - Back Left -->
+                    <div
+                        class="absolute top-0 left-4 w-40 sm:w-44 h-48 sm:h-52 rounded-xl overflow-hidden shadow-xl transform rotate-[-6deg] z-10">
+                        <img [ngSrc]="'/assets/past_events/first-1.jpg'" alt="DevFest Kivu Event"
+                            class="w-full h-full object-cover" width="288" height="320" decoding="async"
+                            loading="lazy" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent">
+                        </div>
+                        <div class="absolute bottom-2 left-2 right-2">
+                            <p class="text-white font-semibold text-xs">DevFest Kivu 2023</p>
+                        </div>
+                    </div>
+
+                    <!-- Image 2 - Front Center -->
+                    <div
+                        class="absolute top-8 left-1/2 transform -translate-x-1/2 w-44 sm:w-48 h-56 sm:h-60 rounded-xl overflow-hidden shadow-2xl rotate-[2deg] z-30">
+                        <img [ngSrc]="'/assets/past_events/first-2.jpg'" alt="DevFest Kivu Community"
+                            class="w-full h-full object-cover" width="320" height="384" decoding="async"
+                            loading="lazy" />
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-secondary/80 via-secondary/20 to-transparent">
+                        </div>
+                        <div class="absolute bottom-2 left-2 right-2">
+                            <p class="text-white font-semibold text-xs">Notre Communauté</p>
+                        </div>
+                    </div>
+
+                    <!-- Image 3 - Back Right -->
+                    <div
+                        class="absolute top-0 right-4 w-40 sm:w-44 h-48 sm:h-52 rounded-xl overflow-hidden shadow-xl transform rotate-[6deg] z-10">
+                        <img [ngSrc]="'/assets/past_events/first-3.jpg'" alt="Tech Innovation"
+                            class="w-full h-full object-cover" width="288" height="320" decoding="async"
+                            loading="lazy" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-accent/80 via-accent/20 to-transparent">
+                        </div>
+                        <div class="absolute bottom-2 left-2 right-2">
+                            <p class="text-white font-semibold text-xs">Innovation & Tech</p>
+                        </div>
+                    </div>
+
+                    <!-- Floating Stats Badge Mobile -->
+                    <div
+                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-40 w-full flex justify-center px-4">
+                        <div
+                            class="bg-white rounded-xl p-4 sm:p-5 shadow-xl border border-gray-100 inline-flex items-center gap-3 sm:gap-4">
+                            <div class="text-center">
+                                <div class="text-lg sm:text-2xl font-bold text-primary whitespace-nowrap">{{
+                                    impactStats[1].number }}+</div>
+                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1">Participants
+                                </div>
+                            </div>
+                            <div class="w-px h-12 bg-gray-200"></div>
+                            <div class="text-center">
+                                <div class="text-lg sm:text-2xl font-bold text-secondary whitespace-nowrap">20+</div>
+                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1">Speakers</div>
+                            </div>
+                            <div class="w-px h-12 bg-gray-200"></div>
+                            <div class="text-center">
+                                <div class="text-lg sm:text-2xl font-bold text-accent whitespace-nowrap">100%</div>
+                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1">Gratuit</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop View - Album Effect -->
+                <div class="hidden lg:block relative h-[500px] w-full">
+                    <!-- Image 1 - Back Left -->
+                    <div
+                        class="absolute top-0 left-0 w-72 h-80 rounded-2xl overflow-hidden shadow-2xl transform rotate-[-6deg] hover:rotate-[-3deg] transition-all duration-500 hover:scale-105 z-10">
+                        <img [ngSrc]="'/assets/past_events/first-1.jpg'" alt="DevFest Kivu Event"
+                            class="w-full h-full object-cover" width="288" height="320" decoding="async"
+                            loading="lazy" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent">
+                        </div>
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <p class="text-white font-semibold text-sm">DevFest Kivu 2023</p>
+                        </div>
+                    </div>
+
+                    <!-- Image 2 - Front Center -->
+                    <div
+                        class="absolute top-12 left-24 w-80 h-96 rounded-2xl overflow-hidden shadow-2xl transform rotate-[3deg] hover:rotate-[0deg] transition-all duration-500 hover:scale-105 z-30">
+                        <img [ngSrc]="'/assets/past_events/first-2.jpg'" alt="DevFest Kivu Community"
+                            class="w-full h-full object-cover" width="320" height="384" decoding="async"
+                            loading="lazy" />
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-secondary/80 via-secondary/20 to-transparent">
+                        </div>
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <p class="text-white font-semibold text-sm">Notre Communauté</p>
+                        </div>
+                    </div>
+
+                    <!-- Image 3 - Back Right -->
+                    <div
+                        class="absolute top-24 right-0 w-72 h-80 rounded-2xl overflow-hidden shadow-2xl transform rotate-[8deg] hover:rotate-[4deg] transition-all duration-500 hover:scale-105 z-20">
+                        <img [ngSrc]="'/assets/past_events/first-3.jpg'" alt="Tech Innovation"
+                            class="w-full h-full object-cover" width="288" height="320" decoding="async"
+                            loading="lazy" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-accent/80 via-accent/20 to-transparent">
+                        </div>
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <p class="text-white font-semibold text-sm">Innovation & Tech</p>
+                        </div>
+                    </div>
+
+                    <!-- Floating Stats Badge Desktop -->
+                    <div
+                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-white rounded-2xl p-6 shadow-2xl border border-gray-100 z-40 hover:scale-105 transition-transform duration-300">
+                        <div class="flex items-center gap-6">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-primary">{{ impactStats[1].number }}+</div>
+                                <div class="text-xs text-text/60">Participants</div>
+                            </div>
+                            <div class="w-px h-12 bg-gray-200"></div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-secondary">20+</div>
+                                <div class="text-xs text-text/60">Speakers</div>
+                            </div>
+                            <div class="w-px h-12 bg-gray-200"></div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-accent">100%</div>
+                                <div class="text-xs text-text/60">Gratuit</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Countdown / Event Status Section -->
+<section class="relative overflow-hidden bg-gray-900 py-12 md:py-16 lg:py-20">
+    <!-- Subtle background gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 opacity-60"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 text-center relative z-10">
+
+        <!-- CAS 1: Événement Clôturé -->
+        @if (isEventPast()) {
+            <div class="max-w-2xl mx-auto text-center animate-fade-in">
+                <!-- Status Badge -->
+                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-gray-300 border border-white/10 text-xs font-semibold mb-4">
+                    <span class="w-2 h-2 rounded-full bg-gray-400"></span>
+                    <span>Édition terminée</span>
+                </div>
+
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight mb-3">
+                    Rendez-vous à la prochaine édition !
+                </h2>
+
+                <p class="text-gray-300 text-sm sm:text-base  mx-auto mb-8 leading-relaxed">
+                    Cette édition du {{ eventConfig.fullName || 'DevFest Kivu' }} est désormais clôturée. Restez connectés pour découvrir les dates de la prochaine édition.
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <a [routerLink]="'/agenda'" class="btn btn-primary group inline-flex items-center">
+                        <span>Revoir le programme</span>
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                    <a href="#impact" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/10 backdrop-blur-xs transition">
+                        <span>Découvrir l'impact</span>
+                    </a>
+                </div>
+            </div>
+        }
+
+        <!-- CAS 2: Événement En Cours -->
+        @else if (isEventOngoing()) {
+            <div class="max-w-2xl mx-auto text-center animate-fade-in">
+                <!-- Status Badge -->
+                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-400/25 text-xs font-semibold mb-4">
+                    <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>{{ activeDayBadge() }}</span>
+                </div>
+
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight mb-3">
+                    L'événement est en direct
+                </h2>
+
+                <p class="text-gray-300 text-sm sm:text-base mx-auto mb-8 leading-relaxed">
+                    Le festival {{ eventConfig.fullName || 'DevFest Kivu' }} se déroule actuellement. Suivez les interventions et posez vos questions en direct !
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <a [routerLink]="'/agenda'" class="btn btn-primary group inline-flex items-center">
+                        <span>Voir le programme</span>
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                    <a [routerLink]="'/live_q'" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/10 backdrop-blur-xs transition">
+                        <span>Questions en direct</span>
+                    </a>
+                </div>
+            </div>
+        }
+
+        <!-- CAS 3: Compte à rebours actif pour l'édition courante -->
+        @else {
+            <!-- Header Text -->
+            <div class="mb-8 md:mb-10 animate-fade-in">
+                @if (targetBadge()) {
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/15 text-blue-300 border border-blue-400/20 text-xs font-semibold mb-3">
+                        <span>{{ targetBadge() }}</span>
+                    </div>
+                }
+                
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">
+                    {{ targetTitle() }}
+                </h2>
+
+                @if (targetSubTitle()) {
+                    <p class="text-gray-400 text-xs sm:text-sm mx-auto">
+                        {{ targetSubTitle() }}
+                    </p>
+                }
+            </div>
+
+            <!-- Countdown Display -->
+            <div class="flex justify-center items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-8 md:mb-10">
+                <!-- Days -->
+                <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
+                    <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white font-mono tabular-nums leading-none mb-2">
+                        {{ formatTime(daysLeft()) }}
+                    </div>
+                    <div class="text-[11px] sm:text-xs md:text-sm text-gray-400 uppercase tracking-wider font-medium">Jours</div>
+                </div>
+
+                <!-- Separator -->
+                <div class="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-bold -mt-4">:</div>
+
+                <!-- Hours -->
+                <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
+                    <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white font-mono tabular-nums leading-none mb-2">
+                        {{ formatTime(hours()) }}
+                    </div>
+                    <div class="text-[11px] sm:text-xs md:text-sm text-gray-400 uppercase tracking-wider font-medium">Heures</div>
+                </div>
+
+                <!-- Separator -->
+                <div class="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-bold -mt-4">:</div>
+
+                <!-- Minutes -->
+                <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
+                    <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white font-mono tabular-nums leading-none mb-2">
+                        {{ formatTime(minutes()) }}
+                    </div>
+                    <div class="text-[11px] sm:text-xs md:text-sm text-gray-400 uppercase tracking-wider font-medium">Minutes</div>
+                </div>
+
+                <!-- Separator -->
+                <div class="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-bold -mt-4">:</div>
+
+                <!-- Seconds -->
+                <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
+                    <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white font-mono tabular-nums leading-none mb-2">
+                        {{ formatTime(seconde()) }}
+                    </div>
+                    <div class="text-[11px] sm:text-xs md:text-sm text-gray-400 uppercase tracking-wider font-medium">Secondes</div>
+                </div>
+            </div>
+
+            <!-- CTA Button -->
+            <div class="flex justify-center">
+                <a [routerLink]="'/agenda'" class="btn btn-primary group">
+                    <span>Voir le programme</span>
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
+                        </path>
+                    </svg>
+                </a>
+            </div>
+        }
+    </div>
+</section>
+<!-- Impact Section -->
+<section class="bg-white py-12 md:py-20 lg:py-24" id="impact">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+        <!-- Section Header -->
+        <div class="text-center mb-10 md:mb-16">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text mb-3 md:mb-4 px-4">
+                Notre Impact
+            </h2>
+            <p class="text-sm sm:text-base md:text-lg text-text/70 max-w-2xl mx-auto px-4 leading-relaxed">
+                <span class="text-primary font-semibold">{{ engagementYear }} années d'engagement</span> pour
+                l'écosystème technologique de la région
+            </p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-10 md:mb-12">
+            @for (stat of impactStats; track $index) {
+            <div class="group text-center">
+                <div
+                    class="bg-gray-50 rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-100 hover:border-primary/30 transition-all duration-300 hover:shadow-lg h-full">
+                    <div class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-2 md:mb-3">
+                        {{ stat.number }}
+                    </div>
+                    <div class="text-xs sm:text-sm md:text-base text-text font-semibold mb-1 md:mb-2">
+                        {{ stat.label }}
+                    </div>
+                    <div class="text-xs md:text-sm text-text/60 leading-relaxed">
+                        {{ stat.description }}
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center px-4">
+            <a href="https://gdg.community.dev/gdg-kivu/" class="btn btn-primary group mb-3 sm:mb-4">
+                <span>Rejoignez notre communauté</span>
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
+                    </path>
+                </svg>
+            </a>
+            <p class="text-xs sm:text-sm text-text/60 max-w-2xl mx-auto">
+                Formation • Partenariats • Innovation
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Past Events Gallery -->
+<app-past-events-gallery></app-past-events-gallery>
+<!-- Support Section -->
+<section class="py-12 md:py-16 lg:py-20 bg-gray-50 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+        <!-- Section Header -->
+        <div class="text-center mb-10 md:mb-14">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text mb-3 md:mb-4">
+                Nos Partenaires
+            </h2>
+            <p class="text-sm sm:text-base md:text-lg text-text/60 max-w-2xl mx-auto">
+                Ils soutiennent et contribuent au succès du DevFest Kivu
+            </p>
+        </div>
+
+        <!-- Auto-scrolling Partners Container -->
+        <div class="relative">
+            <!-- Gradient overlays for fade effect -->
+            <div
+                class="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none">
+            </div>
+            <div
+                class="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none">
+            </div>
+
+            <!-- Scrolling wrapper -->
+            <div class="overflow-hidden mb-10 md:mb-12">
+                <div class="flex gap-4 sm:gap-6 animate-scroll-partners hover:pause-animation">
+                    <!-- First set of partners -->
+                    @for (partner of supports; track $index) {
+                    <div
+                        class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] group bg-white rounded-xl md:rounded-2xl p-6 md:p-8 border border-gray-100 hover:border-primary/20 transition-all duration-300 hover:shadow-lg">
+                        
+                        <!-- Partner Logo/Image -->
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 border-2 border-gray-100 group-hover:border-primary/30 rounded-lg flex items-center justify-center bg-white">
+                                <a [href]="partner.link" target="_blank" rel="noopener noreferrer">
+                                    <img [src]="partner.logo" 
+                                        [alt]="partner.name"
+                                        class="max-w-full max-h-full object-contain" />
+                                </a>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-base sm:text-lg font-semibold text-text mb-1 truncate">
+                                    {{ partner.name }}
+                                </h4>
+                                <p class="text-xs sm:text-sm text-primary font-medium">
+                                    {{ partner.role }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Partner Quote -->
+                        <p class="text-xs sm:text-sm text-text/70 leading-relaxed line-clamp-3">
+                            {{ partner.quote }}
+                        </p>
+                    </div>
+
+                    }
+
+                    <!-- Duplicate set for seamless loop -->
+                    @for (partner of supports; track $index) {
+                    <div
+                        class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] group bg-white rounded-xl md:rounded-2xl p-6 md:p-8 border border-gray-100 hover:border-primary/20 transition-all duration-300 hover:shadow-lg">
+                        <!-- Partner Logo/Image -->
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="flex-shrink-0">
+                                <img [ngSrc]="'/assets/supports/support-' + ($index + 1) + '.jpg'" [alt]="partner.name"
+                                    class="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover border-2 border-gray-100 group-hover:border-primary/30 transition-colors"
+                                    width="64" height="64" decoding="async" loading="lazy" />
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-base sm:text-lg font-semibold text-text mb-1 truncate">
+                                    {{ partner.name }}
+                                </h4>
+                                <p class="text-xs sm:text-sm text-primary font-medium">
+                                    {{ partner.role }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Partner Quote -->
+                        <p class="text-xs sm:text-sm text-text/70 leading-relaxed line-clamp-3">
+                            {{ partner.quote }}
+                        </p>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center">
+            <p class="text-sm text-text/60 mb-4">
+                Vous souhaitez devenir partenaire ?
+            </p>
+            <a href="https://wa.link/0w8v5r" class="btn group btn-text">
+                <span>Contactez-nous</span>
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
+                    </path>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+    @keyframes scroll-partners {
+        0% {
+            transform: translateX(0);
+        }
+
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+
+    .animate-scroll-partners {
+        animation: scroll-partners 30s linear infinite;
+    }
+
+    .pause-animation:hover {
+        animation-play-state: paused;
+    }
+</style>
+
+<!-- Generator Section -->
+<section class="relative overflow-hidden bg-background  py-16 md:py-20">
+    <!-- Animated Background Elements -->
+    <div class="absolute inset-0 opacity-20">
+        <div class="absolute top-10 left-10 w-20 h-20 bg-primary rounded-full animate-pulse"></div>
+        <div class="absolute bottom-16 right-20 w-16 h-16 bg-secondary rounded-full animate-bounce"></div>
+        <div class="absolute top-1/3 right-1/4 w-24 h-24 bg-accent rounded-lg rotate-12 animate-float"></div>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+        <!-- Section Header -->
+        <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text mb-4">
+            Générateur de Photo de Profil
+        </h2>
+        <p class="text-base sm:text-lg md:text-xl text-text/80 max-w-3xl mx-auto leading-relaxed mb-10">
+            Personnalisez votre <span class="text-primary font-semibold">DP officiel DevFest Kivu</span>
+            et montrez votre participation à l’événement !
+        </p>
+
+        <!-- Call to Action -->
+        <div class="flex justify-center">
+            <a routerLink="/dp-generator" class="btn btn-primary group">
+                <span>Générer ma DP maintenant</span>
+                <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
+                    </path>
+                </svg>
+            </a>
+        </div>
+
+        <!-- Illustration -->
+        <div class="mt-12 flex justify-center">
+            <img [ngSrc]="'/assets/logo.png'" alt="Exemple DP"
+                class="w-40 h-40 rounded-full shadow-lg border-4 border-primary animate-fade-in-up" width="160"
+                height="160" decoding="async" loading="lazy">
+        </div>
+    </div>
+</section>

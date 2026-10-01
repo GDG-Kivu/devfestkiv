@@ -1,0 +1,454 @@
+import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { FirestoreService } from '../../../../../../core/firestore/firestore.service';
+import { Speaker } from '../../../../../event/models/speaker.model';
+
+@Component({
+  selector: 'app-speakers-modal',
+  imports: [CommonModule, FormsModule],
+  template: `
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs animate-fade-in">
+      <div class="relative bg-white rounded-3xl w-full max-w-4xl min-w-[320px] shadow-2xl border border-gray-100 animate-pop-in flex flex-col max-h-[90vh] overflow-hidden my-auto">
+        
+        <!-- Fixed Header -->
+        <div class="flex items-center px-6 py-5 border-b border-gray-100 flex-shrink-0 bg-white">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#4285F4] flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900">Gestion des Intervenants & Speakers</h3>
+              <p class="text-xs text-gray-500">Édition : {{ editionId }} • {{ speakers().length }} intervenant(s)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode Toggle: List vs Form -->
+        @if (!showForm()) {
+          <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6">
+            <div class="flex items-center justify-between gap-4">
+              <span class="text-xs text-gray-500">Gérez les profils et biographies des intervenants.</span>
+              <button
+                type="button"
+                (click)="openCreateForm()"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-[#4285F4] hover:bg-[#3367D6] text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                <span>Ajouter un speaker</span>
+              </button>
+            </div>
+
+            <!-- Loading State -->
+            @if (isLoading()) {
+              <div class="py-12 text-center text-gray-400 flex flex-col items-center gap-3">
+              <svg class="w-8 h-8 animate-spin text-[#4285F4]" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span class="text-xs font-semibold">Chargement des speakers...</span>
+            </div>
+          } @else if (speakers().length === 0) {
+            <div class="text-center py-12 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200 text-gray-500 space-y-3">
+              <p class="text-sm font-semibold text-gray-700">Aucun speaker enregistré pour cette édition</p>
+              <p class="text-xs text-gray-400">Cliquez sur « Ajouter un speaker » pour créer votre première fiche intervenant.</p>
+            </div>
+          } @else {
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              @for (sp of speakers(); track sp.id || sp.name) {
+                <div class="bg-gray-50/70 hover:bg-gray-50 rounded-2xl p-4 border border-gray-200/80 flex items-start gap-4 transition">
+                  <div class="w-14 h-14 rounded-full overflow-hidden bg-gray-200 flex-shrink-0 border-2 border-white shadow-xs">
+                    <img
+                      [src]="sp.photo || 'assets/logo.png'"
+                      [alt]="sp.name"
+                      class="w-full h-full object-cover"
+                      (error)="handleImageError($event)"
+                    />
+                  </div>
+
+                  <div class="min-w-0 flex-1 space-y-1">
+                    <div class="flex items-center justify-between gap-2">
+                      <h4 class="text-sm font-bold text-gray-900 truncate">{{ sp.name }}</h4>
+                      <span
+                        class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                        [class.bg-green-100]="sp.status !== 'draft'"
+                        [class.text-green-700]="sp.status !== 'draft'"
+                        [class.bg-amber-100]="sp.status === 'draft'"
+                        [class.text-amber-700]="sp.status === 'draft'"
+                      >
+                        {{ sp.status === 'draft' ? 'Brouillon' : 'Publié' }}
+                      </span>
+                    </div>
+
+                    <p class="text-xs text-[#4285F4] font-medium truncate">{{ sp.title || 'Intervenant' }}</p>
+                    <p class="text-xs text-gray-500 line-clamp-2">{{ sp.bio }}</p>
+
+                    <div class="pt-2 flex items-center justify-between">
+                      <span class="text-[11px] font-semibold text-gray-400 uppercase">
+                        {{ sp.day === 'jour2' ? 'Jour 2' : 'Jour 1' }}
+                      </span>
+
+                      <div class="flex items-center gap-2">
+                        <button
+                          type="button"
+                          (click)="openEditForm(sp)"
+                          class="px-2.5 py-1 text-xs font-semibold text-[#4285F4] hover:bg-blue-50 rounded-lg transition cursor-pointer"
+                        >
+                          Modifier
+                        </button>
+                        <button
+                          type="button"
+                          (click)="deleteSpeaker(sp)"
+                          class="px-2.5 py-1 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg transition cursor-pointer"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- List View Fixed Footer -->
+        <div class="flex items-center justify-end px-6 py-4 border-t border-gray-100 flex-shrink-0 bg-white">
+          <button
+            type="button"
+            (click)="close.emit()"
+            class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs sm:text-sm font-semibold rounded-xl transition cursor-pointer"
+          >
+            Fermer
+          </button>
+        </div>
+      } @else {
+        <!-- Speaker Edit/Create Form with Fixed Actions -->
+        <form (ngSubmit)="saveSpeaker()" class="flex flex-col flex-1 overflow-hidden min-h-0">
+          <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-4">
+            <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+              <h4 class="text-sm font-bold text-gray-900">
+                {{ isEditing() ? 'Modifier le profil du speaker' : 'Créer un nouvel intervenant' }}
+              </h4>
+              <button
+                type="button"
+                (click)="showForm.set(false)"
+                class="text-xs text-gray-500 hover:text-gray-800 font-semibold cursor-pointer"
+              >
+                ← Retour à la liste
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Nom complet *</label>
+                <input
+                  type="text"
+                  name="name"
+                  [(ngModel)]="activeSpeaker.name"
+                  required
+                  placeholder="Ex: Daniella Ansima"
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Titre / Rôle / Entreprise</label>
+                <input
+                  type="text"
+                  name="title"
+                  [(ngModel)]="activeSpeaker.title"
+                  placeholder="Ex: Senior Software Engineer chez Google"
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">URL de la photo de profil</label>
+              <div class="flex gap-3 items-center">
+                <input
+                  type="url"
+                  name="photo"
+                  [(ngModel)]="activeSpeaker.photo"
+                  placeholder="https://... ou assets/..."
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+                />
+                @if (activeSpeaker.photo) {
+                  <img
+                    [src]="activeSpeaker.photo"
+                    alt="Aperçu"
+                    class="w-10 h-10 rounded-full object-cover border border-gray-200 flex-shrink-0"
+                    (error)="handleImageError($event)"
+                  />
+                }
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Biographie</label>
+              <textarea
+                name="bio"
+                rows="3"
+                [(ngModel)]="activeSpeaker.bio"
+                placeholder="Parcours, centres d'intérêt, sujet d'expertise..."
+                class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40 resize-none"
+              ></textarea>
+            </div>
+
+            <!-- Social Links -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">LinkedIn URL</label>
+                <input
+                  type="url"
+                  name="linkedin"
+                  [(ngModel)]="activeSpeaker.socials.linkedin"
+                  placeholder="https://linkedin.com/in/..."
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Twitter / X URL</label>
+                <input
+                  type="url"
+                  name="twitter"
+                  [(ngModel)]="activeSpeaker.socials.twitter"
+                  placeholder="https://x.com/..."
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">GitHub URL</label>
+                <input
+                  type="url"
+                  name="github"
+                  [(ngModel)]="activeSpeaker.socials.github"
+                  placeholder="https://github.com/..."
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+                />
+              </div>
+            </div>
+
+            <!-- Day & Status -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Jour de passage</label>
+                <select
+                  name="day"
+                  [(ngModel)]="activeSpeaker.day"
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+                >
+                  @for (d of availableDays(); track d.id) {
+                    <option [value]="d.id">
+                      {{ d.name }} {{ d.date ? '(' + d.date + ')' : '' }}
+                    </option>
+                  }
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">Statut de publication</label>
+                <select
+                  name="status"
+                  [(ngModel)]="activeSpeaker.status"
+                  class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+                >
+                  <option value="published">Publié (visible sur le site)</option>
+                  <option value="draft">Brouillon (masqué)</option>
+                </select>
+              </div>
+            </div>
+
+            @if (feedbackMessage()) {
+              <div
+                class="text-xs p-3 rounded-xl border flex items-center gap-2"
+                [class.bg-green-50]="feedbackType() === 'success'"
+                [class.text-green-800]="feedbackType() === 'success'"
+                [class.border-green-200]="feedbackType() === 'success'"
+                [class.bg-red-50]="feedbackType() === 'error'"
+                [class.text-red-800]="feedbackType() === 'error'"
+                [class.border-red-200]="feedbackType() === 'error'"
+              >
+                <span>{{ feedbackMessage() }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Fixed Form Actions Footer -->
+          <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 flex-shrink-0 bg-white">
+            <button
+              type="button"
+              (click)="showForm.set(false)"
+              class="px-4 py-2.5 text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl transition cursor-pointer"
+            >
+              Annuler
+            </button>
+
+            <button
+              type="submit"
+              [disabled]="isSaving()"
+              class="flex items-center gap-2 px-5 py-2.5 bg-[#4285F4] hover:bg-[#3367D6] disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
+            >
+              @if (isSaving()) {
+                <svg class="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Enregistrement...</span>
+              } @else {
+                <span>{{ isEditing() ? 'Mettre à jour' : 'Ajouter le speaker' }}</span>
+              }
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+  `,
+})
+export class SpeakersModalComponent implements OnInit {
+  @Input({ required: true }) editionId!: string;
+  @Output() close = new EventEmitter<void>();
+  @Output() updated = new EventEmitter<void>();
+
+  private fs = inject(FirestoreService);
+
+  speakers = signal<Speaker[]>([]);
+  availableDays = signal<Array<{ id: string; name: string; date?: string }>>([
+    { id: 'day1', name: 'Jour 1' },
+    { id: 'day2', name: 'Jour 2' },
+  ]);
+  isLoading = signal(true);
+  showForm = signal(false);
+  isEditing = signal(false);
+  isSaving = signal(false);
+  feedbackMessage = signal<string | null>(null);
+  feedbackType = signal<'success' | 'error'>('success');
+
+  activeSpeaker: Speaker = {
+    name: '',
+    title: '',
+    bio: '',
+    photo: '',
+    socials: {},
+    day: 'jour1',
+    status: 'published',
+  };
+
+  ngOnInit(): void {
+    this.loadEventDays();
+    this.loadSpeakers();
+  }
+
+  private loadEventDays(): void {
+    this.fs.getEvent(this.editionId).subscribe({
+      next: (event) => {
+        if (event?.agenda?.days && event.agenda.days.length > 0) {
+          this.availableDays.set(
+            event.agenda.days.map((d) => ({
+              id: d.id,
+              name: d.name,
+              date: d.date,
+            })),
+          );
+        }
+      },
+    });
+  }
+
+  private loadSpeakers(): void {
+    this.isLoading.set(true);
+    this.fs.getEventCollection<Speaker>(this.editionId, 'speakers').subscribe({
+      next: (list) => {
+        this.speakers.set(list || []);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  openCreateForm(): void {
+    this.activeSpeaker = {
+      name: '',
+      title: '',
+      bio: '',
+      photo: '',
+      socials: { twitter: '', linkedin: '', github: '' },
+      day: 'jour1',
+      status: 'published',
+    };
+    this.isEditing.set(false);
+    this.feedbackMessage.set(null);
+    this.showForm.set(true);
+  }
+
+  openEditForm(speaker: Speaker): void {
+    this.activeSpeaker = {
+      ...speaker,
+      socials: speaker.socials || {},
+    };
+    this.isEditing.set(true);
+    this.feedbackMessage.set(null);
+    this.showForm.set(true);
+  }
+
+  handleImageError(event: Event): void {
+    (event.target as HTMLImageElement).src = 'assets/logo.png';
+  }
+
+  async saveSpeaker(): Promise<void> {
+    if (this.isSaving()) return;
+
+    if (!this.activeSpeaker.name?.trim()) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set('Veuillez renseigner le nom complet du speaker.');
+      return;
+    }
+
+    this.isSaving.set(true);
+    this.feedbackMessage.set(null);
+
+    try {
+      if (this.isEditing() && this.activeSpeaker.id) {
+        await this.fs.saveEventDocument(this.editionId, 'speakers', this.activeSpeaker as Speaker & { id: string });
+      } else {
+        const id = await this.fs.createEventDocument(this.editionId, 'speakers', this.activeSpeaker);
+        this.activeSpeaker.id = id;
+      }
+
+      this.feedbackType.set('success');
+      this.feedbackMessage.set('Speaker enregistré avec succès !');
+      this.updated.emit();
+
+      setTimeout(() => {
+        this.showForm.set(false);
+      }, 1000);
+    } catch (err: any) {
+      this.feedbackType.set('error');
+      this.feedbackMessage.set(err?.message || 'Erreur lors de l\'enregistrement.');
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
+  async deleteSpeaker(speaker: Speaker): Promise<void> {
+    if (!speaker.id) return;
+    if (!confirm(`Supprimer l'intervenant ${speaker.name} ?`)) return;
+
+    try {
+      await this.fs.deleteEventDocument(this.editionId, 'speakers', speaker.id);
+      this.updated.emit();
+    } catch (err: any) {
+      alert(err?.message || 'Erreur lors de la suppression.');
+    }
+  }
+}
