@@ -22,12 +22,9 @@ import { SessionForm } from './sessions/session-form/session-form';
         <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-xs border border-gray-100">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <div class="flex items-center gap-2.5">
-                <span class="w-3 h-3 rounded-full bg-[#EA4335] animate-pulse"></span>
-                <span class="text-xs font-bold tracking-wider text-[#EA4335] uppercase">
-                  Espace d'Administration
-                </span>
-              </div>
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Espace d'Administration
+              </span>
               <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">
                 Tableau de Bord Administrateur
               </h1>
@@ -37,7 +34,7 @@ import { SessionForm } from './sessions/session-form/session-form';
             </div>
 
             <!-- Tab Navigation Buttons -->
-            <div class="flex items-center bg-gray-100 p-1.5 rounded-xl border border-gray-200/80 self-start md:self-auto flex-wrap gap-1">
+            <div class="flex items-center bg-gray-100 p-1 rounded-xl border border-gray-200 self-start md:self-auto flex-wrap gap-1">
               <!-- Tab 1: Sessions Live -->
               <button
                 type="button"
@@ -48,11 +45,11 @@ import { SessionForm } from './sessions/session-form/session-form';
                 [class.text-gray-600]="activeTab() !== 'sessions'"
                 class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer"
               >
-                <svg class="w-4 h-4 text-[#4285F4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                 </svg>
                 <span>Sessions Live</span>
-                <span class="ml-1 px-1.5 py-0.2 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold">
+                <span class="ml-1 px-1.5 py-0.2 bg-gray-200 text-gray-700 rounded-full text-[10px] font-bold">
                   {{ sessions.length }}
                 </span>
               </button>
@@ -67,7 +64,7 @@ import { SessionForm } from './sessions/session-form/session-form';
                 [class.text-gray-600]="activeTab() !== 'cms'"
                 class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer"
               >
-                <svg class="w-4 h-4 text-[#34A853]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/>
                 </svg>
                 <span>Gestion Contenus (CMS)</span>
@@ -83,7 +80,7 @@ import { SessionForm } from './sessions/session-form/session-form';
                 [class.text-gray-600]="activeTab() !== 'settings'"
                 class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer"
               >
-                <svg class="w-4 h-4 text-[#EA4335]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>

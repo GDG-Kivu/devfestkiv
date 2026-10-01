@@ -204,11 +204,14 @@ import { EventConfigService, FestivalDaySchedule } from '../../../../../event/se
                   [(ngModel)]="activeItem.format"
                   class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#34A853]/40"
                 >
+                  <option value="conference">Conférence</option>
                   <option value="keynote">Keynote</option>
                   <option value="talk">Talk / Présentation</option>
                   <option value="workshop">Workshop / Atelier</option>
                   <option value="codelab">Codelab</option>
                   <option value="discussion">Panel & Discussion</option>
+                  <option value="sponsor">Sponsor</option>
+                  <option value="closing">Closing / Clôture</option>
                   <option value="break">Pause / Networking / Lunch</option>
                 </select>
               </div>
@@ -400,12 +403,20 @@ export class AgendaModalComponent implements OnInit {
   filteredAgendaItems = computed(() => {
     const filter = this.selectedDayFilter();
     const items = this.agendaItems();
-    if (filter === 'all') {
-      return [...items].sort((a, b) => (a.startsAt || '').localeCompare(b.startsAt || ''));
-    }
-    return items
-      .filter((it) => (it.dayId || 'day1') === filter)
-      .sort((a, b) => (a.startsAt || '').localeCompare(b.startsAt || ''));
+    const filtered = filter === 'all'
+      ? items
+      : items.filter((it) => (it.dayId || 'day1') === filter);
+
+    return [...filtered].sort((a, b) => {
+      if (filter === 'all' && a.dayId !== b.dayId) {
+        return (a.dayId || 'day1').localeCompare(b.dayId || 'day1');
+      }
+      const [ah, am] = (a.startsAt || '00:00').split(':').map((v) => parseInt(v, 10) || 0);
+      const [bh, bm] = (b.startsAt || '00:00').split(':').map((v) => parseInt(v, 10) || 0);
+      const startDiff = (ah * 60 + am) - (bh * 60 + bm);
+      if (startDiff !== 0) return startDiff;
+      return (a.endsAt || '').localeCompare(b.endsAt || '');
+    });
   });
 
   ngOnInit(): void {
@@ -569,18 +580,28 @@ export class AgendaModalComponent implements OnInit {
     this.showForm.set(true);
   }
 
-  getFormatBadgeClass(format: AgendaFormat): string {
+  getFormatBadgeClass(format: AgendaFormat | string): string {
     switch (format) {
+      case 'conference':
+        return 'bg-blue-500 text-white';
       case 'keynote':
-        return 'bg-blue-100 text-blue-800';
-      case 'workshop':
-        return 'bg-amber-100 text-amber-800';
-      case 'break':
-        return 'bg-gray-100 text-gray-700';
+        return 'bg-green-500 text-white';
+      case 'talk':
+        return 'bg-red-500 text-white';
       case 'discussion':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-purple-500 text-white';
+      case 'break':
+        return 'bg-slate-400 text-white';
+      case 'sponsor':
+        return 'bg-emerald-500 text-white';
+      case 'closing':
+        return 'bg-orange-500 text-white';
+      case 'workshop':
+        return 'bg-amber-500 text-white';
+      case 'codelab':
+        return 'bg-sky-500 text-white';
       default:
-        return 'bg-green-100 text-green-800';
+        return 'bg-blue-500 text-white';
     }
   }
 

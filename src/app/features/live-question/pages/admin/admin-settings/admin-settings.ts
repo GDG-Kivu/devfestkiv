@@ -41,8 +41,8 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
                 <h2 class="text-xl font-bold text-gray-900">
                   {{ userDisplayName() }}
                 </h2>
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#EA4335]/10 text-[#EA4335]">
-                  <span class="w-1.5 h-1.5 rounded-full bg-[#EA4335]"></span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+                  <span class="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
                   Administrateur Principal
                 </span>
               </div>
@@ -64,7 +64,7 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
         <!-- Action Card: Add Presenter -->
         <div class="bg-white rounded-2xl p-6 shadow-xs border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
           <div class="space-y-3">
-            <div class="w-12 h-12 rounded-xl bg-blue-50 text-[#4285F4] flex items-center justify-center">
+            <div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center">
               <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
               </svg>
@@ -81,7 +81,7 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
             <button
               type="button"
               (click)="openAddViewerModal()"
-              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#4285F4] hover:bg-[#3367D6] text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-black text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer"
             >
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -94,7 +94,7 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
         <!-- Action Card: Transfer Admin -->
         <div class="bg-white rounded-2xl p-6 shadow-xs border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
           <div class="space-y-3">
-            <div class="w-12 h-12 rounded-xl bg-[#EA4335]/10 text-[#EA4335] flex items-center justify-center">
+            <div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center">
               <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
               </svg>
@@ -111,9 +111,9 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
             <button
               type="button"
               (click)="openTransferModal()"
-              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-black text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl text-xs font-semibold transition cursor-pointer"
             >
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg class="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
               </svg>
               <span>Transférer les droits</span>
@@ -131,7 +131,7 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
             <h3 class="text-base font-bold text-gray-900">Présentateurs Actifs</h3>
             <p class="text-xs text-gray-500">Membres autorisés à accéder au mode projection des questions</p>
           </div>
-          <span class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">
+          <span class="px-2.5 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded-full">
             {{ viewers().length }} présentateur(s)
           </span>
         </div>
@@ -145,7 +145,7 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
             @for (v of viewers(); track v.uid) {
               <div class="flex items-center justify-between p-4 bg-white hover:bg-gray-50/80 transition">
                 <div class="flex items-center gap-3 min-w-0">
-                  <div class="w-10 h-10 rounded-full bg-blue-50 text-[#4285F4] flex items-center justify-center font-bold text-xs flex-shrink-0">
+                  <div class="w-10 h-10 rounded-full bg-gray-100 text-gray-700 flex items-center justify-center font-bold text-xs flex-shrink-0">
                     {{ getInitials(v.displayName || v.email) }}
                   </div>
                   <div class="min-w-0">
@@ -154,8 +154,8 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
                         {{ v.displayName || v.email }}
                       </p>
                       @if (v.roomName) {
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-blue-50 text-[#4285F4] border border-blue-100">
-                          <svg class="w-3 h-3 text-[#4285F4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                          <svg class="w-3 h-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                           </svg>
                           {{ v.roomName }}
@@ -194,7 +194,7 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
           <!-- Modal Header -->
           <div class="flex items-center pb-3 border-b border-gray-100">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#4285F4] flex items-center justify-center flex-shrink-0">
+              <div class="w-10 h-10 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center flex-shrink-0">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
                 </svg>

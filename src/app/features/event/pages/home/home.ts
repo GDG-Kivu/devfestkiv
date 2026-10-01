@@ -193,7 +193,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
           festivalDays.length > 1 ? 'Le Jour 1 commence dans' : "L'événement commence dans",
         );
         this.targetSubTitle.set(
-          festivalDays.length > 1 ? `Jour 1 sur ${festivalDays.length}` : 'Rendez-vous pour une expérience technologique unique.',
+          'Rendez-vous pour une expérience technologique unique.',
         );
         this.targetBadge.set(
           festivalDays.length > 1 ? `Jour 1 / ${festivalDays.length}` : 'Bientôt disponible',
@@ -202,7 +202,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
         // Successive Day in Multi-day Festival (e.g. Day 1 has ended, Day 2 is next!)
         this.targetTitle.set(`Le ${nextUpcomingDay.name} commence dans`);
         this.targetSubTitle.set(
-          `Suite du festival • ${nextUpcomingDay.name}`,
+          'Préparez-vous pour la suite des sessions et ateliers.',
         );
         this.targetBadge.set(`Jour ${nextUpcomingDay.dayNumber} / ${festivalDays.length}`);
       }

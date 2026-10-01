@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { ContactService } from '../../../features/event/services/contact.service';
 
 @Component({
   selector: 'app-footer',
-  imports: [RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   template: `
-    <footer class="bg-accent-pastel ">
+    <footer class="bg-accent-pastel">
       <div class="max-w-7xl mx-auto px-md sm:px-lg lg:px-xl py-xl">
         <!-- Main Footer Content -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
@@ -54,16 +57,21 @@ import { RouterLink } from '@angular/router';
               <a routerLink="/dp-generator" class="block text-sm transition-all duration-200 hover:text-primary hover:underline underline-offset-2">
                 Générateur de DP
               </a>
-              <a href="#" class="block text-sm transition-all duration-200 hover:text-primary hover:underline underline-offset-2">
+              <a 
+                href="https://developers.google.com/community-guidelines" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="block text-sm transition-all duration-200 hover:text-primary hover:underline underline-offset-2"
+              >
                 Code de conduite
               </a>
-              <a href="#" class="block text-sm transition-all duration-200 hover:text-primary hover:underline underline-offset-2">
-                Contact
+              <a routerLink="/contact" class="block text-sm transition-all duration-200 hover:text-primary hover:underline underline-offset-2">
+                Contact & Support
               </a>
             </nav>
           </div>
 
-          <!-- Social Media -->
+          <!-- Social Media & Newsletter -->
           <div class="space-y-md">
             <h3 class="text-lg font-semibold">Suivez-nous</h3>
             <div class="flex flex-wrap gap-md">
@@ -104,20 +112,6 @@ import { RouterLink } from '@angular/router';
               </a>
 
               <a 
-                href="https://instagram.com/devfestkivu" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="flex items-center justify-center w-10 h-10 bg-text/20 hover:bg-primary hover:text-white rounded-md transition-all duration-200 hover:scale-110 hover:shadow-md"
-                aria-label="Instagram"
-              >
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.987 11.987 6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.648.001 12.017.001zM8.449 20.312c-4.27 0-7.73-3.46-7.73-7.73s3.46-7.73 7.73-7.73 7.73 3.46 7.73 7.73-3.46 7.73-7.73 7.73z"/>
-                  <path d="M12.017 4.729c-3.994 0-7.258 3.263-7.258 7.258 0 3.994 3.263 7.258 7.258 7.258 3.994 0 7.258-3.263 7.258-7.258 0-3.994-3.263-7.258-7.258-7.258zm0 11.985c-2.614 0-4.727-2.113-4.727-4.727s2.113-4.727 4.727-4.727 4.727 2.113 4.727 4.727-2.113 4.727-4.727 4.727z"/>
-                  <circle cx="19.204" cy="4.796" r="1.615"/>
-                </svg>
-              </a>
-
-              <a 
                 href="https://youtube.com/@devfestkivu" 
                 target="_blank" 
                 rel="noopener noreferrer"
@@ -131,18 +125,42 @@ import { RouterLink } from '@angular/router';
             </div>
             
             <!-- Newsletter Signup -->
-            <div class="mt-md">
-              <p class="text-sm mb-sm">Restez informé des actualités</p>
-              <div class="flex">
+            <div class="mt-md space-y-2">
+              <p class="text-sm font-semibold">Restez informé des actualités</p>
+              <form (ngSubmit)="subscribeNewsletter()" class="flex">
                 <input 
                   type="email" 
-                  placeholder="Votre email"
+                  required
+                  [(ngModel)]="newsletterEmail"
+                  name="newsletterEmail"
+                  placeholder="Votre adresse email"
                   class="flex-1 px-sm py-xs text-sm text-text bg-white rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                <button class="btn btn-primary btn-sm rounded-l-none">
-                  S'abonner
+                <button 
+                  type="submit" 
+                  [disabled]="isSubscribing() || !newsletterEmail.trim()"
+                  class="btn btn-primary btn-sm rounded-l-none cursor-pointer disabled:opacity-50"
+                >
+                  @if (isSubscribing()) {
+                    <svg class="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  } @else {
+                    <span>S'abonner</span>
+                  }
                 </button>
-              </div>
+              </form>
+
+              @if (newsletterFeedback()) {
+                <p 
+                  class="text-xs transition-opacity duration-300"
+                  [class.text-green-700]="feedbackType() === 'success'"
+                  [class.text-red-600]="feedbackType() === 'error'"
+                >
+                  {{ newsletterFeedback() }}
+                </p>
+              }
             </div>
           </div>
         </div>
@@ -150,7 +168,7 @@ import { RouterLink } from '@angular/router';
         <!-- Bottom Section -->
         <div class="border-t border-white/20 mt-xl pt-lg">
           <div class="flex justify-center items-center gap-md">
-            <p class="text-sm ">
+            <p class="text-sm">
               © {{ currentYear }} DevFest Kivu. Tous droits réservés.
             </p>
           </div>
@@ -161,5 +179,37 @@ import { RouterLink } from '@angular/router';
   styles: ``
 })
 export class Footer {
+  private contactService = inject(ContactService);
   currentYear = new Date().getFullYear();
+
+  newsletterEmail = '';
+  isSubscribing = signal(false);
+  newsletterFeedback = signal<string | null>(null);
+  feedbackType = signal<'success' | 'error'>('success');
+
+  async subscribeNewsletter(): Promise<void> {
+    const email = this.newsletterEmail.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      this.feedbackType.set('error');
+      this.newsletterFeedback.set('Veuillez saisir une adresse email valide.');
+      return;
+    }
+
+    this.isSubscribing.set(true);
+    this.newsletterFeedback.set(null);
+
+    try {
+      await this.contactService.subscribeNewsletter(email);
+      this.feedbackType.set('success');
+      this.newsletterFeedback.set('Merci ! Votre inscription a bien été prise en compte.');
+      this.newsletterEmail = '';
+    } catch (err: any) {
+      console.error('Erreur inscription newsletter:', err);
+      this.feedbackType.set('error');
+      this.newsletterFeedback.set('Une erreur est survenue. Veuillez réessayer.');
+    } finally {
+      this.isSubscribing.set(false);
+    }
+  }
 }

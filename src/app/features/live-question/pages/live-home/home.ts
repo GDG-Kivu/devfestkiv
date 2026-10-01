@@ -32,30 +32,6 @@ import { Subscription } from 'rxjs';
 
       <!-- Hero Content -->
       <div class="relative z-10 max-w-5xl mx-auto px-6 sm:px-8 text-center space-y-10">
-        <!-- Badge -->
-        <div
-          class="inline-flex items-center gap-2 px-4 py-2 bg-[#4285F4]/10 text-[#4285F4] rounded-full text-sm font-medium animate-slide-down"
-          style="animation-delay:0.1s;"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-4 h-4 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77
-              9.77 0 01-4-.8l-4 1 1-3.6A7.7 7.7 0 013 12c0-4.418 4.03-8 9-8s9
-              3.582 9 8z"
-            />
-          </svg>
-          <span> Questions en temps réel</span>
-        </div>
-
         <!-- Heading -->
         <div class="animate-slide-up" style="animation-delay:0.2s;">
           <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold text-gray-900 leading-tight mb-4">

@@ -32,6 +32,7 @@
     "@angular/platform-server": "^20.3.2",
     "@angular/router": "^20.3.2",
     "@angular/ssr": "^20.3.2",
+    "@emailjs/browser": "^4.4.1",
     "@pqina/angular-pintura": "^9.0.4",
     "@tailwindcss/postcss": "^4.1.13",
     "@techiediaries/ngx-qrcode": "^9.1.0",

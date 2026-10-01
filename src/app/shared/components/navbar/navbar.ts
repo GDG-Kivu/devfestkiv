@@ -5,8 +5,11 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-navbar',
   imports: [RouterLink, RouterLinkActive, CommonModule],
+  host: {
+    class: 'sticky top-0 z-50 block w-full',
+  },
   template: `
-    <nav class="backdrop-blur-sm sticky top-0 z-50 shadow-xs transition-all duration-300">
+    <nav class="bg-white/80 backdrop-blur-md border-b border-gray-100/60 shadow-xs transition-colors duration-200">
       <div class="max-w-7xl mx-auto px-md sm:px-lg lg:px-xl">
         <div class="flex justify-between items-center h-16">
           <!-- Logo Section -->

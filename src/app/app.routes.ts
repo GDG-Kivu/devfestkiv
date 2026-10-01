@@ -32,6 +32,10 @@ export const routes: Routes = [
         path: 'dp-generator',
         loadComponent: () => import('./features/event/pages/dp-generator/dp-generator'),
       },
+      {
+        path: 'contact',
+        loadComponent: () => import('./features/event/pages/contact/contact'),
+      },
     ],
   },
   {

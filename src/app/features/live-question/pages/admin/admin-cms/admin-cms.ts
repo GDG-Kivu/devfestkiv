@@ -49,7 +49,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
               id="editionSelector"
               [ngModel]="selectedEditionId()"
               (ngModelChange)="onEditionChange($event)"
-              class="bg-transparent text-xs sm:text-sm font-bold text-[#4285F4] focus:outline-none cursor-pointer pr-2"
+              class="bg-transparent text-xs sm:text-sm font-bold text-gray-900 focus:outline-none cursor-pointer pr-2"
             >
               @for (ed of availableEditions(); track ed) {
                 <option [value]="ed">
@@ -78,7 +78,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
               type="button"
               (click)="setAsLiveEdition()"
               [disabled]="isSettingLive()"
-              class="inline-flex items-center gap-2 px-4 py-2 bg-[#34A853] hover:bg-[#2d9248] disabled:bg-gray-300 text-white text-xs font-semibold rounded-xl shadow-xs transition cursor-pointer"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-black disabled:bg-gray-300 text-white text-xs font-semibold rounded-xl shadow-xs transition cursor-pointer"
               title="Rendre cette édition active pour l'ensemble du site public"
             >
               @if (isSettingLive()) {
@@ -110,20 +110,20 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
 
       <!-- Active Edition Indicator / Status Feedback -->
       @if (statusMessage()) {
-        <div class="p-3 bg-green-50 text-green-800 border border-green-200 rounded-xl text-xs flex items-center justify-between">
+        <div class="p-3 bg-gray-100 text-gray-800 border border-gray-200 rounded-xl text-xs flex items-center justify-between">
           <span>{{ statusMessage() }}</span>
-          <button (click)="statusMessage.set(null)" class="text-green-600 hover:text-green-900 font-bold">✕</button>
+          <button (click)="statusMessage.set(null)" class="text-gray-600 hover:text-gray-900 font-bold">✕</button>
         </div>
       }
 
       <!-- Modules Loading State -->
       @if (isLoadingModules()) {
         <div class="py-16 text-center text-gray-400 flex flex-col items-center gap-3">
-          <svg class="w-10 h-10 animate-spin text-[#4285F4]" fill="none" viewBox="0 0 24 24">
+          <svg class="w-10 h-10 animate-spin text-gray-500" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <span class="text-sm font-semibold">Chargement des contenus de l'édition {{ selectedEditionId() }}...</span>
+          <span class="text-sm font-semibold text-gray-600">Chargement des contenus de l'édition {{ selectedEditionId() }}...</span>
         </div>
       } @else {
         <!-- CMS Modules 7 Cards Grid -->
@@ -134,7 +134,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
             <div class="space-y-3">
               <div class="flex items-start justify-between gap-2">
                 <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-xl bg-blue-50 text-[#4285F4] flex items-center justify-center flex-shrink-0">
+                  <div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center flex-shrink-0">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -143,7 +143,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                   <div>
                     <div class="flex items-center gap-2">
                       <h3 class="text-base font-bold text-gray-900">Configuration Globale</h3>
-                      <span class="text-xs font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                      <span class="text-xs font-semibold bg-gray-100 text-gray-800 px-2 py-0.5 rounded-full">
                         {{ currentEvent()?.year || selectedEditionId() }}
                       </span>
                     </div>
@@ -157,7 +157,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                 <button
                   type="button"
                   (click)="openModal('config')"
-                  class="p-2 rounded-xl bg-gray-50 hover:bg-blue-50 text-gray-400 hover:text-[#4285F4] border border-gray-100 hover:border-blue-200 transition cursor-pointer flex-shrink-0"
+                  class="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-400 hover:text-gray-900 border border-gray-100 transition cursor-pointer flex-shrink-0"
                   title="Modifier les infos globales"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -176,7 +176,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
               <a
                 routerLink="/"
                 target="_blank"
-                class="text-xs font-semibold text-[#4285F4] hover:underline inline-flex items-center gap-1.5 cursor-pointer"
+                class="text-xs font-semibold text-gray-600 hover:text-gray-900 hover:underline inline-flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Prévisualiser l'accueil</span>
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -191,7 +191,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
             <div class="space-y-3">
               <div class="flex items-start justify-between gap-2">
                 <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-xl bg-blue-50 text-[#4285F4] flex items-center justify-center flex-shrink-0">
+                  <div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center flex-shrink-0">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/>
                     </svg>
@@ -199,7 +199,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                   <div>
                     <div class="flex items-center gap-2">
                       <h3 class="text-base font-bold text-gray-900">Intervenants & Speakers</h3>
-                      <span class="text-xs font-bold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full">
+                      <span class="text-xs font-semibold bg-gray-100 text-gray-800 px-2.5 py-0.5 rounded-full">
                         {{ speakersCount() }}
                       </span>
                     </div>
@@ -213,7 +213,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                 <button
                   type="button"
                   (click)="openModal('speakers')"
-                  class="p-2 rounded-xl bg-gray-50 hover:bg-blue-50 text-gray-400 hover:text-[#4285F4] border border-gray-100 hover:border-blue-200 transition cursor-pointer flex-shrink-0"
+                  class="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-400 hover:text-gray-900 border border-gray-100 transition cursor-pointer flex-shrink-0"
                   title="Gérer les speakers"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -228,7 +228,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
               <a
                 routerLink="/speakers"
                 target="_blank"
-                class="text-xs font-semibold text-[#4285F4] hover:underline inline-flex items-center gap-1.5 cursor-pointer"
+                class="text-xs font-semibold text-gray-600 hover:text-gray-900 hover:underline inline-flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Prévisualiser les speakers</span>
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -243,7 +243,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
             <div class="space-y-3">
               <div class="flex items-start justify-between gap-2">
                 <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-xl bg-green-50 text-[#34A853] flex items-center justify-center flex-shrink-0">
+                  <div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center flex-shrink-0">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
@@ -251,7 +251,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                   <div>
                     <div class="flex items-center gap-2">
                       <h3 class="text-base font-bold text-gray-900">Agenda & Programme</h3>
-                      <span class="text-xs font-bold bg-green-100 text-green-800 px-2.5 py-0.5 rounded-full">
+                      <span class="text-xs font-semibold bg-gray-100 text-gray-800 px-2.5 py-0.5 rounded-full">
                         {{ agendaCount() }} 
                       </span>
                     </div>
@@ -265,7 +265,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                 <button
                   type="button"
                   (click)="openModal('agenda')"
-                  class="p-2 rounded-xl bg-gray-50 hover:bg-green-50 text-gray-400 hover:text-[#34A853] border border-gray-100 hover:border-green-200 transition cursor-pointer flex-shrink-0"
+                  class="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-400 hover:text-gray-900 border border-gray-100 transition cursor-pointer flex-shrink-0"
                   title="Gérer le programme"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -280,7 +280,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
               <a
                 routerLink="/agenda"
                 target="_blank"
-                class="text-xs font-semibold text-[#34A853] hover:underline inline-flex items-center gap-1.5 cursor-pointer"
+                class="text-xs font-semibold text-gray-600 hover:text-gray-900 hover:underline inline-flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Prévisualiser le programme</span>
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -295,7 +295,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
             <div class="space-y-3">
               <div class="flex items-start justify-between gap-2">
                 <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0">
+                  <div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center flex-shrink-0">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -303,7 +303,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                   <div>
                     <div class="flex items-center gap-2">
                       <h3 class="text-base font-bold text-gray-900">Foire Aux Questions (FAQ)</h3>
-                      <span class="text-xs font-bold bg-purple-100 text-purple-800 px-2.5 py-0.5 rounded-full">
+                      <span class="text-xs font-semibold bg-gray-100 text-gray-800 px-2.5 py-0.5 rounded-full">
                         {{ faqCount() }}
                       </span>
                     </div>
@@ -317,7 +317,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                 <button
                   type="button"
                   (click)="openModal('faq')"
-                  class="p-2 rounded-xl bg-gray-50 hover:bg-purple-50 text-gray-400 hover:text-purple-600 border border-gray-100 hover:border-purple-200 transition cursor-pointer flex-shrink-0"
+                  class="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-400 hover:text-gray-900 border border-gray-100 transition cursor-pointer flex-shrink-0"
                   title="Gérer les FAQ"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -332,7 +332,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
               <a
                 routerLink="/qa"
                 target="_blank"
-                class="text-xs font-semibold text-purple-600 hover:underline inline-flex items-center gap-1.5 cursor-pointer"
+                class="text-xs font-semibold text-gray-600 hover:text-gray-900 hover:underline inline-flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Prévisualiser la FAQ</span>
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -347,7 +347,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
             <div class="space-y-3">
               <div class="flex items-start justify-between gap-2">
                 <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center flex-shrink-0">
+                  <div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center flex-shrink-0">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
@@ -355,7 +355,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                   <div>
                     <div class="flex items-center gap-2">
                       <h3 class="text-base font-bold text-gray-900">Galerie & Albums</h3>
-                      <span class="text-xs font-bold bg-pink-100 text-pink-800 px-2.5 py-0.5 rounded-full">
+                      <span class="text-xs font-semibold bg-gray-100 text-gray-800 px-2.5 py-0.5 rounded-full">
                         {{ galleryPhotosCount() }} 
                       </span>
                     </div>
@@ -369,7 +369,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                 <button
                   type="button"
                   (click)="openModal('gallery')"
-                  class="p-2 rounded-xl bg-gray-50 hover:bg-pink-50 text-gray-400 hover:text-pink-600 border border-gray-100 hover:border-pink-200 transition cursor-pointer flex-shrink-0"
+                  class="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-400 hover:text-gray-900 border border-gray-100 transition cursor-pointer flex-shrink-0"
                   title="Gérer les photos & albums"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -384,7 +384,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
               <a
                 routerLink="/"
                 target="_blank"
-                class="text-xs font-semibold text-pink-600 hover:underline inline-flex items-center gap-1.5 cursor-pointer"
+                class="text-xs font-semibold text-gray-600 hover:text-gray-900 hover:underline inline-flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Prévisualiser la galerie</span>
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -399,7 +399,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
             <div class="space-y-3">
               <div class="flex items-start justify-between gap-2">
                 <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-xl bg-amber-50 text-[#FBBC04] flex items-center justify-center flex-shrink-0">
+                  <div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center flex-shrink-0">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
@@ -407,7 +407,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                   <div>
                     <div class="flex items-center gap-2">
                       <h3 class="text-base font-bold text-gray-900">Sponsors & Partenaires</h3>
-                      <span class="text-xs font-bold bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full">
+                      <span class="text-xs font-semibold bg-gray-100 text-gray-800 px-2.5 py-0.5 rounded-full">
                         {{ partnersCount() }}
                       </span>
                     </div>
@@ -421,7 +421,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                 <button
                   type="button"
                   (click)="openModal('partners')"
-                  class="p-2 rounded-xl bg-gray-50 hover:bg-amber-50 text-gray-400 hover:text-amber-700 border border-gray-100 hover:border-amber-200 transition cursor-pointer flex-shrink-0"
+                  class="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-400 hover:text-gray-900 border border-gray-100 transition cursor-pointer flex-shrink-0"
                   title="Gérer les partenaires"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -436,7 +436,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
               <a
                 routerLink="/sponsor"
                 target="_blank"
-                class="text-xs font-semibold text-amber-700 hover:underline inline-flex items-center gap-1.5 cursor-pointer"
+                class="text-xs font-semibold text-gray-600 hover:text-gray-900 hover:underline inline-flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Prévisualiser les sponsors</span>
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -451,7 +451,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
             <div class="space-y-3">
               <div class="flex items-start justify-between gap-2">
                 <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-xl bg-red-50 text-[#EA4335] flex items-center justify-center flex-shrink-0">
+                  <div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center flex-shrink-0">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
@@ -459,7 +459,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                   <div>
                     <div class="flex items-center gap-2">
                       <h3 class="text-base font-bold text-gray-900">Templates Générateur DP</h3>
-                      <span class="text-xs font-bold bg-red-100 text-[#EA4335] px-2.5 py-0.5 rounded-full">
+                      <span class="text-xs font-semibold bg-gray-100 text-gray-800 px-2.5 py-0.5 rounded-full">
                         Badge
                       </span>
                     </div>
@@ -473,7 +473,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
                 <button
                   type="button"
                   (click)="openModal('dp-template')"
-                  class="p-2 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-[#EA4335] border border-gray-100 hover:border-red-200 transition cursor-pointer flex-shrink-0"
+                  class="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-400 hover:text-gray-900 border border-gray-100 transition cursor-pointer flex-shrink-0"
                   title="Personnaliser le design DP"
                 >
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -488,7 +488,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
               <a
                 routerLink="/dp-generator"
                 target="_blank"
-                class="text-xs font-semibold text-[#EA4335] hover:underline inline-flex items-center gap-1.5 cursor-pointer"
+                class="text-xs font-semibold text-gray-600 hover:text-gray-900 hover:underline inline-flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Prévisualiser le générateur</span>
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

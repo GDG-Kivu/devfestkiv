@@ -1,4 +1,13 @@
-export type AgendaFormat = 'keynote' | 'talk' | 'workshop' | 'codelab' | 'discussion' | 'break';
+export type AgendaFormat =
+  | 'keynote'
+  | 'conference'
+  | 'talk'
+  | 'workshop'
+  | 'codelab'
+  | 'discussion'
+  | 'sponsor'
+  | 'closing'
+  | 'break';
 
 /** Agenda slot for an event, stored under events/{editionId}/agenda. */
 export interface AgendaItem {
