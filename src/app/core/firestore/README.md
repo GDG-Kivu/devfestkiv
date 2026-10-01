@@ -1,75 +1,100 @@
-# Firestore data contract
+# 🔥 Firestore Data Contract & Architecture
 
-This project uses Firestore Native, Standard edition. Event-scoped content belongs under `events/{editionId}`. Do not add new root collections for edition-specific data.
+Ce document définit le contrat de données, l'arborescence des collections Cloud Firestore, les règles de sécurité et les bonnes pratiques pour l'ensemble du projet DevFest Kivu.
 
-## Collection layout
+Le projet utilise **Firestore Native (Standard edition)** avec persistance locale multi-onglets.
 
-| Path                                                             | Purpose                                                                                        | Access                                                                                           |
-| ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `events/{editionId}`                                             | General event configuration, including date, venue, registration URL and `maxQuestionsPerUser` | Public read; admin create/update                                                                 |
-| `events/{editionId}/sessions/{sessionId}`                        | Live sessions                                                                                  | Authenticated read when active; admin writes                                                     |
-| `events/{editionId}/sessions/{sessionId}/questions/{questionId}` | Questions posted for a live session                                                            | Authenticated read for active sessions; authenticated create with matching UID; admin moderation |
-| `events/{editionId}/questionQuotas/{uid}`                        | Per-edition question count and last atomic question write                                      | User reads own count; admin can inspect; constrained user transaction writes                     |
-| `events/{editionId}/speakers/{speakerId}`                        | Edition speakers                                                                               | Published read; admin writes                                                                     |
-| `events/{editionId}/agenda/{agendaItemId}`                       | Agenda entries                                                                                 | Published read; admin writes                                                                     |
-| `events/{editionId}/faq/{faqId}`                                 | FAQ entries                                                                                    | Published read; admin writes                                                                     |
-| `events/{editionId}/partners/{partnerId}`                        | Partners and sponsors, represented by `EventPartner`                                           | Published read; admin writes                                                                     |
-| `events/{editionId}/news/{articleId}`                            | News articles                                                                                  | Published read; admin writes                                                                     |
-| `events/{editionId}/remote/{controllerId}`                       | Live presentation remote state                                                                 | Authenticated read; admin writes                                                                 |
-| `events/{editionId}/emojis/{reactionId}`                         | Live reaction events                                                                           | Authenticated read/create; admin update/delete                                                   |
-| `users/{uid}`                                                    | Global profile and role (`invite` or `admin`)                                                  | Self/admin read; client writes denied                                                            |
-| `siteSettings/global`                                            | Global settings, especially `currentEditionId`                                                 | Public read; admin writes                                                                        |
+---
 
-Do not create a separate `sponsors` subcollection: sponsors use `partners` with an appropriate `role`. Existing root `sponsors` documents were considered migration sources only.
+## 🗂️ Arborescence des Collections Firestore
 
-## Models
+Toutes les données associées à une édition du festival sont cloisonnées sous le document racine `events/{editionId}`. Aucun document lié à une édition spécifique ne doit être créé à la racine.
 
-- `EventDocument` is the event-root contract. Its critical fields are `editionId`, `date.start`, `date.end`, venue/contact fields and `maxQuestionsPerUser`. Partner, agenda and speaker lists are subcollections, not root arrays.
-- `SiteSettings` contains the global `currentEditionId`.
-- `LiveSession<Timestamp>` is stored in the edition's `sessions` collection. New questions must not be appended to the legacy embedded `questions` array.
-- `LiveQuestion` is stored as a question subdocument. `uid`, `contenu`, `createdAt` and `status` are required; profile fields and reactions are optional.
-- `QuestionQuota` is scoped to one edition and UID. Its `count` is increased atomically with exactly one question write.
-- `Speaker`, `AgendaItem`, `FaqItem`, `NewsArticle` and `EventPartner` are the shared CMS contracts in `features/cms/models`.
+| Chemin Firestore | Description & Rôle | Visibilité & Droits d'accès |
+| :--- | :--- | :--- |
+| `events/{editionId}` | Configuration générale de l'édition (dates, lieu, thème, registrationUrl, quota `maxQuestionsPerUser`, galerie, albums, dpTemplate) | Lecture publique ; Écriture réservée aux Admins |
+| `events/{editionId}/speakers/{speakerId}` | Profils des intervenants de l'édition (`Speaker`) | Lecture publique si `status == 'published'` ; Écriture Admin |
+| `events/{editionId}/agenda/{agendaItemId}` | Créneaux et planning du festival (`AgendaItem`) | Lecture publique si `isPublished == true` ; Écriture Admin |
+| `events/{editionId}/faq/{faqId}` | Questions et réponses fréquentes (`FaqItem`) | Lecture publique si `isPublished == true` ; Écriture Admin |
+| `events/{editionId}/partners/{partnerId}` | Partenaires et sponsors (`EventPartner`) | Lecture publique si `isPublished == true` ; Écriture Admin |
+| `events/{editionId}/news/{articleId}` | Articles et annonces officielles (`NewsArticle`) | Lecture publique si `status == 'published'` ; Écriture Admin |
+| `events/{editionId}/sessions/{sessionId}` | Sessions pour les questions en direct (`LiveSession`) | Lecture publique des sessions actives (`isActive == true`) ; Écriture Admin |
+| `events/{editionId}/sessions/{sessionId}/questions/{questionId}` | Questions posées par les participants en direct (`LiveQuestion`) | Lecture pour session active ; Création authentifiée (avec UID correspondant) ; Modération Admin |
+| `events/{editionId}/questionQuotas/{uid}` | Compteur atomique de questions posées par participant | Lecture de son propre quota ; Écriture via transaction atomique lors de la création d'une question |
+| `events/{editionId}/remote/{controllerId}` | État de la télécommande pour les présentateurs | Lecture authentifiée ; Écriture Admin/Présentateur |
+| `events/{editionId}/emojis/{reactionId}` | Réactions en temps réel par émojis flottants | Lecture/Création authentifiée ; Écriture Admin |
+| `users/{uid}` | Profils utilisateurs et rôles (`invite` ou `admin`) | Lecture par l'utilisateur connecté ou Admin ; Écriture client refusée |
+| `siteSettings/global` | Paramètres globaux, notamment `currentEditionId` | Lecture publique ; Écriture Admin |
 
-Required versus optional fields are expressed directly in the interfaces: `?` denotes optional; fields without `?` are required. `status`/`isPublished` control public visibility. Keep new document fields in these interfaces before writing them from a component.
+> **⚠️ Règle importante pour les Partenaires/Sponsors** : Ne créez pas de collection `sponsors` distincte. Tous les sponsors sont des partenaires (`EventPartner`) dans la sous-collection `partners` avec un champ `role` décrivant leur niveau (ex: *Platinum Sponsor*, *Community Partner*, etc.).
 
-## FirestoreService API
+---
 
-Inject `FirestoreService`; components should not construct collection/document paths or call Firebase SDK functions themselves.
+## 📦 Modèles de Données TypeScript
 
-- `getCurrentEditionId()` resolves `siteSettings/global.currentEditionId`, falling back to `EVENT_CONFIG.edition` if settings are not configured.
-- `getEvent(editionId)` reads the event root. `getEventWithFallback(editionId)` uses local `EVENT_CONFIG` only for the bundled edition when the document is missing or unavailable. `getCurrentEventWithFallback()` combines those operations.
-- `getEventCollection<T>(editionId, collectionName)` streams one typed subcollection. `getEventDocument<T>(...)` streams one document.
-- `getEventCollectionResult<T>(editionId, collectionName, fallback?)` emits `loading`, then `success`; if Firestore fails it emits `error` and includes the optional local fallback.
-- If that collection is empty and a fallback is supplied, `getEventCollectionResult` emits `success` with `source: 'fallback'`; use this only for critical content with a deliberately maintained local default.
-- `getPublishedEventCollection<T>(...)` and its `...Result` variant query `isPublished == true` or `status == 'published'`. Use these for public pages: Firestore rules are not filters, so querying a collection that can also return drafts is rejected even if the UI hides drafts afterward.
-- `createEventDocument(...)` creates a document and supplies a generated ID when one is not passed. `saveEventDocument(...)` upserts/merges. `updateEventDocument(...)` updates an existing document and fails if it does not exist. `deleteEventDocument(...)` deletes one document.
-- `saveEvent(...)` and `saveSiteSettings(...)` are admin operations governed by Firestore rules.
-- `getSessions(editionId?)` and `getActiveSessions(editionId?)` default to the current edition. Pass an edition explicitly in admin/history views.
-- `getQuestions(sessionId, editionId?)` reads a session's question subcollection. `addQuestion(sessionId, question, editionId?)` creates a pending question and increments that user's edition quota in the same transaction.
-- `setSession(...)`, `deleteSession(...)`, `setRemote(...)`, and `setEmojis(...)` preserve the live module's specific operations while resolving the event edition centrally.
+Les modèles de données partagés sont situés dans [`src/app/features/event/models/`](file:///d:/ccc/prod/company_dev/devfestkiv/src/app/features/event/models/) et [`src/app/features/live-question/models/`](file:///d:/ccc/prod/company_dev/devfestkiv/src/app/features/live-question/models/) :
 
-Firestore does not cascade deletes. Deleting a session document does not automatically delete its `questions` subcollection; use a deliberate admin cleanup/migration operation if cascading removal is required.
+1. **`EventDocument`** (`event.model.ts`) : Contrat racine de l'édition. Contient `editionId`, `edition`, `year`, `name`, `theme`, `date`, `venue`, `contact`, `impactStats`, `gallery`, `albums`, `dpTemplate`.
+2. **`Speaker`** (`speaker.model.ts`) : `name`, `title`, `bio`, `photo`, `topics`, `status` (`draft` \| `published`), `socials` (`twitter`, `linkedin`, `github`), `day`.
+3. **`AgendaItem`** (`agenda-item.model.ts`) : `id`, `editionId`, `dayId`, `title`, `description`, `speakerIds`, `startsAt`, `endsAt`, `room`, `track`, `format` (`keynote` \| `talk` \| `workshop` \| `codelab` \| `discussion` \| `break`), `isPublished`.
+4. **`FaqItem`** (`faq-item.model.ts`) : `id`, `question`, `answer`, `category` (`Logistique` \| `Inscription` \| `Speakers` \| `Technique` \| `Autre`), `isPublished`, `order`.
+5. **`EventPartner`** (`partner.model.ts`) : `id`, `name`, `role`, `quote`, `logo`, `link`, `isPublished`, `order`.
+6. **`NewsArticle`** (`news-article.model.ts`) : `id`, `title`, `slug`, `excerpt`, `content`, `imageUrl`, `publishedAt`, `status`.
+7. **`LiveSession`** & **`LiveQuestion`** (`live-session.model.ts`, `live-question.model.ts`) : Gestion du direct.
 
-## Timestamp conversion and states
+---
 
-Use `formattedTimestamp(timestamp?: Timestamp)` from `shared/utils/formatted-timestamp.ts` when adapting Firestore timestamps to `Date` values. Do not duplicate timestamp conversion in components.
+## 🛠️ Utilisation de `FirestoreService`
 
-Use `FirestoreResult<T>` from `shared/models/firestore-result.model.ts` for future page/service state: `loading`, `success` with data and source (`firestore` or `fallback`), or `error` with an optional fallback value.
+Tous les composants doivent injecter et utiliser [`FirestoreService`](file:///d:/ccc/prod/company_dev/devfestkiv/src/app/core/firestore/firestore.service.ts). **Aucun composant ne doit manipuler directement les fonctions bas niveau du SDK Firebase.**
 
-## Security rules
+### Méthodes Clés Disponibles :
 
-`firestore.rules` is the security boundary; Angular guards are navigation UX only. Admin is determined by `users/{uid}.role == 'admin'` and `disabled != true`. Client writes to `users` are denied. CMS/event/session mutations are admin-only. Public questions require Authentication, the caller's UID, bounded content and a pending status; question plus quota must be one atomic transaction. The quota limit is read from `events/{editionId}.maxQuestionsPerUser` and defaults to 5 when absent. Values above 100 are rejected by rules.
+```typescript
+import { inject } from '@angular/core';
+import { FirestoreService } from '../../core/firestore/firestore.service';
 
-When adding a collection, update `EventSubcollection`, its model and path helper if appropriate, this document, and `firestore.rules` in the same change.
+export class MonComposant {
+  private fs = inject(FirestoreService);
 
-### Rules verification matrix
+  // 1. Récupérer l'ID de l'édition active sur le site
+  currentEdition$ = this.fs.getCurrentEditionId();
 
-| Identity                                    | Read published content / active sessions            | Create a question                        | Write event, session, CMS or remote state |
-| ------------------------------------------- | --------------------------------------------------- | ---------------------------------------- | ----------------------------------------- |
-| Anonymous Auth visitor                      | Allowed                                             | Allowed only under the per-edition quota | Denied                                    |
-| Google user without admin profile           | Allowed                                             | Allowed only under the per-edition quota | Denied                                    |
-| Enabled admin (`role: admin`, not disabled) | Allowed                                             | Allowed under normal question validation | Allowed                                   |
-| Disabled admin                              | Allowed only where public/signed-in read is allowed | Allowed only under the per-edition quota | Denied                                    |
+  // 2. Récupérer les éléments publiés pour l'édition courante
+  loadSpeakers(editionId: string) {
+    this.fs.getPublishedEventCollection<Speaker>(editionId, 'speakers', { field: 'status', value: 'published' })
+      .subscribe(speakers => {
+        // ...
+      });
+  }
 
-Before publishing rule changes, verify each row with the Firestore Emulator or Rules Playground, including a question batch with and without the matching quota increment. Emulator-based automated rule tests require a compatible Java 21+ runtime in this workspace.
+  // 3. Récupérer la configuration générale de l'édition avec fallback local
+  eventConfig$ = this.fs.getCurrentEventWithFallback();
+}
+```
+
+### Méthodes d'Écriture (CRUD Admin) :
+- `createEventDocument(editionId, collectionName, data)` : Crée un document avec génération d'ID automatique.
+- `saveEventDocument(editionId, collectionName, data)` : Enregistre / Upsert avec merge.
+- `updateEventDocument(editionId, collectionName, docId, changes)` : Met à jour un document existant.
+- `deleteEventDocument(editionId, collectionName, docId)` : Supprime un document.
+
+---
+
+## 🔒 Sécurité & Quotas (firestore.rules)
+
+La sécurité est assurée côté serveur par `firestore.rules` :
+
+1. **Rôle Administrateur** : Déterminé par le document `users/{uid}` avec le champ `role == 'admin'` et `disabled != true`. Les écritures sur les données d'édition et du CMS sont strictement réservées aux administrateurs.
+2. **Quotas de Questions en Direct** :
+   - Chaque question ajoutée fait l'objet d'une transaction atomique incrémentant le compteur dans `events/{editionId}/questionQuotas/{uid}`.
+   - La limite maximale est définie par `maxQuestionsPerUser` (par défaut **5**, maximum configurable **100**).
+   - Les questions nécessitent une authentification (Google ou Anonyme automatique gérée par `AuthService.ensureAnonymousOrAuthenticated()`).
+3. **Filtrage des Requêtes Publiques** :
+   - Les règles Firestore n'agissant pas comme des filtres automatiques, les requêtes publiques doivent obligatoirement cibler `where('isPublished', '==', true)` ou `where('status', '==', 'published')` via la méthode `getPublishedEventCollection()`.
+
+---
+
+## ⏱️ Conversion des Dates & Timestamps
+
+Utilisez l'utilitaire `formattedTimestamp(timestamp)` situé dans `src/app/shared/utils/formatted-timestamp.ts` pour convertir les objets `Timestamp` Firestore en objets JavaScript `Date` de manière sécurisée et homogène.
