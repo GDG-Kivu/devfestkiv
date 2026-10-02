@@ -29,7 +29,7 @@ import { Speaker } from '../../models/speaker.model';
             @for (s of speakers(); track s.id || $index) {
               <div
                 class="group bg-white rounded-2xl border border-gray-200 p-6 flex flex-col items-center text-center transition-all duration-300 hover:shadow-md hover:border-gray-300 animate-fade-in-up"
-                [style.animation-delay]="$index * 80 + 'ms'"
+                [style.animationDelay]="$index * 80 + 'ms'"
               >
                 <div class="relative mb-5">
                   <img

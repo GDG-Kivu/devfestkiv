@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -10,7 +10,9 @@ import { CommonModule } from '@angular/common';
     class: 'sticky top-0 z-50 block w-full',
   },
   template: `
-    <nav class="bg-white/80 backdrop-blur-md border-b border-gray-100/60 shadow-xs transition-colors duration-200">
+    <nav
+      class="bg-white/80 backdrop-blur-md border-b border-gray-100/60 shadow-xs transition-colors duration-200"
+    >
       <div class="max-w-7xl mx-auto px-md sm:px-lg lg:px-xl">
         <div class="flex justify-between items-center h-16">
           <!-- Logo Section -->
@@ -27,14 +29,14 @@ import { CommonModule } from '@angular/common';
           </div>
 
           <!-- Desktop Navigation -->
-          <div class="hidden md:block">
-            <div class="ml-10 flex items-baseline space-x-1 lg:space-x-2 group">
+          <div class="hidden lg:block">
+            <div class="ml-6 xl:ml-10 flex items-baseline space-x-1 xl:space-x-2 group">
               @for (item of navItems(); track item.path) {
                 <a
                   [routerLink]="item.path"
                   routerLinkActive="nav-active"
                   [routerLinkActiveOptions]="item.path === '/' ? { exact: true } : { exact: false }"
-                  class="nav-link lg:text-base text-gray-500"
+                  class="nav-link text-sm xl:text-base text-gray-500"
                   [attr.aria-current]="item.path === '/' ? 'page' : null"
                 >
                   {{ item.label }}
@@ -44,12 +46,12 @@ import { CommonModule } from '@angular/common';
           </div>
 
           <!-- CTA Button (Desktop) -->
-          <div class="hidden md:block">
+          <div class="hidden lg:block">
             <a routerLink="/dp-generator" class="btn btn-primary btn-md"> Genérer votre DP </a>
           </div>
 
           <!-- Mobile Menu Button -->
-          <div class="md:hidden">
+          <div class="lg:hidden">
             <button
               (click)="toggleMobileMenu()"
               class="relative inline-flex items-center justify-center p-sm text-text hover:text-primary hover:bg-background/50 transition-all duration-300 rounded-sm group"
@@ -96,7 +98,8 @@ import { CommonModule } from '@angular/common';
 
       <!-- Mobile Navigation Menu -->
       <div
-        class="md:hidden bg-white/95 backdrop-blur-sm border-t border-background overflow-hidden transition-all duration-500 ease-in-out"
+        class="lg:hidden bg-white/95 backdrop-blur-sm border-t border-background overflow-hidden transition-all duration-500 ease-in-out"
+        [class.invisible]="!isReady()"
         [class.max-h-0]="!isMobileMenuOpen()"
         [class.max-h-screen]="isMobileMenuOpen()"
       >
@@ -114,7 +117,7 @@ import { CommonModule } from '@angular/common';
               [routerLinkActiveOptions]="item.path === '/' ? { exact: true } : { exact: false }"
               (click)="closeMobileMenu()"
               class="block px-sm py-md text-base font-medium text-text hover:text-primary transition-all duration-300 border-l-4 border-transparent hover:translate-x-1 hover:border-primary"
-              [style.transition-delay]="i * 50 + 'ms'"
+              [style.transitionDelay]="i * 50 + 'ms'"
             >
               {{ item.label }}
             </a>
@@ -199,6 +202,8 @@ import { CommonModule } from '@angular/common';
 })
 export class Navbar {
   isMobileMenuOpen = signal(false);
+  /** Stays false during SSR and the hydration flash window; set true after first browser render. */
+  isReady = signal(false);
 
   navItems = signal([
     { path: '/', label: 'Home' },
@@ -208,6 +213,12 @@ export class Navbar {
     { path: '/qa', label: 'Q&A' },
     { path: '/live_q', label: 'Questions live' },
   ]);
+
+  constructor() {
+    afterNextRender(() => {
+      this.isReady.set(true);
+    });
+  }
 
   toggleMobileMenu() {
     this.isMobileMenuOpen.update((value) => !value);

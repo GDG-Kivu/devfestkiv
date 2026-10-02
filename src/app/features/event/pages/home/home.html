@@ -451,8 +451,8 @@
                             <div
                                 class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 border-2 border-gray-100 group-hover:border-primary/30 rounded-lg flex items-center justify-center bg-white">
                                 <a [href]="partner.link" target="_blank" rel="noopener noreferrer">
-                                    <img [ngSrc]="partner.logo" [alt]="partner.name"
-                                        class="max-w-full max-h-full object-contain" />
+                                    <img [src]="partner.logo" [alt]="partner.name"
+                                        class="max-w-full max-h-full object-contain" loading="lazy" />
                                 </a>
                             </div>
                             <div class="flex-1 min-w-0">
@@ -483,7 +483,7 @@
                                 class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 border-2 border-gray-100 group-hover:border-primary/30 rounded-lg flex items-center justify-center bg-white p-1">
                                 <a [href]="partner.link" target="_blank" rel="noopener noreferrer"
                                     class="w-full h-full flex items-center justify-center">
-                                    <img [ngSrc]="partner.logo" [alt]="partner.name"
+                                    <img [src]="partner.logo" [alt]="partner.name"
                                         class="max-w-full max-h-full object-contain" loading="lazy" />
                                 </a>
                             </div>
