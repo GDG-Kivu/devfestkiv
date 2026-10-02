@@ -118,7 +118,7 @@ import { Subscription } from 'rxjs';
       } @else if (activeSessions().length === 0) {
         <!-- Empty State -->
         <div
-          class="max-w-md mx-auto text-center py-12 px-6 bg-white rounded-xl border border-gray-100 shadow-sm"
+          class="mx-auto text-center py-12 px-6 bg-white rounded-xl border border-gray-100 shadow-sm"
         >
           <div
             class="w-12 h-12 bg-red-50 text-[#EA4335] rounded-full flex items-center justify-center mx-auto mb-3"
