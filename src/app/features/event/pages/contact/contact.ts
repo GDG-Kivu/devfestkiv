@@ -11,45 +11,51 @@ import { EventConfigService } from '../../services/event-config.service';
   template: `
     <div class="min-h-screen bg-gray-50/50 py-16 px-4 sm:px-6 lg:px-8">
       <div class="max-w-5xl mx-auto space-y-12">
-        
         <!-- Header -->
         <div class="text-center space-y-3 max-w-2xl mx-auto animate-fade-in">
           <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
             Contactez-nous
           </h1>
           <p class="text-lg text-gray-600 leading-relaxed">
-            Une question sur l'événement, les inscriptions ou le sponsoring ? Notre équipe est à votre écoute.
+            Une question sur l'événement, les inscriptions ou le sponsoring ? Notre équipe est à
+            votre écoute.
           </p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
           <!-- Colonne Gauche : Coordonnées -->
           <div class="lg:col-span-5 space-y-6">
-            
             <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-xs border border-gray-200 space-y-6">
               <h2 class="text-xl font-bold text-gray-900">Coordonnées</h2>
-              
+
               <div class="space-y-5">
                 <!-- Email -->
                 <div>
-                  <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</h3>
-                  <a href="mailto:{{ eventConfig.contact.email }}" class="text-sm font-semibold text-primary hover:underline">
+                  <h3 class="text-xs font-semibold text-gray-500 tracking-wider">Email</h3>
+                  <a
+                    href="mailto:{{ eventConfig.contact.email }}"
+                    class="text-sm font-semibold text-primary hover:underline"
+                  >
                     {{ eventConfig.contact.email }}
                   </a>
                 </div>
 
                 <!-- Téléphone -->
                 <div>
-                  <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Téléphone</h3>
-                  <a href="tel:{{ eventConfig.contact.phone }}" class="text-sm font-semibold text-gray-800 hover:text-primary">
+                  <h3 class="text-xs font-semibold text-gray-500 tracking-wider">Téléphone</h3>
+                  <a
+                    href="tel:{{ eventConfig.contact.phone }}"
+                    class="text-sm font-semibold text-gray-800 hover:text-primary"
+                  >
                     {{ eventConfig.contact.phone }}
                   </a>
                 </div>
 
                 <!-- Lieu -->
                 <div>
-                  <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Lieu de l'événement</h3>
+                  <h3 class="text-xs font-semibold text-gray-500 tracking-wider">
+                    Lieu de l'événement
+                  </h3>
                   <p class="text-sm font-semibold text-gray-800">
                     {{ eventConfig.venue.conferenceCenter }}
                   </p>
@@ -58,24 +64,31 @@ import { EventConfigService } from '../../services/event-config.service';
               </div>
 
               <div class="pt-4 border-t border-gray-100">
-                <a routerLink="/qa" class="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                <a
+                  routerLink="/qa"
+                  class="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
+                >
                   <span>Consulter la foire aux questions (FAQ)</span>
                   <span>→</span>
                 </a>
               </div>
             </div>
-
           </div>
 
           <!-- Colonne Droite : Formulaire -->
-          <div class="lg:col-span-7 bg-white rounded-2xl p-6 sm:p-8 shadow-xs border border-gray-200">
-            
+          <div
+            class="lg:col-span-7 bg-white rounded-2xl p-6 sm:p-8 shadow-xs border border-gray-200"
+          >
             <h2 class="text-xl font-bold text-gray-900 mb-1">Envoyez-nous un message</h2>
-            <p class="text-xs text-gray-500 mb-6">Nous vous répondrons dans les meilleurs délais.</p>
+            <p class="text-xs text-gray-500 mb-6">
+              Nous vous répondrons dans les meilleurs délais.
+            </p>
 
             <!-- Message de succès -->
             @if (successMessage()) {
-              <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 text-sm">
+              <div
+                class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 text-sm"
+              >
                 Votre message a été envoyé avec succès. Nous vous répondrons très vite.
               </div>
             }
@@ -88,9 +101,15 @@ import { EventConfigService } from '../../services/event-config.service';
             }
 
             <form (ngSubmit)="onSubmit()" class="space-y-4">
-              
               <!-- Honeypot anti-spam -->
-              <input type="text" [(ngModel)]="honeypot" name="company_check" class="hidden" tabindex="-1" autocomplete="off" />
+              <input
+                type="text"
+                [(ngModel)]="honeypot"
+                name="company_check"
+                class="hidden"
+                tabindex="-1"
+                autocomplete="off"
+              />
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <!-- Nom -->
@@ -175,20 +194,22 @@ import { EventConfigService } from '../../services/event-config.service';
                   <span>Envoyer</span>
                 }
               </button>
-
             </form>
-
           </div>
-
         </div>
-
       </div>
     </div>
   `,
   styles: `
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     .animate-fade-in {
       animation: fadeIn 0.4s ease-out forwards;
@@ -244,7 +265,7 @@ export default class ContactComponent {
     } catch (err: any) {
       console.error('Erreur EmailJS:', err);
       this.errorMessage.set(
-        err?.text || 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer ultérieurement.'
+        err?.text || "Une erreur est survenue lors de l'envoi. Veuillez réessayer ultérieurement.",
       );
     } finally {
       this.isSubmitting.set(false);
