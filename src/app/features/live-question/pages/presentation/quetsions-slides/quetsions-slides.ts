@@ -40,10 +40,10 @@ import { FormsModule } from '@angular/forms';
           @for (q of questions; track q; let i = $index) {
             <div
               class="absolute w-[90%] transition-all duration-700 ease-in-out transform origin-center rounded-xl"
-              [style.z-index]="questions.length - i"
+              [style.zIndex]="questions.length - i"
               [style.transform]="getTransform(i)"
               [style.opacity]="i < currentIndex - 2 ? 0 : 1"
-              [style.background-color]="cardColors[i]"
+              [style.backgroundColor]="cardColors[i]"
             >
               <div
                 class="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl p-8 text-center border border-gray-200"

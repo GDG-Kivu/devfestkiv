@@ -1,5 +1,13 @@
 import { Component, ElementRef, inject, signal } from '@angular/core';
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Auth } from '@angular/fire/auth';
 import { EventConfigService } from '../../../event/services/event-config.service';
@@ -12,7 +20,7 @@ import { RoleService } from '../../../../core/auth/services/role.service';
   host: {
     '(document:click)': 'onDocumentClick($event)',
   },
-  templateUrl: "nav-bar.html",
+  templateUrl: 'nav-bar.html',
   styles: `
     @keyframes popIn {
       0% {
@@ -47,7 +55,11 @@ export class NavBar {
     if (targetPath === '/live_q') {
       return current === '/live_q' || current === '/live_q/' || current.startsWith('/live_q?');
     }
-    return current === targetPath || current.startsWith(targetPath + '/') || current.startsWith(targetPath + '?');
+    return (
+      current === targetPath ||
+      current.startsWith(targetPath + '/') ||
+      current.startsWith(targetPath + '?')
+    );
   }
 
   constructor() {
@@ -118,7 +130,9 @@ export class NavBar {
 
   onDocumentClick(event: MouseEvent): void {
     if (this.isUserMenuOpen()) {
-      const clickedInside = this.elementRef.nativeElement.querySelector('.user-dropdown-container')?.contains(event.target as Node);
+      const clickedInside = this.elementRef.nativeElement
+        .querySelector('.user-dropdown-container')
+        ?.contains(event.target as Node);
       if (!clickedInside) {
         this.closeUserMenu();
       }

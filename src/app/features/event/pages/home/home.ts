@@ -1,4 +1,14 @@
-import { Component, OnDestroy, OnInit, signal, inject, PLATFORM_ID, effect } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  signal,
+  inject,
+  PLATFORM_ID,
+  effect,
+  NgZone,
+} from '@angular/core';
 import PastEventsGallery from '../../components/past-events-gallery/past-events-gallery';
 import { RouterLink } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
@@ -8,6 +18,7 @@ import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-home',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [PastEventsGallery, RouterLink, NgOptimizedImage],
   templateUrl: 'home.html',
   styles: `
@@ -114,6 +125,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
   public eventConfig = inject(EventConfigService);
   private fs = inject(FirestoreService, { optional: true });
   private platformId = inject(PLATFORM_ID);
+  private ngZone = inject(NgZone);
 
   seconde = signal(0);
   minutes = signal(0);
@@ -223,7 +235,14 @@ export default class HomeComponent implements OnInit, OnDestroy {
 
   private startInterval(): void {
     this.stopInterval();
-    this.countdownInterval = setInterval(() => this.updateTimeDisplay(), 1000);
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    this.ngZone.runOutsideAngular(() => {
+      this.countdownInterval = setInterval(() => {
+        this.updateTimeDisplay();
+      }, 1000);
+    });
   }
 
   private stopInterval(): void {

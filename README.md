@@ -26,6 +26,7 @@ Bienvenue sur le dépôt officiel du site web et de la plateforme interactive **
 ## ✨ Fonctionnalités
 
 ### 🌐 Portail Public Événement (`/`)
+
 - **Accueil & Présentation** : Compte à rebours, thématique, statistiques d'impact et sponsors.
 - **Programme & Agenda (`/agenda`)** : Planning dynamique par jour et par format (Keynote, Talk, Workshop, etc.) avec favoris locaux.
 - **Intervenants (`/speakers`)** : Profils des speakers, thématiques et réseaux sociaux.
@@ -35,6 +36,7 @@ Bienvenue sur le dépôt officiel du site web et de la plateforme interactive **
 - **Contact & Newsletter (`/contact`)** : Envoi de messages et inscription newsletter via EmailJS.
 
 ### 🎤 Module Live Questions & Administration (`/live_q`)
+
 - **Espace Questions (`/question-space`)** : Pose de questions en temps réel, anonymes ou authentifiées, et réactions par émojis flottants.
 - **Mode Présentateur (`/presenter`)** : Projection plein écran des questions et diapositives pour la scène avec bulle interactive.
 - **Télécommande Virtuelle (`/remote`)** : Contrôle distant des slides en direct.
@@ -47,7 +49,7 @@ Bienvenue sur le dépôt officiel du site web et de la plateforme interactive **
 
 ## 🏗️ Architecture du Projet
 
-Le projet suit une structure modulaire par domaine d'activité (*Feature-based*) :
+Le projet suit une structure modulaire par domaine d'activité (_Feature-based_) :
 
 ```text
 src/app/
@@ -98,6 +100,7 @@ ng serve
 # ou
 npm start
 ```
+
 Rendez-vous sur `http://localhost:4200/`. L'application se recharge automatiquement à chaque modification de fichier.
 
 ### Construction pour la production (avec SSR)
@@ -112,6 +115,7 @@ npm run serve:ssr:devfestkivu
 ## ⚙️ Configuration & Variables
 
 ### 1. Firebase Configuration
+
 Le fichier `src/app/config/firebase.config.ts` contient la configuration publique du projet Firebase :
 
 ```typescript
@@ -127,6 +131,7 @@ export const FIREBASE_CONFIG = {
 ```
 
 ### 2. EmailJS Configuration
+
 Le fichier `src/app/config/emailjs.config.ts` permet d'activer le formulaire de contact et la newsletter :
 
 ```typescript
@@ -167,6 +172,7 @@ Consultez le guide détaillé étape par étape dans [github_tasks_backlog.md](f
 Toutes les tâches à réaliser sont répertoriées dans le fichier **[`github_tasks_backlog.md`](file:///d:/ccc/prod/company_dev/devfestkiv/github_tasks_backlog.md)**.
 
 ### Workflow pour les contributeurs :
+
 1. **Choisir une issue** dans le backlog GitHub ou [`github_tasks_backlog.md`](file:///d:/ccc/prod/company_dev/devfestkiv/github_tasks_backlog.md).
 2. **Créer une branche dédiée** à partir de `main` :
    ```bash
@@ -184,14 +190,16 @@ Toutes les tâches à réaliser sont répertoriées dans le fichier **[`github_t
 Afin de maintenir une base de code propre et performante, merci de respecter scrupuleusement les règles suivantes :
 
 ### 🔴 Angular v20+
+
 - **Standalone par défaut** : Ne **JAMAIS** ajouter `standalone: true` dans les décorateurs `@Component` ou `@Directive` (c'est le comportement par défaut d'Angular 20+).
 - **Signals & Réactivité** : Privilégier les `signal()`, `computed()` et `effect()` pour la gestion de l'état local.
 - **Contrôle de flux moderne** : Utiliser la syntaxe native `@if`, `@for`, `@switch` et **non** les anciennes directives structurelles `*ngIf` / `*ngFor`.
 - **Injection de dépendances** : Utiliser la fonction `inject(ServiceName)` plutôt que l'injection par constructeur.
 - **Gestion des événements d'hôte** : Ne **PAS** utiliser `@HostListener` ou `@HostBinding`. Déclarer les liaisons dans l'objet `host: { ... }` du composant.
-- **Images optimisées** : Utiliser la directive `NgOptimizedImage` (`[ngSrc]`) pour les images statiques clés.
+- **Images optimisées** : Utiliser la directive `NgOptimizedImage` (`[src]`) pour les images statiques clés.
 
 ### 🎨 Styles & Tailwind CSS
+
 - Utiliser les classes utilitaires de **Tailwind CSS v4**.
 - Privilégier les liaisons de classes dynamiques `[class.ma-classe]="condition"` et `[style.mon-style]="valeur"` plutôt que `ngClass` / `ngStyle`.
 

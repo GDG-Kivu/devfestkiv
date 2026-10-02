@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { EventConfigService } from '../../services/event-config.service';
 
 @Component({
   selector: 'app-past-events-gallery',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgOptimizedImage],
   templateUrl: 'past-events-gallery.html',
   styleUrl: 'past-events-gallery.css',

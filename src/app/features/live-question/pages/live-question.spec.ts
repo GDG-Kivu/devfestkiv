@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LiveQuestion } from './live-question';
+import LiveQuestion from './live-question';
 
 describe('LiveQuestion', () => {
   let component: LiveQuestion;

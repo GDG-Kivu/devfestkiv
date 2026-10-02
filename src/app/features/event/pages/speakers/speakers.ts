@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { EventConfigService } from '../../services/event-config.service';
 import { FirestoreService } from '../../../../core/firestore/firestore.service';
 import { Speaker } from '../../models/speaker.model';
 
 @Component({
   selector: 'app-speakers',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   template: `
     <div class="min-h-screen bg-white">
@@ -22,15 +23,13 @@ import { Speaker } from '../../models/speaker.model';
 
         <!-- Speakers Grid or Empty state -->
         @if (isLoading()) {
-          <div class="text-center py-16 text-gray-500">
-            Chargement des intervenants...
-          </div>
+          <div class="text-center py-16 text-gray-500">Chargement des intervenants...</div>
         } @else if (speakers().length > 0) {
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             @for (s of speakers(); track s.id || $index) {
               <div
                 class="group bg-white rounded-2xl border border-gray-200 p-6 flex flex-col items-center text-center transition-all duration-300 hover:shadow-md hover:border-gray-300 animate-fade-in-up"
-                [style.animation-delay]="$index * 80 + 'ms'"
+                [style.animationDelay]="$index * 80 + 'ms'"
               >
                 <div class="relative mb-5">
                   <img
@@ -57,7 +56,12 @@ import { Speaker } from '../../models/speaker.model';
                       class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
                       aria-label="LinkedIn Profile"
                     >
-                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <svg
+                        class="w-4 h-4"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
                         <path
                           d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
                         />
@@ -78,7 +82,9 @@ import { Speaker } from '../../models/speaker.model';
         <div class="mt-20 border-t border-gray-100 pt-12">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
             <div class="flex flex-col items-center text-center">
-              <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-gray-700 mb-3">
+              <div
+                class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-gray-700 mb-3"
+              >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
@@ -96,7 +102,9 @@ import { Speaker } from '../../models/speaker.model';
             </div>
 
             <div class="flex flex-col items-center text-center">
-              <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-gray-700 mb-3">
+              <div
+                class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-gray-700 mb-3"
+              >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"

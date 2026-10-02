@@ -58,132 +58,66 @@
 
             <!-- Right Visual - Image Album -->
             <div class="mt-12 lg:mt-0 animate-slide-right" style="animation-delay: 0.3s;">
-                <!-- Mobile View - Album Effect (Scaled Down) -->
-                <div class="lg:hidden relative h-[380px] w-full max-w-lg mx-auto px-4">
+                <div class="relative h-[380px] lg:h-[500px] w-full max-w-lg lg:max-w-none mx-auto lg:mx-0 px-4 lg:px-0">
                     <!-- Image 1 - Back Left -->
                     <div
-                        class="absolute top-0 left-4 w-40 sm:w-44 h-48 sm:h-52 rounded-xl overflow-hidden shadow-xl transform rotate-[-6deg] z-10">
+                        class="absolute top-0 left-4 lg:left-0 w-40 sm:w-44 lg:w-72 h-48 sm:h-52 lg:h-80 rounded-xl lg:rounded-2xl overflow-hidden shadow-xl lg:shadow-2xl transform rotate-[-6deg] lg:hover:rotate-[-3deg] transition-all duration-500 hover:scale-105 z-10">
                         <img [ngSrc]="'/assets/past_events/first-1.jpg'" alt="DevFest Kivu Event"
-                            class="w-full h-full object-cover" width="288" height="320" decoding="async"
-                            loading="lazy" />
+                            class="w-full h-full object-cover" fill sizes="(max-width: 640px) 50vw, (max-width: 1024px) 35vw, 25vw"
+                            decoding="async" loading="lazy" />
                         <div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent">
                         </div>
-                        <div class="absolute bottom-2 left-2 right-2">
-                            <p class="text-white font-semibold text-xs">DevFest Kivu 2023</p>
+                        <div class="absolute bottom-2 left-2 right-2 lg:bottom-4 lg:left-4 lg:right-4">
+                            <p class="text-white font-semibold text-xs lg:text-sm">DevFest Kivu 2023</p>
                         </div>
                     </div>
 
-                    <!-- Image 2 - Front Center -->
+                    <!-- Image 2 - Front Center (LCP) -->
                     <div
-                        class="absolute top-8 left-1/2 transform -translate-x-1/2 w-44 sm:w-48 h-56 sm:h-60 rounded-xl overflow-hidden shadow-2xl rotate-[2deg] z-30">
+                        class="absolute top-8 lg:top-12 left-1/2 lg:left-24 transform -translate-x-1/2 lg:translate-x-0 w-44 sm:w-48 lg:w-80 h-56 sm:h-60 lg:h-96 rounded-xl lg:rounded-2xl overflow-hidden shadow-2xl rotate-[2deg] lg:rotate-[3deg] lg:hover:rotate-[0deg] transition-all duration-500 hover:scale-105 z-30">
                         <img [ngSrc]="'/assets/past_events/first-2.jpg'" alt="DevFest Kivu Community"
-                            class="w-full h-full object-cover" width="320" height="384" decoding="async"
-                            loading="lazy" />
+                            class="w-full h-full object-cover" fill priority sizes="(max-width: 640px) 55vw, (max-width: 1024px) 40vw, 30vw" />
                         <div
                             class="absolute inset-0 bg-gradient-to-t from-secondary/80 via-secondary/20 to-transparent">
                         </div>
-                        <div class="absolute bottom-2 left-2 right-2">
-                            <p class="text-white font-semibold text-xs">Notre Communauté</p>
+                        <div class="absolute bottom-2 left-2 right-2 lg:bottom-4 lg:left-4 lg:right-4">
+                            <p class="text-white font-semibold text-xs lg:text-sm">Notre Communauté</p>
                         </div>
                     </div>
 
                     <!-- Image 3 - Back Right -->
                     <div
-                        class="absolute top-0 right-4 w-40 sm:w-44 h-48 sm:h-52 rounded-xl overflow-hidden shadow-xl transform rotate-[6deg] z-10">
+                        class="absolute top-0 lg:top-24 right-4 lg:right-0 w-40 sm:w-44 lg:w-72 h-48 sm:h-52 lg:h-80 rounded-xl lg:rounded-2xl overflow-hidden shadow-xl lg:shadow-2xl transform rotate-[6deg] lg:rotate-[8deg] lg:hover:rotate-[4deg] transition-all duration-500 hover:scale-105 z-10 lg:z-20">
                         <img [ngSrc]="'/assets/past_events/first-3.jpg'" alt="Tech Innovation"
-                            class="w-full h-full object-cover" width="288" height="320" decoding="async"
-                            loading="lazy" />
+                            class="w-full h-full object-cover" fill sizes="(max-width: 640px) 50vw, (max-width: 1024px) 35vw, 25vw"
+                            decoding="async" loading="lazy" />
                         <div class="absolute inset-0 bg-gradient-to-t from-accent/80 via-accent/20 to-transparent">
                         </div>
-                        <div class="absolute bottom-2 left-2 right-2">
-                            <p class="text-white font-semibold text-xs">Innovation & Tech</p>
+                        <div class="absolute bottom-2 left-2 right-2 lg:bottom-4 lg:left-4 lg:right-4">
+                            <p class="text-white font-semibold text-xs lg:text-sm">Innovation & Tech</p>
                         </div>
                     </div>
 
-                    <!-- Floating Stats Badge Mobile -->
+                    <!-- Floating Stats Badge -->
                     <div
-                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-40 w-full flex justify-center px-4">
+                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-40 w-full lg:w-auto flex justify-center px-4 lg:px-0">
                         <div
-                            class="bg-white rounded-xl p-4 sm:p-5 shadow-xl border border-gray-100 inline-flex items-center gap-3 sm:gap-4">
+                            class="bg-white rounded-xl lg:rounded-2xl p-4 sm:p-5 lg:p-6 shadow-xl lg:shadow-2xl border border-gray-100 inline-flex items-center gap-3 sm:gap-4 lg:gap-6 hover:scale-105 transition-transform duration-300">
                             <div class="text-center">
-                                <div class="text-lg sm:text-2xl font-bold text-primary whitespace-nowrap">{{
+                                <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-primary whitespace-nowrap">{{
                                     impactStats[1].number }}+</div>
-                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1">Participants
+                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">Participants
                                 </div>
                             </div>
                             <div class="w-px h-12 bg-gray-200"></div>
                             <div class="text-center">
-                                <div class="text-lg sm:text-2xl font-bold text-secondary whitespace-nowrap">20+</div>
-                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1">Speakers</div>
+                                <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-secondary whitespace-nowrap">20+</div>
+                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">Speakers</div>
                             </div>
                             <div class="w-px h-12 bg-gray-200"></div>
                             <div class="text-center">
-                                <div class="text-lg sm:text-2xl font-bold text-accent whitespace-nowrap">100%</div>
-                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1">Gratuit</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Desktop View - Album Effect -->
-                <div class="hidden lg:block relative h-[500px] w-full">
-                    <!-- Image 1 - Back Left -->
-                    <div
-                        class="absolute top-0 left-0 w-72 h-80 rounded-2xl overflow-hidden shadow-2xl transform rotate-[-6deg] hover:rotate-[-3deg] transition-all duration-500 hover:scale-105 z-10">
-                        <img [ngSrc]="'/assets/past_events/first-1.jpg'" alt="DevFest Kivu Event"
-                            class="w-full h-full object-cover" width="288" height="320" decoding="async"
-                            loading="lazy" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent">
-                        </div>
-                        <div class="absolute bottom-4 left-4 right-4">
-                            <p class="text-white font-semibold text-sm">DevFest Kivu 2023</p>
-                        </div>
-                    </div>
-
-                    <!-- Image 2 - Front Center -->
-                    <div
-                        class="absolute top-12 left-24 w-80 h-96 rounded-2xl overflow-hidden shadow-2xl transform rotate-[3deg] hover:rotate-[0deg] transition-all duration-500 hover:scale-105 z-30">
-                        <img [ngSrc]="'/assets/past_events/first-2.jpg'" alt="DevFest Kivu Community"
-                            class="w-full h-full object-cover" width="320" height="384" decoding="async"
-                            loading="lazy" />
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-secondary/80 via-secondary/20 to-transparent">
-                        </div>
-                        <div class="absolute bottom-4 left-4 right-4">
-                            <p class="text-white font-semibold text-sm">Notre Communauté</p>
-                        </div>
-                    </div>
-
-                    <!-- Image 3 - Back Right -->
-                    <div
-                        class="absolute top-24 right-0 w-72 h-80 rounded-2xl overflow-hidden shadow-2xl transform rotate-[8deg] hover:rotate-[4deg] transition-all duration-500 hover:scale-105 z-20">
-                        <img [ngSrc]="'/assets/past_events/first-3.jpg'" alt="Tech Innovation"
-                            class="w-full h-full object-cover" width="288" height="320" decoding="async"
-                            loading="lazy" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-accent/80 via-accent/20 to-transparent">
-                        </div>
-                        <div class="absolute bottom-4 left-4 right-4">
-                            <p class="text-white font-semibold text-sm">Innovation & Tech</p>
-                        </div>
-                    </div>
-
-                    <!-- Floating Stats Badge Desktop -->
-                    <div
-                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-white rounded-2xl p-6 shadow-2xl border border-gray-100 z-40 hover:scale-105 transition-transform duration-300">
-                        <div class="flex items-center gap-6">
-                            <div class="text-center">
-                                <div class="text-3xl font-bold text-primary">{{ impactStats[1].number }}+</div>
-                                <div class="text-xs text-text/60">Participants</div>
-                            </div>
-                            <div class="w-px h-12 bg-gray-200"></div>
-                            <div class="text-center">
-                                <div class="text-3xl font-bold text-secondary">20+</div>
-                                <div class="text-xs text-text/60">Speakers</div>
-                            </div>
-                            <div class="w-px h-12 bg-gray-200"></div>
-                            <div class="text-center">
-                                <div class="text-3xl font-bold text-accent">100%</div>
-                                <div class="text-xs text-text/60">Gratuit</div>
+                                <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-accent whitespace-nowrap">100%</div>
+                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">Gratuit</div>
                             </div>
                         </div>
                     </div>
@@ -198,150 +132,169 @@
 <section class="relative overflow-hidden bg-gray-900 py-12 md:py-16 lg:py-20">
     <!-- Subtle background gradient -->
     <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 opacity-60"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+    <div
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none">
+    </div>
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 text-center relative z-10">
 
         <!-- CAS 1: Événement Clôturé -->
         @if (isEventPast()) {
-            <div class="max-w-2xl mx-auto text-center animate-fade-in">
-                <!-- Status Badge -->
-                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-gray-300 border border-white/10 text-xs font-semibold mb-4">
-                    <span class="w-2 h-2 rounded-full bg-gray-400"></span>
-                    <span>Édition terminée</span>
-                </div>
-
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight mb-3">
-                    Rendez-vous à la prochaine édition !
-                </h2>
-
-                <p class="text-gray-300 text-sm sm:text-base  mx-auto mb-8 leading-relaxed">
-                    Cette édition du {{ eventConfig.fullName || 'DevFest Kivu' }} est désormais clôturée. Restez connectés pour découvrir les dates de la prochaine édition.
-                </p>
-
-                <div class="flex flex-wrap items-center justify-center gap-4">
-                    <a [routerLink]="'/agenda'" class="btn btn-primary group inline-flex items-center">
-                        <span>Revoir le programme</span>
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                        </svg>
-                    </a>
-                    <a href="#impact" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/10 backdrop-blur-xs transition">
-                        <span>Découvrir l'impact</span>
-                    </a>
-                </div>
+        <div class="max-w-2xl mx-auto text-center animate-fade-in">
+            <!-- Status Badge -->
+            <div
+                class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-gray-300 border border-white/10 text-xs font-semibold mb-4">
+                <span class="w-2 h-2 rounded-full bg-gray-400"></span>
+                <span>Édition terminée</span>
             </div>
+
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight mb-3">
+                Rendez-vous à la prochaine édition !
+            </h2>
+
+            <p class="text-gray-300 text-sm sm:text-base  mx-auto mb-8 leading-relaxed">
+                Cette édition du {{ eventConfig.fullName || 'DevFest Kivu' }} est désormais clôturée. Restez connectés
+                pour découvrir les dates de la prochaine édition.
+            </p>
+
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <a [routerLink]="'/agenda'" class="btn btn-primary group inline-flex items-center">
+                    <span>Revoir le programme</span>
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                </a>
+                <a href="#impact"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/10 backdrop-blur-xs transition">
+                    <span>Découvrir l'impact</span>
+                </a>
+            </div>
+        </div>
         }
 
         <!-- CAS 2: Événement En Cours -->
         @else if (isEventOngoing()) {
-            <div class="max-w-2xl mx-auto text-center animate-fade-in">
-                <!-- Status Badge -->
-                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-400/25 text-xs font-semibold mb-4">
-                    <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
-                    <span>{{ activeDayBadge() }}</span>
-                </div>
-
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight mb-3">
-                    L'événement est en direct
-                </h2>
-
-                <p class="text-gray-300 text-sm sm:text-base mx-auto mb-8 leading-relaxed">
-                    Le festival {{ eventConfig.fullName || 'DevFest Kivu' }} se déroule actuellement. Suivez les interventions et posez vos questions en direct !
-                </p>
-
-                <div class="flex flex-wrap items-center justify-center gap-4">
-                    <a [routerLink]="'/agenda'" class="btn btn-primary group inline-flex items-center">
-                        <span>Voir le programme</span>
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                        </svg>
-                    </a>
-                    <a [routerLink]="'/live_q'" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/10 backdrop-blur-xs transition">
-                        <span>Questions en direct</span>
-                    </a>
-                </div>
+        <div class="max-w-2xl mx-auto text-center animate-fade-in">
+            <!-- Status Badge -->
+            <div
+                class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-400/25 text-xs font-semibold mb-4">
+                <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>{{ activeDayBadge() }}</span>
             </div>
+
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight mb-3">
+                L'événement est en direct
+            </h2>
+
+            <p class="text-gray-300 text-sm sm:text-base mx-auto mb-8 leading-relaxed">
+                Le festival {{ eventConfig.fullName || 'DevFest Kivu' }} se déroule actuellement. Suivez les
+                interventions et posez vos questions en direct !
+            </p>
+
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <a [routerLink]="'/agenda'" class="btn btn-primary group inline-flex items-center">
+                    <span>Voir le programme</span>
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                </a>
+                <a [routerLink]="'/live_q'"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/10 backdrop-blur-xs transition">
+                    <span>Questions en direct</span>
+                </a>
+            </div>
+        </div>
         }
 
         <!-- CAS 3: Compte à rebours actif pour l'édition courante -->
         @else {
-            <!-- Header Text -->
-            <div class="mb-8 md:mb-10 animate-fade-in">
-                @if (targetBadge()) {
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/15 text-blue-300 border border-blue-400/20 text-xs font-semibold mb-3">
-                        <span>{{ targetBadge() }}</span>
-                    </div>
-                }
-                
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">
-                    {{ targetTitle() }}
-                </h2>
-
-                @if (targetSubTitle()) {
-                    <p class="text-gray-400 text-xs sm:text-sm mx-auto">
-                        {{ targetSubTitle() }}
-                    </p>
-                }
+        <!-- Header Text -->
+        <div class="mb-8 md:mb-10 animate-fade-in">
+            @if (targetBadge()) {
+            <div
+                class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/15 text-blue-300 border border-blue-400/20 text-xs font-semibold mb-3">
+                <span>{{ targetBadge() }}</span>
             </div>
+            }
 
-            <!-- Countdown Display -->
-            <div class="flex justify-center items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-8 md:mb-10">
-                <!-- Days -->
-                <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
-                    <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white font-mono tabular-nums leading-none mb-2">
-                        {{ formatTime(daysLeft()) }}
-                    </div>
-                    <div class="text-[11px] sm:text-xs md:text-sm text-gray-400 uppercase tracking-wider font-medium">Jours</div>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">
+                {{ targetTitle() }}
+            </h2>
+
+            @if (targetSubTitle()) {
+            <p class="text-gray-400 text-xs sm:text-sm mx-auto">
+                {{ targetSubTitle() }}
+            </p>
+            }
+        </div>
+
+        <!-- Countdown Display -->
+        <div class="flex justify-center items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-8 md:mb-10">
+            <!-- Days -->
+            <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
+                <div
+                    class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white font-mono tabular-nums leading-none mb-2">
+                    {{ formatTime(daysLeft()) }}
                 </div>
-
-                <!-- Separator -->
-                <div class="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-bold -mt-4">:</div>
-
-                <!-- Hours -->
-                <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
-                    <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white font-mono tabular-nums leading-none mb-2">
-                        {{ formatTime(hours()) }}
-                    </div>
-                    <div class="text-[11px] sm:text-xs md:text-sm text-gray-400 uppercase tracking-wider font-medium">Heures</div>
-                </div>
-
-                <!-- Separator -->
-                <div class="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-bold -mt-4">:</div>
-
-                <!-- Minutes -->
-                <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
-                    <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white font-mono tabular-nums leading-none mb-2">
-                        {{ formatTime(minutes()) }}
-                    </div>
-                    <div class="text-[11px] sm:text-xs md:text-sm text-gray-400 uppercase tracking-wider font-medium">Minutes</div>
-                </div>
-
-                <!-- Separator -->
-                <div class="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-bold -mt-4">:</div>
-
-                <!-- Seconds -->
-                <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
-                    <div class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white font-mono tabular-nums leading-none mb-2">
-                        {{ formatTime(seconde()) }}
-                    </div>
-                    <div class="text-[11px] sm:text-xs md:text-sm text-gray-400 uppercase tracking-wider font-medium">Secondes</div>
+                <div class="text-[11px] sm:text-xs md:text-sm text-gray-400 uppercase tracking-wider font-medium">Jours
                 </div>
             </div>
 
-            <!-- CTA Button -->
-            <div class="flex justify-center">
-                <a [routerLink]="'/agenda'" class="btn btn-primary group">
-                    <span>Voir le programme</span>
-                    <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
-                        </path>
-                    </svg>
-                </a>
+            <!-- Separator -->
+            <div class="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-bold -mt-4">:</div>
+
+            <!-- Hours -->
+            <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
+                <div
+                    class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white font-mono tabular-nums leading-none mb-2">
+                    {{ formatTime(hours()) }}
+                </div>
+                <div class="text-[11px] sm:text-xs md:text-sm text-gray-400 uppercase tracking-wider font-medium">Heures
+                </div>
             </div>
+
+            <!-- Separator -->
+            <div class="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-bold -mt-4">:</div>
+
+            <!-- Minutes -->
+            <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
+                <div
+                    class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white font-mono tabular-nums leading-none mb-2">
+                    {{ formatTime(minutes()) }}
+                </div>
+                <div class="text-[11px] sm:text-xs md:text-sm text-gray-400 uppercase tracking-wider font-medium">
+                    Minutes</div>
+            </div>
+
+            <!-- Separator -->
+            <div class="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-bold -mt-4">:</div>
+
+            <!-- Seconds -->
+            <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
+                <div
+                    class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white font-mono tabular-nums leading-none mb-2">
+                    {{ formatTime(seconde()) }}
+                </div>
+                <div class="text-[11px] sm:text-xs md:text-sm text-gray-400 uppercase tracking-wider font-medium">
+                    Secondes</div>
+            </div>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="flex justify-center">
+            <a [routerLink]="'/agenda'" class="btn btn-primary group">
+                <span>Voir le programme</span>
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
+                    </path>
+                </svg>
+            </a>
+        </div>
         }
     </div>
 </section>
@@ -428,14 +381,14 @@
                     @for (partner of supports; track $index) {
                     <div
                         class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] group bg-white rounded-xl md:rounded-2xl p-6 md:p-8 border border-gray-100 hover:border-primary/20 transition-all duration-300 hover:shadow-lg">
-                        
+
                         <!-- Partner Logo/Image -->
                         <div class="flex items-start gap-4 mb-4">
-                            <div class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 border-2 border-gray-100 group-hover:border-primary/30 rounded-lg flex items-center justify-center bg-white">
+                            <div
+                                class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 border-2 border-gray-100 group-hover:border-primary/30 rounded-lg flex items-center justify-center bg-white">
                                 <a [href]="partner.link" target="_blank" rel="noopener noreferrer">
-                                    <img [src]="partner.logo" 
-                                        [alt]="partner.name"
-                                        class="max-w-full max-h-full object-contain" />
+                                    <img [src]="partner.logo" [alt]="partner.name"
+                                        class="max-w-full max-h-full object-contain" loading="lazy" />
                                 </a>
                             </div>
                             <div class="flex-1 min-w-0">
@@ -462,10 +415,13 @@
                         class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] group bg-white rounded-xl md:rounded-2xl p-6 md:p-8 border border-gray-100 hover:border-primary/20 transition-all duration-300 hover:shadow-lg">
                         <!-- Partner Logo/Image -->
                         <div class="flex items-start gap-4 mb-4">
-                            <div class="flex-shrink-0">
-                                <img [ngSrc]="'/assets/supports/support-' + ($index + 1) + '.jpg'" [alt]="partner.name"
-                                    class="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover border-2 border-gray-100 group-hover:border-primary/30 transition-colors"
-                                    width="64" height="64" decoding="async" loading="lazy" />
+                            <div
+                                class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 border-2 border-gray-100 group-hover:border-primary/30 rounded-lg flex items-center justify-center bg-white p-1">
+                                <a [href]="partner.link" target="_blank" rel="noopener noreferrer"
+                                    class="w-full h-full flex items-center justify-center">
+                                    <img [src]="partner.logo" [alt]="partner.name"
+                                        class="max-w-full max-h-full object-contain" loading="lazy" />
+                                </a>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-base sm:text-lg font-semibold text-text mb-1 truncate">
