@@ -3,7 +3,7 @@
   <!-- SIDEBAR -->
   <aside class="w-80 bg-white border-r border-gray-200 shadow-sm overflow-y-auto hidden md:block">
     <div class="sticky top-0 bg-white z-10 border-b border-gray-200">
-      <a routerLink="/" class="flex items-center px-6 py-5 hover:bg-gray-50 transition-colors group">
+      <a routerLink="/live_q" class="flex items-center px-6 py-5 hover:bg-gray-50 transition-colors group">
         <!-- Google brand dots logo -->
         <div class="flex items-center space-x-1 mr-4">
           <div class="w-2 h-2 rounded-full bg-[#4285F4]"></div>
@@ -19,34 +19,33 @@
 
     <!-- Sessions list or skeleton -->
     @if (sessionsLoading()) {
-      <app-skeleton variant="sessions" [count]="5" />
+    <app-skeleton variant="sessions" [count]="5" />
     } @else if (sessions().length === 0) {
-      <div class="p-6 text-center text-gray-400 text-sm italic">
-        Aucune session active pour le moment.
-      </div>
+    <div class="p-6 text-center text-gray-400 text-sm italic">
+      Aucune session active pour le moment.
+    </div>
     } @else {
-      <ul class="p-3">
-        @for (s of sessions(); track s.id) {
-        <li class="px-4 py-4 rounded-xl transition-all duration-300 mb-2" (click)="selectSession(s)"
-          [class]="s.isActive
+    <ul class="p-3">
+      @for (s of sessions(); track s.id) {
+      <li class="px-4 py-4 rounded-xl transition-all duration-300 mb-2" (click)="selectSession(s)" [class]="s.isActive
             ? 'bg-white shadow-sm border border-gray-100 hover:shadow-md hover:border-blue-200 cursor-pointer'
             : 'bg-gray-50 opacity-60 cursor-not-allowed'">
-          <div class="flex items-center justify-between">
-            <div class="flex-1 min-w-0">
-              <p class="font-semibold text-gray-800 truncate">{{ s.theme }}</p>
-              <p class="text-gray-500 text-sm mt-1 line-clamp-2">{{ s.speaker }}</p>
-            </div>
-
-            @if (s.isActive) {
-            <div class="flex items-center ml-3">
-              <div class="w-2 h-2 rounded-full bg-[#34A853] animate-pulse mr-2"></div>
-              <span class="text-xs text-[#34A853] font-medium">Live</span>
-            </div>
-            }
+        <div class="flex items-center justify-between">
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-gray-800 truncate">{{ s.theme }}</p>
+            <p class="text-gray-500 text-sm mt-1 line-clamp-2">{{ s.speaker }}</p>
           </div>
-        </li>
-        }
-      </ul>
+
+          @if (s.isActive) {
+          <div class="flex items-center ml-3">
+            <div class="w-2 h-2 rounded-full bg-[#34A853] animate-pulse mr-2"></div>
+            <span class="text-xs text-[#34A853] font-medium">Live</span>
+          </div>
+          }
+        </div>
+      </li>
+      }
+    </ul>
     }
   </aside>
 
@@ -128,7 +127,7 @@
 
         <!-- Skeleton loading for questions -->
         @if (questionsLoading()) {
-          <app-skeleton variant="questions" [count]="3" />
+        <app-skeleton variant="questions" [count]="3" />
         } @else if (questions().length === 0) {
         <div class="flex-1 flex items-center justify-center">
           <div class="text-center">

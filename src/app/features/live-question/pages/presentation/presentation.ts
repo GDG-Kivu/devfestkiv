@@ -168,18 +168,24 @@ export default class Presentation {
     if (active) this.selectedSession = active;
 
     this.speakersSub = this.fs.getSessions().subscribe((sessions: any) => {
-      this.sessions = sessions;
+      this.sessions = sessions || [];
 
       if (isPlatformBrowser(this.platformId)) {
         const selectedId = sessionStorage.getItem('selectedSession');
         if (selectedId) {
-          this.selectedSession = this.sessions.find((s) => s.id.toString() === selectedId);
-          if (this.selectedSession) this.watchQuestions(this.selectedSession);
-          this.selectedSlide = this.getUrl(this.selectedSession?.slides!)!;
-
-          this.safeSlideUrl = this.selectedSlide
-            ? this.sanitizer.bypassSecurityTrustResourceUrl(this.selectedSlide)
-            : null;
+          const found = this.sessions.find((s) => s.id?.toString() === selectedId);
+          if (found) {
+            this.selectedSession = found;
+            this.watchQuestions(found);
+            this.updateSlideUrl(found.slides);
+          }
+        } else if (!this.selectedSession && this.sessions.length > 0) {
+          const activeSession = this.sessions.find((s) => s.isActive) || this.sessions[0];
+          if (activeSession) {
+            this.selectedSession = activeSession;
+            this.watchQuestions(activeSession);
+            this.updateSlideUrl(activeSession.slides);
+          }
         }
       }
     });
@@ -233,15 +239,23 @@ export default class Presentation {
   }
   onSessionChange(session: LiveSession<Timestamp> | null) {
     this.selectedSession = session;
-    if (session) this.watchQuestions(session);
-    this.selectedSlide = this.getUrl(session?.slides!)!;
+    if (session) {
+      this.watchQuestions(session);
+      this.updateSlideUrl(session.slides);
+    } else {
+      this.updateSlideUrl(null);
+    }
     this.isVisible = true;
     if (isPlatformBrowser(this.platformId)) {
       sessionStorage.setItem('selectedSession', this.selectedSession?.id ?? '');
     }
-    this.safeSlideUrl = this.selectedSlide
-      ? this.sanitizer.bypassSecurityTrustResourceUrl(this.selectedSlide)
-      : null;
+  }
+
+  updateSlideUrl(rawUrl: string | undefined | null): void {
+    const url = this.getUrl(rawUrl);
+    this.selectedSlide = url || '';
+    this.safeSlideUrl = url ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : null;
+    this.cdr.markForCheck();
   }
 
   private watchQuestions(session: LiveSession<Timestamp>): void {
@@ -252,6 +266,7 @@ export default class Presentation {
           ...session,
           questions: [...questions, ...(session.questions ?? [])],
         };
+        this.cdr.markForCheck();
       }
     });
   }
@@ -271,11 +286,18 @@ export default class Presentation {
   }
   isActive = true;
 
-  getUrl(url: string) {
-    const srcMatch = url.match(/src="([^"]+)"/);
-
-    const src = srcMatch ? srcMatch[1] : null;
-    return src;
+  getUrl(url: string | undefined | null): string | null {
+    if (!url) return null;
+    const trimmed = url.trim();
+    if (!trimmed) return null;
+    const srcMatch = trimmed.match(/src="([^"]+)"/i);
+    if (srcMatch && srcMatch[1]) {
+      return srcMatch[1];
+    }
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+    return null;
   }
 
   // Popup
