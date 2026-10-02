@@ -9,9 +9,9 @@
     }
   </div>
   <!-- Slides -->
-  @if (isActive) {
+  @if (isActive && safeSlideUrl) {
   <div class="absolute inset-0 z-0">
-    <iframe [src]="safeSlideUrl" frameborder="0" class="w-full h-full"></iframe>
+    <iframe [src]="safeSlideUrl" frameborder="0" class="w-full h-full" allowfullscreen></iframe>
   </div>
   } @else {
   <app-questions-slides [session]="selectedSession" />
