@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -6,6 +6,7 @@ import { ContactService } from '../../../features/event/services/contact.service
 
 @Component({
   selector: 'app-footer',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, RouterLink],
   template: `
     <footer class="bg-accent-pastel">
@@ -20,6 +21,9 @@ import { ContactService } from '../../../features/event/services/contact.service
                 src="/assets/logo-1.png" 
                 alt="DevFest Kivu Logo" 
                 class="h-8 w-auto"
+                width="111"
+                height="32"
+                loading="lazy"
               >
             </div>
             <p class="text-sm leading-relaxed">

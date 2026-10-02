@@ -1,4 +1,4 @@
-import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, EnvironmentInjector, inject, Injectable, runInInjectionContext, signal } from '@angular/core';
 import {
   collection,
   collectionData,
@@ -22,6 +22,7 @@ import { UserProfile } from '../models/user-profile.model';
 export class RoleService {
   private readonly firestore = inject(Firestore);
   private readonly auth = inject(AuthService);
+  private readonly injector = inject(EnvironmentInjector);
 
   readonly profile = signal<UserProfile | null>(null);
   readonly isAdmin = signal(false);
@@ -52,8 +53,10 @@ export class RoleService {
   async ensureProfile(user: User): Promise<UserProfile | null> {
     this.isLoadingProfile.set(true);
     try {
-      const userDocRef = doc(this.firestore, firestorePaths.user(user.uid));
-      const snapshot = await getDoc(userDocRef);
+      const snapshot = await runInInjectionContext(this.injector, () => {
+        const userDocRef = doc(this.firestore, firestorePaths.user(user.uid));
+        return getDoc(userDocRef);
+      });
       let profile = snapshot.exists()
         ? ({ uid: user.uid, ...snapshot.data() } as UserProfile)
         : null;
@@ -62,12 +65,11 @@ export class RoleService {
 
       // If user signed in with an email, check for invitation / duplicate docs matching this email
       if (userEmailClean) {
-        const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
-        const emailQuery = query(
-          usersCol,
-          where('email', '==', userEmailClean)
-        );
-        const querySnapshot = await getDocs(emailQuery);
+        const querySnapshot = await runInInjectionContext(this.injector, () => {
+          const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
+          const emailQuery = query(usersCol, where('email', '==', userEmailClean));
+          return getDocs(emailQuery);
+        });
 
         for (const matchedDoc of querySnapshot.docs) {
           const matchedData = matchedDoc.data();
@@ -91,8 +93,11 @@ export class RoleService {
           // Clean up temporary invitation document if doc ID differs from actual user.uid
           if (matchedDoc.id !== user.uid) {
             try {
-              await deleteDoc(doc(this.firestore, firestorePaths.user(matchedDoc.id)));
-            } catch (err) {
+              await runInInjectionContext(this.injector, () => {
+                const docRef = doc(this.firestore, firestorePaths.user(matchedDoc.id));
+                return deleteDoc(docRef);
+              });
+            } catch {
               // Ignore if delete not permitted
             }
           }
@@ -119,7 +124,10 @@ export class RoleService {
       }
 
       // Save/Merge the consolidated profile under user.uid
-      await setDoc(userDocRef, profile, { merge: true });
+      await runInInjectionContext(this.injector, () => {
+        const userDocRef = doc(this.firestore, firestorePaths.user(user.uid));
+        return setDoc(userDocRef, profile, { merge: true });
+      });
 
       if (this.auth.user()?.uid !== user.uid) return null;
       this.profile.set(profile);
@@ -186,20 +194,21 @@ export class RoleService {
       throw new Error('Invalid email address.');
     }
 
-    const currentDocRef = doc(this.firestore, firestorePaths.user(currentUser.uid));
-
     // Update current document with the new admin email
-    await setDoc(
-      currentDocRef,
-      {
-        email: cleanEmail,
-        role: 'admin',
-        disabled: false,
-        transferredAt: serverTimestamp(),
-        transferredBy: currentUser.email || currentUser.uid,
-      },
-      { merge: true }
-    );
+    await runInInjectionContext(this.injector, () => {
+      const currentDocRef = doc(this.firestore, firestorePaths.user(currentUser.uid));
+      return setDoc(
+        currentDocRef,
+        {
+          email: cleanEmail,
+          role: 'admin',
+          disabled: false,
+          transferredAt: serverTimestamp(),
+          transferredBy: currentUser.email || currentUser.uid,
+        },
+        { merge: true }
+      );
+    });
   }
 
   /**
@@ -215,43 +224,50 @@ export class RoleService {
       throw new Error('Invalid email address.');
     }
 
-    const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
-    
     // Check if user with this email already exists
-    const existingQuery = query(usersCol, where('email', '==', cleanEmail));
-    const existingSnapshot = await getDocs(existingQuery);
-    
+    const existingSnapshot = await runInInjectionContext(this.injector, () => {
+      const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
+      const existingQuery = query(usersCol, where('email', '==', cleanEmail));
+      return getDocs(existingQuery);
+    });
+
     if (!existingSnapshot.empty) {
       for (const existingDoc of existingSnapshot.docs) {
         const data = existingDoc.data();
         if (data['role'] === 'admin') {
           throw new Error('This user is the current active administrator.');
         }
-        await setDoc(
-          doc(this.firestore, firestorePaths.user(existingDoc.id)),
-          {
-            role: 'viewer',
-            disabled: false,
-            displayName: displayName || data['displayName'] || null,
-            roomName: roomName || data['roomName'] || null,
-            updatedAt: serverTimestamp(),
-            createdBy: currentUser?.email || 'admin',
-          },
-          { merge: true }
-        );
+        await runInInjectionContext(this.injector, () => {
+          const userRef = doc(this.firestore, firestorePaths.user(existingDoc.id));
+          return setDoc(
+            userRef,
+            {
+              role: 'viewer',
+              disabled: false,
+              displayName: displayName || data['displayName'] || null,
+              roomName: roomName || data['roomName'] || null,
+              updatedAt: serverTimestamp(),
+              createdBy: currentUser?.email || 'admin',
+            },
+            { merge: true }
+          );
+        });
       }
     } else {
       // Create a new document in users collection
-      const newViewerRef = doc(usersCol);
-      await setDoc(newViewerRef, {
-        uid: newViewerRef.id,
-        email: cleanEmail,
-        displayName: displayName || null,
-        roomName: roomName || null,
-        role: 'viewer',
-        disabled: false,
-        createdAt: serverTimestamp(),
-        createdBy: currentUser?.email || 'admin',
+      await runInInjectionContext(this.injector, () => {
+        const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
+        const newViewerRef = doc(usersCol);
+        return setDoc(newViewerRef, {
+          uid: newViewerRef.id,
+          email: cleanEmail,
+          displayName: displayName || null,
+          roomName: roomName || null,
+          role: 'viewer',
+          disabled: false,
+          createdAt: serverTimestamp(),
+          createdBy: currentUser?.email || 'admin',
+        });
       });
     }
   }
@@ -263,16 +279,21 @@ export class RoleService {
     if (!this.isAdmin()) {
       throw new Error('Only an administrator can remove viewers.');
     }
-    await deleteDoc(doc(this.firestore, firestorePaths.user(viewerId)));
+    await runInInjectionContext(this.injector, () => {
+      const viewerRef = doc(this.firestore, firestorePaths.user(viewerId));
+      return deleteDoc(viewerRef);
+    });
   }
 
   /**
    * Real-time stream of all active viewers.
    */
   getViewers(): Observable<UserProfile[]> {
-    const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
-    const viewersQuery = query(usersCol, where('role', '==', 'viewer'));
-    return collectionData(viewersQuery, { idField: 'uid' }) as Observable<UserProfile[]>;
+    return runInInjectionContext(this.injector, () => {
+      const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
+      const viewersQuery = query(usersCol, where('role', '==', 'viewer'));
+      return collectionData(viewersQuery, { idField: 'uid' }) as Observable<UserProfile[]>;
+    });
   }
 }
 

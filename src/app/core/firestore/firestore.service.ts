@@ -40,7 +40,8 @@ export class FirestoreService {
   private readonly fs = inject(Firestore);
   private readonly auth = inject(AuthService);
   private readonly _injector: EnvironmentInjector = inject(EnvironmentInjector);
-  createDocId = (colName: string) => doc(collection(this.fs, colName)).id;
+  createDocId = (colName: string) =>
+    runInInjectionContext(this._injector, () => doc(collection(this.fs, colName)).id);
 
   getAllEvents(): Observable<EventDocument[]> {
     return runInInjectionContext(

@@ -1,9 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, RouterLinkActive, CommonModule],
   host: {
     class: 'sticky top-0 z-50 block w-full',
@@ -19,6 +20,8 @@ import { CommonModule } from '@angular/common';
                 src="/assets/logo-1.png"
                 alt="DevFest Kivu Logo"
                 class="h-8 w-auto sm:h-10 lg:h-10"
+                width="139"
+                height="40"
               />
             </a>
           </div>

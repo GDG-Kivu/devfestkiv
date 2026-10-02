@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QuestionSpace } from './question-space';
+import QuestionSpace from './question-space';
 
 describe('QuestionSpace', () => {
   let component: QuestionSpace;

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { EventConfigService, FestivalDaySchedule } from '../../services/event-config.service';
@@ -22,6 +22,7 @@ export interface FormattedAgendaItem {
 
 @Component({
   selector: 'app-agenda',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './agenda.html',
   imports: [CommonModule],
   styles: [

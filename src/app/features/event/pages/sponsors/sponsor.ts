@@ -1,4 +1,11 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { EventConfigService } from '../../services/event-config.service';
@@ -16,6 +23,7 @@ interface SponsorData {
 
 @Component({
   selector: 'app-sponsor',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, RouterLink],
   template: `
     <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-yellow-50/30">
@@ -48,7 +56,12 @@ interface SponsorData {
 
             <a routerLink="/contact" class="btn btn-primary">
               <span>Devenir Partenaire</span>
-              <svg class="w-5 h-5 ml-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                class="w-5 h-5 ml-2 inline-block"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -124,9 +137,7 @@ interface SponsorData {
 
       <!-- Loading State -->
       @if (isLoading()) {
-        <div class="text-center py-16 text-gray-500">
-          Chargement des partenaires...
-        </div>
+        <div class="text-center py-16 text-gray-500">Chargement des partenaires...</div>
       }
 
       <!-- Main Sponsor Showcase (if available) -->
@@ -134,12 +145,16 @@ interface SponsorData {
         <section class="py-20 px-4">
           <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
-              <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Partenaire Principal</h2>
+              <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Partenaire Principal
+              </h2>
               <div class="w-24 h-1 bg-yellow-500 mx-auto rounded-full"></div>
             </div>
 
             @for (sponsor of mainSponsors(); track sponsor.id || sponsor.name) {
-              <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden mb-5">
+              <div
+                class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden mb-5"
+              >
                 <!-- Header -->
                 <div class="bg-gray-50 border-b border-gray-200 p-8">
                   <div class="flex flex-col md:flex-row items-center gap-6">
@@ -274,12 +289,7 @@ interface SponsorData {
               </p>
 
               <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a
-                  routerLink="/contact"
-                  class="btn btn-primary"
-                >
-                  Contactez-nous
-                </a>
+                <a routerLink="/contact" class="btn btn-primary"> Contactez-nous </a>
               </div>
             </div>
           </div>
@@ -320,31 +330,29 @@ export default class Sponsor implements OnInit {
     }
 
     this.fs.getCurrentEditionId().subscribe((editionId) => {
-      this.fs
-        .getPublishedEventCollection<EventPartner>(editionId, 'partners')
-        .subscribe({
-          next: (items) => {
-            if (items && items.length > 0) {
-              this.sponsors.set(
-                items.map((p) => ({
-                  id: p.id,
-                  name: p.name,
-                  role: p.role,
-                  quote: p.quote || '',
-                  image: p.logo,
-                  link: p.link || '',
-                })),
-              );
-            } else {
-              this.sponsors.set([]);
-            }
-            this.isLoading.set(false);
-          },
-          error: () => {
+      this.fs.getPublishedEventCollection<EventPartner>(editionId, 'partners').subscribe({
+        next: (items) => {
+          if (items && items.length > 0) {
+            this.sponsors.set(
+              items.map((p) => ({
+                id: p.id,
+                name: p.name,
+                role: p.role,
+                quote: p.quote || '',
+                image: p.logo,
+                link: p.link || '',
+              })),
+            );
+          } else {
             this.sponsors.set([]);
-            this.isLoading.set(false);
-          },
-        });
+          }
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.sponsors.set([]);
+          this.isLoading.set(false);
+        },
+      });
     });
   }
 }

@@ -72,7 +72,9 @@ import { Subscription } from 'rxjs';
     <!-- ========================== -->
     <!-- SPEAKERS SECTION -->
     <!-- ========================== -->
-    <main class="w-full max-w-full overflow-x-hidden mx-auto px-4 py-16 relative z-10 bg-gradient-to-b">
+    <main
+      class="w-full max-w-full overflow-x-hidden mx-auto px-4 py-16 relative z-10 bg-gradient-to-b"
+    >
       <div class="text-center mb-16">
         <h2 class="text-4xl md:text-5xl font-bold text-gray-900">
           🎤 Speakers en <span class="text-[#4285F4]">live</span>

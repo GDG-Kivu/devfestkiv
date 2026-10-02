@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Remote } from './remote';
+import Remote from './remote';
 
 describe('Remote', () => {
   let component: Remote;
