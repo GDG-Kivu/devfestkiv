@@ -63,8 +63,9 @@
                     <div
                         class="absolute top-0 left-4 lg:left-0 w-40 sm:w-44 lg:w-72 h-48 sm:h-52 lg:h-80 rounded-xl lg:rounded-2xl overflow-hidden shadow-xl lg:shadow-2xl transform rotate-[-6deg] lg:hover:rotate-[-3deg] transition-all duration-500 hover:scale-105 z-10">
                         <img [ngSrc]="'/assets/past_events/first-1.jpg'" alt="DevFest Kivu Event"
-                            class="w-full h-full object-cover" fill sizes="(max-width: 640px) 50vw, (max-width: 1024px) 35vw, 25vw"
-                            decoding="async" loading="lazy" />
+                            class="w-full h-full object-cover" fill
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 35vw, 25vw" decoding="async"
+                            loading="lazy" />
                         <div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent">
                         </div>
                         <div class="absolute bottom-2 left-2 right-2 lg:bottom-4 lg:left-4 lg:right-4">
@@ -76,7 +77,8 @@
                     <div
                         class="absolute top-8 lg:top-12 left-1/2 lg:left-24 transform -translate-x-1/2 lg:translate-x-0 w-44 sm:w-48 lg:w-80 h-56 sm:h-60 lg:h-96 rounded-xl lg:rounded-2xl overflow-hidden shadow-2xl rotate-[2deg] lg:rotate-[3deg] lg:hover:rotate-[0deg] transition-all duration-500 hover:scale-105 z-30">
                         <img [ngSrc]="'/assets/past_events/first-2.jpg'" alt="DevFest Kivu Community"
-                            class="w-full h-full object-cover" fill priority sizes="(max-width: 640px) 55vw, (max-width: 1024px) 40vw, 30vw" />
+                            class="w-full h-full object-cover" fill priority
+                            sizes="(max-width: 640px) 55vw, (max-width: 1024px) 40vw, 30vw" />
                         <div
                             class="absolute inset-0 bg-gradient-to-t from-secondary/80 via-secondary/20 to-transparent">
                         </div>
@@ -89,8 +91,9 @@
                     <div
                         class="absolute top-0 lg:top-24 right-4 lg:right-0 w-40 sm:w-44 lg:w-72 h-48 sm:h-52 lg:h-80 rounded-xl lg:rounded-2xl overflow-hidden shadow-xl lg:shadow-2xl transform rotate-[6deg] lg:rotate-[8deg] lg:hover:rotate-[4deg] transition-all duration-500 hover:scale-105 z-10 lg:z-20">
                         <img [ngSrc]="'/assets/past_events/first-3.jpg'" alt="Tech Innovation"
-                            class="w-full h-full object-cover" fill sizes="(max-width: 640px) 50vw, (max-width: 1024px) 35vw, 25vw"
-                            decoding="async" loading="lazy" />
+                            class="w-full h-full object-cover" fill
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 35vw, 25vw" decoding="async"
+                            loading="lazy" />
                         <div class="absolute inset-0 bg-gradient-to-t from-accent/80 via-accent/20 to-transparent">
                         </div>
                         <div class="absolute bottom-2 left-2 right-2 lg:bottom-4 lg:left-4 lg:right-4">
@@ -106,18 +109,23 @@
                             <div class="text-center">
                                 <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-primary whitespace-nowrap">{{
                                     impactStats[1].number }}+</div>
-                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">Participants
+                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">
+                                    Participants
                                 </div>
                             </div>
                             <div class="w-px h-12 bg-gray-200"></div>
                             <div class="text-center">
-                                <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-secondary whitespace-nowrap">20+</div>
-                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">Speakers</div>
+                                <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-secondary whitespace-nowrap">
+                                    20+</div>
+                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">Speakers
+                                </div>
                             </div>
                             <div class="w-px h-12 bg-gray-200"></div>
                             <div class="text-center">
-                                <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-accent whitespace-nowrap">100%</div>
-                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">Gratuit</div>
+                                <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-accent whitespace-nowrap">
+                                    100%</div>
+                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">Gratuit
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -448,7 +456,7 @@
             <p class="text-sm text-text/60 mb-4">
                 Vous souhaitez devenir partenaire ?
             </p>
-            <a href="https://wa.link/0w8v5r" class="btn group btn-text">
+            <a routerLink="/contact" class="btn group btn-text">
                 <span>Contactez-nous</span>
                 <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
