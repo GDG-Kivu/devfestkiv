@@ -1,22 +1,55 @@
 <div class="min-h-screen overflow-auto py-12 md:py-16">
-  <!-- Preload critical assets for weak connections: hidden but eager loaded images -->
+  <!-- Preload critical assets -->
   <div aria-hidden="true" class="sr-only">
-    <img src="assets/dp-layout.png" alt="" loading="eager" decoding="async" importance="high"
-      style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;" />
-    <img src="assets/logo.png" alt="" loading="eager" decoding="async" importance="high"
-      style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;" />
-    <img src="assets/logo-1.png" alt="" loading="eager" decoding="async" importance="high"
-      style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;" />
-    <img src="assets/border.png" alt="" loading="eager" decoding="async" importance="high"
-      style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;" />
-    <img src="assets/arrow.png" alt="" loading="eager" decoding="async" importance="high"
-      style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;" />
+    <img
+      src="assets/dp-layout.png"
+      alt=""
+      loading="eager"
+      decoding="async"
+      importance="high"
+      style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px"
+    />
+    <img
+      src="assets/logo.png"
+      alt=""
+      loading="eager"
+      decoding="async"
+      importance="high"
+      style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px"
+    />
+    <img
+      src="assets/logo-1.png"
+      alt=""
+      loading="eager"
+      decoding="async"
+      importance="high"
+      style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px"
+    />
+    <img
+      src="assets/border.png"
+      alt=""
+      loading="eager"
+      decoding="async"
+      importance="high"
+      style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px"
+    />
+    <img
+      src="assets/arrow.png"
+      alt=""
+      loading="eager"
+      decoding="async"
+      importance="high"
+      style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px"
+    />
   </div>
 
   <!-- Hero -->
   <section class="container mx-auto px-4 mb-12 md:mb-16 text-center">
-    <h2 class="text-xs md:text-sm text-gray-600 mb-3 tracking-wide">Faites savoir à tout le monde que vous venez !</h2>
-    <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-6 md:mb-8">Créez votre visuel<br />
+    <h2 class="text-xs md:text-sm text-gray-600 mb-3 tracking-wide">
+      Faites savoir à tout le monde que vous venez !
+    </h2>
+    <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-6 md:mb-8">
+      Créez votre visuel<br />
       <span class="text-primary">DevFest personnalisé</span>
     </h1>
   </section>
@@ -25,20 +58,30 @@
   <div class="container mx-auto px-4 mb-12">
     <div class="flex justify-center">
       <div class="inline-flex bg-gray-100 rounded-xl p-1.5 gap-1">
-        <button (click)="setActiveTab('profile')"
+        <button
+          (click)="setActiveTab('profile')"
           class="px-6 py-3 rounded-lg font-semibold text-sm md:text-base transition-all duration-300"
-          [class.bg-white]="activeTab === 'profile'" [class.text-primary]="activeTab === 'profile'"
-          [class.shadow-md]="activeTab === 'profile'" [class.text-gray-600]="activeTab !== 'profile'"
-          [class.hover:text-gray-900]="activeTab !== 'profile'" [class.cursor-pointer]="activeTab !== 'profile'"
-          [class.cursor-default]="activeTab === 'profile'">
+          [class.bg-white]="activeTab === 'profile'"
+          [class.text-primary]="activeTab === 'profile'"
+          [class.shadow-md]="activeTab === 'profile'"
+          [class.text-gray-600]="activeTab !== 'profile'"
+          [class.hover:text-gray-900]="activeTab !== 'profile'"
+          [class.cursor-pointer]="activeTab !== 'profile'"
+          [class.cursor-default]="activeTab === 'profile'"
+        >
           Photo de Profil
         </button>
-        <button (click)="setActiveTab('dp')"
+        <button
+          (click)="setActiveTab('dp')"
           class="px-6 py-3 rounded-lg font-semibold text-sm md:text-base transition-all duration-300"
-          [class.bg-white]="activeTab === 'dp'" [class.text-primary]="activeTab === 'dp'"
-          [class.shadow-md]="activeTab === 'dp'" [class.text-gray-600]="activeTab !== 'dp'"
-          [class.hover:text-gray-900]="activeTab !== 'dp'" [class.cursor-pointer]="activeTab !== 'dp'"
-          [class.cursor-default]="activeTab === 'dp'">
+          [class.bg-white]="activeTab === 'dp'"
+          [class.text-primary]="activeTab === 'dp'"
+          [class.shadow-md]="activeTab === 'dp'"
+          [class.text-gray-600]="activeTab !== 'dp'"
+          [class.hover:text-gray-900]="activeTab !== 'dp'"
+          [class.cursor-pointer]="activeTab !== 'dp'"
+          [class.cursor-default]="activeTab === 'dp'"
+        >
           Générateur de DP
         </button>
       </div>
@@ -48,114 +91,203 @@
   <!-- Main Content -->
   <section class="container mx-auto px-4">
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start">
-
       <!-- Formulaire / Controls -->
       <div class="lg:col-span-2">
         <div class="bg-white rounded-2xl border-2 border-gray-200 p-6 md:p-8 sticky top-8">
-          <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">Saisissez vos coordonnées</h3>
+          <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+            Saisissez vos coordonnées
+          </h3>
           <div class="w-14 md:w-16 h-1 bg-primary mb-6 md:mb-8"></div>
 
           <form class="space-y-5 md:space-y-6" aria-label="Formulaire DP">
             <!-- Nom -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Nom (10 caractères max)</label>
-              <input type="text" [(ngModel)]="fullName" name="fullName" maxlength="10" placeholder="Votre nom"
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Nom (10 caractères max)</label
+              >
+              <input
+                type="text"
+                [(ngModel)]="fullName"
+                name="fullName"
+                maxlength="10"
+                placeholder="Votre nom"
                 class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-primary"
-                aria-label="Nom" />
+                aria-label="Nom"
+              />
             </div>
 
             <!-- Citation (DP) -->
             @if (activeTab === 'dp') {
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Citation / Punchline (40 caractères
-                max)</label>
-              <div class="flex gap-2">
-                <input type="text" [(ngModel)]="quote" name="quote" maxlength="40" placeholder="Votre punchline ici..."
-                  class="flex-1 px-4 py-3 text-base border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-primary"
-                  aria-label="Citation" />
-                <button type="button" (click)="suggestQuote()" class="btn btn-ghost whitespace-nowrap"
-                  aria-label="Suggérer une citation">Suggérer</button>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Citation / Punchline (40 caractères max)</label
+                >
+                <div class="flex gap-2">
+                  <input
+                    type="text"
+                    [(ngModel)]="quote"
+                    name="quote"
+                    maxlength="40"
+                    placeholder="Votre punchline ici..."
+                    class="flex-1 px-4 py-3 text-base border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-primary"
+                    aria-label="Citation"
+                  />
+                  <button
+                    type="button"
+                    (click)="suggestQuote()"
+                    class="btn btn-ghost whitespace-nowrap"
+                    aria-label="Suggérer une citation"
+                  >
+                    Suggérer
+                  </button>
+                </div>
               </div>
-            </div>
             }
 
             <!-- Theme & style controls pour profile -->
             @if (activeTab === 'profile') {
-            <div class="space-y-4 pt-2">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Thème de couleur</label>
-                <div class="flex items-center gap-3">
-                  <button type="button" (click)="setProfileTheme('yellow')"
-                    class="w-8 h-8 rounded-full bg-amber-500 transition-transform hover:scale-110"
-                    [class.ring-2]="profileTheme === 'yellow'" aria-label="Thème jaune"></button>
-                  <button type="button" (click)="setProfileTheme('blue')"
-                    class="w-8 h-8 rounded-full bg-blue-500 transition-transform hover:scale-110"
-                    [class.ring-2]="profileTheme === 'blue'" aria-label="Thème bleu"></button>
-                  <button type="button" (click)="setProfileTheme('green')"
-                    class="w-8 h-8 rounded-full bg-green-500 transition-transform hover:scale-110"
-                    [class.ring-2]="profileTheme === 'green'" aria-label="Thème vert"></button>
-                  <button type="button" (click)="setProfileTheme('red')"
-                    class="w-8 h-8 rounded-full bg-red-500 transition-transform hover:scale-110"
-                    [class.ring-2]="profileTheme === 'red'" aria-label="Thème rouge"></button>
+              <div class="space-y-4 pt-2">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Thème de couleur</label
+                  >
+                  <div class="flex items-center gap-3">
+                    <button
+                      type="button"
+                      (click)="setProfileTheme('yellow')"
+                      class="w-8 h-8 rounded-full bg-amber-500 transition-transform hover:scale-110"
+                      [class.ring-2]="profileTheme === 'yellow'"
+                      aria-label="Thème jaune"
+                    ></button>
+                    <button
+                      type="button"
+                      (click)="setProfileTheme('blue')"
+                      class="w-8 h-8 rounded-full bg-blue-500 transition-transform hover:scale-110"
+                      [class.ring-2]="profileTheme === 'blue'"
+                      aria-label="Thème bleu"
+                    ></button>
+                    <button
+                      type="button"
+                      (click)="setProfileTheme('green')"
+                      class="w-8 h-8 rounded-full bg-green-500 transition-transform hover:scale-110"
+                      [class.ring-2]="profileTheme === 'green'"
+                      aria-label="Thème vert"
+                    ></button>
+                    <button
+                      type="button"
+                      (click)="setProfileTheme('red')"
+                      class="w-8 h-8 rounded-full bg-red-500 transition-transform hover:scale-110"
+                      [class.ring-2]="profileTheme === 'red'"
+                      aria-label="Thème rouge"
+                    ></button>
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Style du cadre</label>
-                <div class="flex items-center gap-4">
-                  <span class="text-sm font-medium" [class.text-gray-900]="profileStyle === 'classic'">Classique</span>
-                  <button type="button" (click)="toggleProfileStyle()"
-                    class="relative inline-flex h-6 w-11 cursor-pointer rounded-full border-2 transition-colors duration-200 ease-in-out"
-                    [class.bg-gray-200]="profileStyle === 'classic'" [class.bg-primary]="profileStyle === 'minimalist'"
-                    aria-label="Toggle style">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Style du cadre</label>
+                  <div class="flex items-center gap-4">
                     <span
-                      class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow transition duration-200 ease-in-out"
-                      [class.translate-x-0]="profileStyle === 'classic'"
-                      [class.translate-x-5]="profileStyle === 'minimalist'"></span>
-                  </button>
-                  <span class="text-sm font-medium"
-                    [class.text-gray-900]="profileStyle === 'minimalist'">Minimaliste</span>
+                      class="text-sm font-medium"
+                      [class.text-gray-900]="profileStyle === 'classic'"
+                      >Classique</span
+                    >
+                    <button
+                      type="button"
+                      (click)="toggleProfileStyle()"
+                      class="relative inline-flex h-6 w-11 cursor-pointer rounded-full border-2 transition-colors duration-200 ease-in-out"
+                      [class.bg-gray-200]="profileStyle === 'classic'"
+                      [class.bg-primary]="profileStyle === 'minimalist'"
+                      aria-label="Toggle style"
+                    >
+                      <span
+                        class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow transition duration-200 ease-in-out"
+                        [class.translate-x-0]="profileStyle === 'classic'"
+                        [class.translate-x-5]="profileStyle === 'minimalist'"
+                      ></span>
+                    </button>
+                    <span
+                      class="text-sm font-medium"
+                      [class.text-gray-900]="profileStyle === 'minimalist'"
+                      >Minimaliste</span
+                    >
+                  </div>
                 </div>
               </div>
-            </div>
             }
 
             <!-- Theme generator -->
             @if (activeTab === 'dp') {
-            <div class="space-y-2 pt-2">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Thème de fond</label>
-              <div class="flex gap-2">
-                <button type="button" (click)="setGeneratorTheme('default')" class="flex-1 btn"
-                  [class.btn-primary]="generatorTheme === 'default'">Défaut</button>
-                <button type="button" (click)="setGeneratorTheme('white')" class="flex-1 btn"
-                  [class.btn-primary]="generatorTheme === 'white'">Blanc</button>
+              <div class="space-y-2 pt-2">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Thème de fond</label>
+                <div class="flex gap-2">
+                  <button
+                    type="button"
+                    (click)="setGeneratorTheme('default')"
+                    class="flex-1 btn"
+                    [class.btn-primary]="generatorTheme === 'default'"
+                  >
+                    Défaut
+                  </button>
+                  <button
+                    type="button"
+                    (click)="setGeneratorTheme('white')"
+                    class="flex-1 btn"
+                    [class.btn-primary]="generatorTheme === 'white'"
+                  >
+                    Blanc
+                  </button>
+                </div>
               </div>
-            </div>
+
+              <ng-container *ngTemplateOutlet="roleAndTemplate"></ng-container>
             }
 
             <!-- Upload -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Votre image</label>
-              <div (click)="openFileInput()" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+              <div
+                (click)="openFileInput()"
+                (dragover)="onDragOver($event)"
+                (dragleave)="onDragLeave($event)"
                 (drop)="onDrop($event)"
                 class="rounded-lg p-6 md:p-8 text-center border-2 border-dashed transition-all duration-300"
-                [class.cursor-pointer]="isFormReadyForUpload" [class.cursor-not-allowed]="!isFormReadyForUpload"
-                [class.opacity-50]="!isFormReadyForUpload" [class.border-gray-300]="!isDraggingOver"
-                [class.bg-gray-50]="!isDraggingOver" [class.border-primary]="isDraggingOver"
-                [class.bg-primary/10]="isDraggingOver" role="button" aria-label="Zone upload image">
+                [class.cursor-pointer]="isFormReadyForUpload"
+                [class.cursor-not-allowed]="!isFormReadyForUpload"
+                [class.opacity-50]="!isFormReadyForUpload"
+                [class.border-gray-300]="!isDraggingOver"
+                [class.bg-gray-50]="!isDraggingOver"
+                [class.border-primary]="isDraggingOver"
+                [class.bg-primary/10]="isDraggingOver"
+                role="button"
+                aria-label="Zone upload image"
+              >
                 <div class="flex flex-col items-center">
-                  <svg class="w-10 h-10 md:w-12 md:h-12 text-gray-400 mb-4" [class.text-primary]="isDraggingOver"
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  <svg
+                    class="w-10 h-10 md:w-12 md:h-12 text-gray-400 mb-4"
+                    [class.text-primary]="isDraggingOver"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                    />
                   </svg>
-                  <p class="text-sm text-gray-600 mb-2"><span class="font-medium text-primary">Cliquez</span> ou déposez
-                    une image</p>
+                  <p class="text-sm text-gray-600 mb-2">
+                    <span class="font-medium text-primary">Cliquez</span> ou déposez une image
+                  </p>
                 </div>
               </div>
               @if (!isFormReadyForUpload) {
-              <p class="text-xs text-red-600 mt-2">Veuillez d'abord remplir votre nom{{ activeTab === 'dp' ? ' et votre
-                citation' : '' }}.</p>
+                <p class="text-xs text-red-600 mt-2">
+                  Veuillez d'abord remplir votre nom{{
+                    activeTab === 'dp' ? ' et votre citation' : ''
+                  }}.
+                </p>
               }
             </div>
           </form>
@@ -166,29 +298,55 @@
       <div #desktopPreviewWrapper class="lg:col-span-3 hidden md:block">
         <div class="bg-white rounded-2xl border-2 border-gray-200 p-4 sm:p-6 md:p-8">
           @if (activeTab === 'profile') {
-          <h3 class="text-xl md:text-2xl font-bold text-center text-gray-900 mb-6 md:mb-8">Aperçu de votre Photo de
-            Profil</h3>
-          <div class="flex justify-center">
-            <app-profil [fullName]="fullName" [previewImage]="previewImage" [uiState]="uiState"
-              [profileTheme]="profileTheme" [profileStyle]="profileStyle"></app-profil>
-          </div>
+            <h3 class="text-xl md:text-2xl font-bold text-center text-gray-900 mb-6 md:mb-8">
+              Aperçu de votre Photo de Profil
+            </h3>
+            <div class="flex justify-center">
+              <app-profil
+                [fullName]="fullName"
+                [previewImage]="previewImage"
+                [uiState]="uiState"
+                [profileTheme]="profileTheme"
+                [profileStyle]="profileStyle"
+              ></app-profil>
+            </div>
           }
 
           @if (activeTab === 'dp') {
-          <h3 class="text-xl md:text-2xl font-bold text-center text-gray-900 mb-6 md:mb-8">Aperçu de votre DP de
-            Publication</h3>
+            <h3 class="text-xl md:text-2xl font-bold text-center text-gray-900 mb-6 md:mb-8">
+              Aperçu de votre DP de Publication
+            </h3>
 
-          <div class="relative mx-auto" [style.height.px]="837 * desktopScale" [style.width.px]="837 * desktopScale">
-            <app-generator [fullName]="fullName" [previewImage]="previewImage" [quote]="quote" [uiState]="uiState"
-              [generatorTheme]="generatorTheme" [eventConfig]="eventConfig" class="absolute top-0 left-0"
-              [style.transform]="'scale(' + desktopScale + ')'" style="transform-origin: top left;"></app-generator>
-          </div>
+            <div
+              class="relative mx-auto overflow-hidden"
+              [style.height.px]="837 * desktopScale"
+              [style.width.px]="837 * desktopScale"
+            >
+              <app-generator
+                [fullName]="fullName"
+                [previewImage]="previewImage"
+                [quote]="quote"
+                [uiState]="uiState"
+                [generatorTheme]="generatorTheme"
+                [eventConfig]="eventConfig"
+                [role]="effectiveRole()"
+                [template]="selectedTemplate()"
+                [dpConfig]="dpConfig()"
+                class="absolute top-0 left-0 block w-[837px] h-[837px]"
+                [style.transform]="'scale(' + desktopScale + ')'"
+                style="transform-origin: top left"
+              ></app-generator>
+            </div>
           }
           <br />
           <!-- Bouton action (desktop) -->
           <div class="hidden md:block">
-            <button type="button" (click)="activeTab === 'profile' ? captureProfileDP() : captureGeneratorDP()"
-              class="btn btn-primary w-full text-center block" aria-label="Télécharger">
+            <button
+              type="button"
+              (click)="activeTab === 'profile' ? captureProfileDP() : captureGeneratorDP()"
+              class="btn btn-primary w-full text-center block"
+              aria-label="Télécharger"
+            >
               Télécharger
             </button>
           </div>
@@ -197,113 +355,266 @@
 
       <!-- Immersive Overlay (mobile-first) -->
       @if ((showOverlay || showPreviewOverlay) && previewImage) {
-      <div class="fixed inset-0 h-80vh z-50 md:hidden flex items-center justify-center" role="dialog" aria-modal="true"
-        aria-label="Aperçu immersif">
-        <!-- Backdrop blur + dim -->
-        <div class="absolute inset-0 backdrop-blur-sm bg-black/55" (click)="closeMobileOverlay()" aria-hidden="true">
-        </div>
+        <div
+          class="fixed inset-0 h-80vh z-50 md:hidden flex items-center justify-center"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Aperçu immersif"
+        >
+          <div
+            class="absolute inset-0 backdrop-blur-sm bg-black/55"
+            (click)="closeMobileOverlay()"
+            aria-hidden="true"
+          ></div>
 
-        <!-- Bottom sheet container -->
-        <div class="relative z-60 w-full max-h-[92vh] bg-transparent p-3">
-          <div class="bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[88vh]">
-            <!-- Header: close + title -->
-            <div class="flex items-center justify-between px-4 py-3 border-b">
-              <div class="flex items-center gap-3">
-                <button (click)="closeMobileOverlay()" class="text-gray-600 p-2" aria-label="Fermer">
-                  ✕
-                </button>
-                <h4 class="font-semibold">Aperçu</h4>
-              </div>
-              <div class="text-sm text-gray-500">Preview</div>
-            </div>
-
-            <div class="p-4 overflow-auto">
-              <!-- Capture preview area: render child (capture-zone only inside child) -->
-              @if (activeTab === 'profile') {
-              <div class="flex justify-center mb-4">
-                <app-profil [fullName]="fullName" [previewImage]="previewImage" [uiState]="uiState"
-                  [profileTheme]="profileTheme" [profileStyle]="profileStyle"></app-profil>
-              </div>
-              }
-
-              @if (activeTab === 'dp') {
-              <div class="relative mx-auto mb-4" [style.height.px]="837 * mobileScale"
-                [style.width.px]="837 * mobileScale">
-                <app-generator [fullName]="fullName" [previewImage]="previewImage" [quote]="quote" [uiState]="uiState"
-                  [generatorTheme]="generatorTheme" [eventConfig]="eventConfig" class="absolute top-0 left-0"
-                  [style.transform]="'scale(' + mobileScale + ')'" style="transform-origin: top left;"></app-generator>
-              </div>
-              }
-              <!-- Controls placed inside overlay for mobile UX -->
-              <div class="space-y-3">
-                <div class="flex-col md:flex-row flex gap-2">
-                  <input type="text" [(ngModel)]="fullName" placeholder="Nom" maxlength="10"
-                    class="flex-1 px-3 py-2 border rounded" aria-label="Nom (overlay)" />
-                  @if (activeTab === 'dp') {
-                  <input type="text" [(ngModel)]="quote" placeholder="Citation" maxlength="40"
-                    class="flex-1 px-3 py-2 border rounded" aria-label="Citation (overlay)" />
-                  }
-                  @else if (activeTab === 'profile') {
-                  <button type="button" (click)="toggleProfileStyle()" class="flex-1 py-2 rounded border">
-                    Style : {{ profileStyle === 'classic' ? 'Classique' : 'Minimaliste' }}
+          <div class="relative z-60 w-full max-h-[92vh] bg-transparent p-3">
+            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[88vh]">
+              <div class="flex items-center justify-between px-4 py-3 border-b">
+                <div class="flex items-center gap-3">
+                  <button
+                    (click)="closeMobileOverlay()"
+                    class="text-gray-600 p-2"
+                    aria-label="Fermer"
+                  >
+                    ✕
                   </button>
-                  }
+                  <h4 class="font-semibold">Aperçu</h4>
                 </div>
+                <div class="text-sm text-gray-500">Preview</div>
+              </div>
 
+              <div class="p-4 overflow-auto">
                 @if (activeTab === 'profile') {
-                <div class="flex gap-2 items-center">
-                  <button type="button" (click)="setProfileTheme('yellow')" class="px-3 py-2 rounded border"
-                    [class.bg-amber-500]="profileTheme==='yellow'">Jaune</button>
-                  <button type="button" (click)="setProfileTheme('blue')" class="px-3 py-2 rounded border"
-                    [class.bg-blue-500]="profileTheme==='blue'">Bleu</button>
-                  <button type="button" (click)="setProfileTheme('green')" class="px-3 py-2 rounded border"
-                    [class.bg-green-500]="profileTheme==='green'">Vert</button>
-                  <button type="button" (click)="setProfileTheme('red')" class="px-3 py-2 rounded border"
-                    [class.bg-red-500]="profileTheme==='red'">Rouge</button>
-                </div>
+                  <div class="flex justify-center mb-4">
+                    <app-profil
+                      [fullName]="fullName"
+                      [previewImage]="previewImage"
+                      [uiState]="uiState"
+                      [profileTheme]="profileTheme"
+                      [profileStyle]="profileStyle"
+                    ></app-profil>
+                  </div>
                 }
 
                 @if (activeTab === 'dp') {
-                <div class="flex gap-2">
-                  <button type="button" (click)="setGeneratorTheme('default')" class="flex-1 rounded border"
-                    [class.bg-primary]="generatorTheme==='default'">Défaut</button>
-                  <button type="button" (click)="setGeneratorTheme('white')" class="flex-1 rounded border"
-                    [class.bg-primary]="generatorTheme==='white'">Blanc</button>
-                </div>
+                  <div
+                    class="relative mx-auto mb-4 overflow-hidden"
+                    [style.height.px]="837 * mobileScale"
+                    [style.width.px]="837 * mobileScale"
+                  >
+                    <app-generator
+                      [fullName]="fullName"
+                      [previewImage]="previewImage"
+                      [quote]="quote"
+                      [uiState]="uiState"
+                      [generatorTheme]="generatorTheme"
+                      [eventConfig]="eventConfig"
+                      [role]="effectiveRole()"
+                      [template]="selectedTemplate()"
+                      [dpConfig]="dpConfig()"
+                      class="absolute top-0 left-0 block w-[837px] h-[837px]"
+                      [style.transform]="'scale(' + mobileScale + ')'"
+                      style="transform-origin: top left"
+                    ></app-generator>
+                  </div>
                 }
 
-                <div class="flex gap-2">
-                  <button class="btn btn-ghost flex-1" (click)="openFileInput()">Changer image</button>
-                  <button class="btn btn-primary flex-1"
-                    (click)="activeTab === 'profile' ? captureProfileDP() : captureGeneratorDP()">Télécharger</button>
-                </div>
+                <div class="space-y-3">
+                  <div class="flex-col md:flex-row flex gap-2">
+                    <input
+                      type="text"
+                      [(ngModel)]="fullName"
+                      placeholder="Nom"
+                      maxlength="10"
+                      class="flex-1 px-3 py-2 border rounded"
+                      aria-label="Nom (overlay)"
+                    />
+                    @if (activeTab === 'dp') {
+                      <input
+                        type="text"
+                        [(ngModel)]="quote"
+                        placeholder="Citation"
+                        maxlength="40"
+                        class="flex-1 px-3 py-2 border rounded"
+                        aria-label="Citation (overlay)"
+                      />
+                    } @else if (activeTab === 'profile') {
+                      <button
+                        type="button"
+                        (click)="toggleProfileStyle()"
+                        class="flex-1 py-2 rounded border"
+                      >
+                        Style : {{ profileStyle === 'classic' ? 'Classique' : 'Minimaliste' }}
+                      </button>
+                    }
+                  </div>
 
-                <p class="text-xs text-gray-500 text-center">Astuce : vous pouvez modifier le nom et le thème
-                  directement ici avant de télécharger.</p>
+                  @if (activeTab === 'profile') {
+                    <div class="flex gap-2 items-center">
+                      <button
+                        type="button"
+                        (click)="setProfileTheme('yellow')"
+                        class="px-3 py-2 rounded border"
+                        [class.bg-amber-500]="profileTheme === 'yellow'"
+                      >
+                        Jaune
+                      </button>
+                      <button
+                        type="button"
+                        (click)="setProfileTheme('blue')"
+                        class="px-3 py-2 rounded border"
+                        [class.bg-blue-500]="profileTheme === 'blue'"
+                      >
+                        Bleu
+                      </button>
+                      <button
+                        type="button"
+                        (click)="setProfileTheme('green')"
+                        class="px-3 py-2 rounded border"
+                        [class.bg-green-500]="profileTheme === 'green'"
+                      >
+                        Vert
+                      </button>
+                      <button
+                        type="button"
+                        (click)="setProfileTheme('red')"
+                        class="px-3 py-2 rounded border"
+                        [class.bg-red-500]="profileTheme === 'red'"
+                      >
+                        Rouge
+                      </button>
+                    </div>
+                  }
+
+                  @if (activeTab === 'dp') {
+                    <div class="flex gap-2">
+                      <button
+                        type="button"
+                        (click)="setGeneratorTheme('default')"
+                        class="flex-1 rounded border"
+                        [class.bg-primary]="generatorTheme === 'default'"
+                      >
+                        Défaut
+                      </button>
+                      <button
+                        type="button"
+                        (click)="setGeneratorTheme('white')"
+                        class="flex-1 rounded border"
+                        [class.bg-primary]="generatorTheme === 'white'"
+                      >
+                        Blanc
+                      </button>
+                    </div>
+
+                    <ng-container *ngTemplateOutlet="roleAndTemplate"></ng-container>
+                  }
+
+                  <div class="flex gap-2">
+                    <button class="btn btn-ghost flex-1" (click)="openFileInput()">
+                      Changer image
+                    </button>
+                    <button
+                      class="btn btn-primary flex-1"
+                      (click)="activeTab === 'profile' ? captureProfileDP() : captureGeneratorDP()"
+                    >
+                      Télécharger
+                    </button>
+                  </div>
+
+                  <p class="text-xs text-gray-500 text-center">
+                    Astuce : vous pouvez modifier le nom et le thème directement ici avant de
+                    télécharger.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
       }
 
       <!-- Popup Cropper -->
       @if (showCropper) {
-      <div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-        <div class="bg-white rounded-2xl p-6 shadow-2xl w-full max-w-2xl">
-          <h3 class="text-lg font-bold text-gray-900 mb-4">Recadrez votre image</h3>
-          <div class="w-full h-[400px]">
-            <image-cropper [imageBase64]="imageBase64" [maintainAspectRatio]="activeTab === 'profile'"
-              [aspectRatio]="activeTab === 'profile' ? 1 : undefined"
-              [resizeToWidth]="activeTab === 'profile' ? 600 : 1200" [format]="'png'" [output]="'base64'"
-              class="w-full h-full" (imageCropped)="onImageCropped($event)"
-              (loadImageFailed)="imageCropperCancelled()"></image-cropper>
-          </div>
-          <div class="flex justify-end mt-4 gap-3">
-            <button class="btn btn-danger" (click)="imageCropperCancelled()">Annuler</button>
-            <button class="btn btn-primary" (click)="confirmCrop()">Confirmer</button>
+        <div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div class="bg-white rounded-2xl p-6 shadow-2xl w-full max-w-2xl">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Recadrez votre image</h3>
+            <div class="w-full h-[400px]">
+              <image-cropper
+                [imageBase64]="imageBase64"
+                [maintainAspectRatio]="activeTab === 'profile'"
+                [aspectRatio]="activeTab === 'profile' ? 1 : undefined"
+                [resizeToWidth]="activeTab === 'profile' ? 600 : 1200"
+                [format]="'png'"
+                [output]="'base64'"
+                class="w-full h-full"
+                (imageCropped)="onImageCropped($event)"
+                (loadImageFailed)="imageCropperCancelled()"
+              ></image-cropper>
+            </div>
+            <div class="flex justify-end mt-4 gap-3">
+              <button class="btn btn-danger" (click)="imageCropperCancelled()">Annuler</button>
+              <button class="btn btn-primary" (click)="confirmCrop()">Confirmer</button>
+            </div>
           </div>
         </div>
-      </div>
       }
     </div>
+  </section>
+
+  <!-- Template partagé : template + rôle (utilisé par le formulaire et l'overlay mobile) -->
+  <ng-template #roleAndTemplate>
+    <!-- Template -->
+    <div class="space-y-2 pt-2">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Template</label>
+      <div class="flex gap-2">
+        <button
+          type="button"
+          (click)="setTemplate('classic')"
+          class="flex-1 btn"
+          [class.btn-primary]="selectedTemplate() === 'classic'"
+        >
+          Classic
+        </button>
+        <button
+          type="button"
+          (click)="setTemplate('bold')"
+          class="flex-1 btn"
+          [class.btn-primary]="selectedTemplate() === 'bold'"
+        >
+          Bold
+        </button>
+      </div>
+    </div>
+
+    <!-- Rôle -->
+    <div class="space-y-2 pt-2">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Type de badge</label>
+
+      @if (roleService.isAdmin()) {
+        <div class="grid grid-cols-2 gap-2">
+          @for (r of roles; track r) {
+            <button
+              type="button"
+              (click)="selectRole(r)"
+              class="flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm font-semibold transition"
+              [style.border-color]="roleMeta[r].color"
+              [style.background-color]="selectedRole() === r ? roleMeta[r].color : 'transparent'"
+              [style.color]="selectedRole() === r ? roleMeta[r].textColor : '#374151'"
+            >
+              <span>{{ roleMeta[r].icon }}</span
+              ><span>{{ roleMeta[r].label }}</span>
+            </button>
+          }
+        </div>
+      } @else {
+        <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 border border-gray-200">
+          <span>🎟️</span>
+          <span class="text-sm font-semibold text-gray-800">Badge Participant·e</span>
+          <span class="ml-auto text-xs text-gray-400">🔒</span>
+        </div>
+        <p class="text-xs text-gray-500">
+          Les badges Speaker, Organisateur et Bénévole sont réservés aux organisateurs.
+        </p>
+      }
+    </div>
+  </ng-template>
+</div>

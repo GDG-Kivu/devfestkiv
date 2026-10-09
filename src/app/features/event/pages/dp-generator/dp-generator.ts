@@ -6,6 +6,9 @@ import {
   inject,
   ElementRef,
   ViewChild,
+  computed,
+  effect,
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +17,14 @@ import { Generator } from './generator/generator';
 import html2canvas from 'html2canvas-pro';
 import { ImageCropperComponent, ImageCroppedEvent } from 'ngx-image-cropper';
 import { EventConfigService } from '../../services/event-config.service';
+import { RoleService } from '../../../../core/auth/services/role.service';
+import {
+  ROLE_LIST,
+  ROLE_META,
+  ParticipantRole,
+  DpTemplate,
+} from '../../models/participant-role.model';
+import { DpTemplateConfig } from '../../models/event.model';
 
 @Component({
   selector: 'app-dp-generator',
@@ -22,7 +33,32 @@ import { EventConfigService } from '../../services/event-config.service';
 })
 export default class DpGenerator implements OnInit, OnDestroy {
   eventConfig = inject(EventConfigService);
-  constructor(private cdr: ChangeDetectorRef) {}
+  roleService = inject(RoleService);
+
+  readonly roles = ROLE_LIST;
+  readonly roleMeta = ROLE_META;
+
+  selectedRole = signal<ParticipantRole>('attendee');
+  selectedTemplate = signal<DpTemplate>('classic');
+
+  // Config DP lue depuis le document de l'édition (events/{editionId}.dpTemplate)
+  dpConfig = computed<DpTemplateConfig | null>(
+    () => this.eventConfig.eventDocument()?.dpTemplate ?? null,
+  );
+
+  // Garde-fou : c'est CETTE valeur qui est envoyée au Generator
+  effectiveRole = computed<ParticipantRole>(() =>
+    this.roleService.isAdmin() ? this.selectedRole() : 'attendee',
+  );
+
+  constructor(private cdr: ChangeDetectorRef) {
+    // Déconnexion / perte du rôle admin => retour à 'attendee'
+    effect(() => {
+      if (!this.roleService.isAdmin()) {
+        this.selectedRole.set('attendee');
+      }
+    });
+  }
 
   @ViewChild('desktopPreviewWrapper') desktopPreviewWrapper!: ElementRef<HTMLDivElement>;
 
@@ -49,7 +85,7 @@ export default class DpGenerator implements OnInit, OnDestroy {
   // Thèmes pour le Générateur de DP
   generatorTheme: 'default' | 'white' = 'default';
 
-  // suggestions
+  // suggestions (fallback local si Firestore n'en fournit pas)
   suggestedQuotes = [
     'Coder est ma passion.',
     `${this.eventConfig.fullName}, j'arrive !`,
@@ -65,7 +101,6 @@ export default class DpGenerator implements OnInit, OnDestroy {
   showPreviewOverlay = false;
   private checkIsMobileBound = this.checkIsMobile.bind(this);
 
-  // exporting flag (optional spinner)
   isExporting = false;
   mobileScale = 1;
 
@@ -74,7 +109,6 @@ export default class DpGenerator implements OnInit, OnDestroy {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       this.checkIsMobile();
       window.addEventListener('resize', this.checkIsMobileBound);
-      // preload critical assets for weak connections
       this.preloadAssets([
         'assets/dp-layout.png',
         'assets/logo.png',
@@ -119,7 +153,6 @@ export default class DpGenerator implements OnInit, OnDestroy {
     if (this.isMobile && typeof window !== 'undefined') {
       const PADDING = 48;
       const availableWidth = window.innerWidth - PADDING;
-
       this.mobileScale = availableWidth / 900;
     } else {
       this.mobileScale = 1;
@@ -186,6 +219,17 @@ export default class DpGenerator implements OnInit, OnDestroy {
     this.generatorTheme = theme;
   }
 
+  // Rôle & template
+  selectRole(role: ParticipantRole) {
+    if (ROLE_META[role].adminOnly && !this.roleService.isAdmin()) return;
+    this.selectedRole.set(role);
+  }
+
+  setTemplate(t: DpTemplate) {
+    // nom, photo, citation et rôle vivent dans ce composant : rien n'est perdu
+    this.selectedTemplate.set(t);
+  }
+
   // Drag & Drop & File
   onDragOver(event: DragEvent) {
     if (!this.isFormReadyForUpload) return;
@@ -222,7 +266,6 @@ export default class DpGenerator implements OnInit, OnDestroy {
 
   // Cropper
   openCropper(file: File) {
-    // quick validation (5MB)
     const MAX_MB = 5;
     if (file.size > MAX_MB * 1024 * 1024) {
       alert(
@@ -250,7 +293,6 @@ export default class DpGenerator implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  // DpGenerator.ts
   confirmCrop() {
     if (this.tempCroppedImage) {
       this.previewImage = this.tempCroppedImage;
@@ -272,8 +314,10 @@ export default class DpGenerator implements OnInit, OnDestroy {
   }
 
   suggestQuote() {
-    this.quote = this.suggestedQuotes[this.quoteIndex];
-    this.quoteIndex = (this.quoteIndex + 1) % this.suggestedQuotes.length;
+    const fromConfig = this.dpConfig()?.suggestedQuotes;
+    const list = fromConfig?.length ? fromConfig : this.suggestedQuotes;
+    this.quote = list[this.quoteIndex % list.length];
+    this.quoteIndex = (this.quoteIndex + 1) % list.length;
   }
 
   // Capture & Download
@@ -291,7 +335,6 @@ export default class DpGenerator implements OnInit, OnDestroy {
       return;
     }
 
-    // Clone only the capture zone
     const clone = el.cloneNode(true) as HTMLElement;
     clone.style.position = 'absolute';
     clone.style.top = '0';
@@ -299,7 +342,6 @@ export default class DpGenerator implements OnInit, OnDestroy {
     clone.style.zIndex = '-10';
     clone.classList.add('dp-capture-clone');
 
-    // Try to mark inner images as anonymous for CORS (best-effort)
     const imgs = clone.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
     imgs.forEach((img) => {
       try {
@@ -377,8 +419,6 @@ export default class DpGenerator implements OnInit, OnDestroy {
   async captureProfileDP() {
     await this.captureElement('dp-capture-zone-profile', `${this.fullName || 'ma-photo'}-profil`);
     this.scrollToPreview();
-    if (this.isMobile) {
-    }
   }
 
   async captureGeneratorDP() {
