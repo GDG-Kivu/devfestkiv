@@ -215,30 +215,7 @@
               </div>
             }
 
-            <!-- Theme generator -->
             @if (activeTab === 'dp') {
-              <div class="space-y-2 pt-2">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Thème de fond</label>
-                <div class="flex gap-2">
-                  <button
-                    type="button"
-                    (click)="setGeneratorTheme('default')"
-                    class="flex-1 btn"
-                    [class.btn-primary]="generatorTheme === 'default'"
-                  >
-                    Défaut
-                  </button>
-                  <button
-                    type="button"
-                    (click)="setGeneratorTheme('white')"
-                    class="flex-1 btn"
-                    [class.btn-primary]="generatorTheme === 'white'"
-                  >
-                    Blanc
-                  </button>
-                </div>
-              </div>
-
               <ng-container *ngTemplateOutlet="roleAndTemplate"></ng-container>
             }
 
@@ -487,25 +464,6 @@
                   }
 
                   @if (activeTab === 'dp') {
-                    <div class="flex gap-2">
-                      <button
-                        type="button"
-                        (click)="setGeneratorTheme('default')"
-                        class="flex-1 rounded border"
-                        [class.bg-primary]="generatorTheme === 'default'"
-                      >
-                        Défaut
-                      </button>
-                      <button
-                        type="button"
-                        (click)="setGeneratorTheme('white')"
-                        class="flex-1 rounded border"
-                        [class.bg-primary]="generatorTheme === 'white'"
-                      >
-                        Blanc
-                      </button>
-                    </div>
-
                     <ng-container *ngTemplateOutlet="roleAndTemplate"></ng-container>
                   }
 
@@ -562,28 +520,51 @@
 
   <!-- Template partagé : template + rôle (utilisé par le formulaire et l'overlay mobile) -->
   <ng-template #roleAndTemplate>
-    <!-- Template -->
-    <div class="space-y-2 pt-2">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Template</label>
-      <div class="flex gap-2">
-        <button
-          type="button"
-          (click)="setTemplate('classic')"
-          class="flex-1 btn"
-          [class.btn-primary]="selectedTemplate() === 'classic'"
-        >
-          Classic
-        </button>
-        <button
-          type="button"
-          (click)="setTemplate('bold')"
-          class="flex-1 btn"
-          [class.btn-primary]="selectedTemplate() === 'bold'"
-        >
-          Bold
-        </button>
+    @if (roleService.isAdmin()) {
+      <div class="space-y-2 pt-2">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Template</label>
+        <div class="flex gap-2">
+          <button
+            type="button"
+            (click)="setTemplate('classic')"
+            class="flex-1 btn"
+            [class.btn-primary]="selectedTemplate() === 'classic'"
+          >
+            Classic
+          </button>
+          <button
+            type="button"
+            (click)="setTemplate('bold')"
+            class="flex-1 btn"
+            [class.btn-primary]="selectedTemplate() === 'bold'"
+          >
+            Bold
+          </button>
+        </div>
       </div>
-    </div>
+    } @else {
+      <div class="space-y-2 pt-2">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Thème de fond</label>
+        <div class="flex gap-2">
+          <button
+            type="button"
+            (click)="setGeneratorTheme('default')"
+            class="flex-1 btn"
+            [class.btn-primary]="generatorTheme === 'default'"
+          >
+            Défaut
+          </button>
+          <button
+            type="button"
+            (click)="setGeneratorTheme('white')"
+            class="flex-1 btn"
+            [class.btn-primary]="generatorTheme === 'white'"
+          >
+            Blanc
+          </button>
+        </div>
+      </div>
+    }
 
     <!-- Rôle -->
     <div class="space-y-2 pt-2">
