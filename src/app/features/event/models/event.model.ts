@@ -51,6 +51,7 @@ export interface EventConfig {
     tags: string[];
     badgeColor: string;
     dotColor: string;
+    albumUrl?: string;
   }>;
   agenda: {
     days: Array<{
