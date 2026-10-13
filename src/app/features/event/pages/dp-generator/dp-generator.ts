@@ -37,6 +37,7 @@ export default class DpGenerator implements OnInit, OnDestroy {
 
   readonly roles = ROLE_LIST;
   readonly roleMeta = ROLE_META;
+  readonly maxNameLength = 50;
 
   selectedRole = signal<ParticipantRole>('attendee');
   selectedTemplate = signal<DpTemplate>('classic');

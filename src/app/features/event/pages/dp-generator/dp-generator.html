@@ -103,13 +103,13 @@
             <!-- Nom -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2"
-                >Nom (10 caractères max)</label
+                >Nom (50 caractères max)</label
               >
               <input
                 type="text"
                 [(ngModel)]="fullName"
                 name="fullName"
-                maxlength="10"
+                [attr.maxlength]="maxNameLength"
                 placeholder="Votre nom"
                 class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-primary"
                 aria-label="Nom"
@@ -402,7 +402,7 @@
                       type="text"
                       [(ngModel)]="fullName"
                       placeholder="Nom"
-                      maxlength="10"
+                      [attr.maxlength]="maxNameLength"
                       class="flex-1 px-3 py-2 border rounded"
                       aria-label="Nom (overlay)"
                     />
