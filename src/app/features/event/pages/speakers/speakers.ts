@@ -1,5 +1,12 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { EventConfigService } from '../../services/event-config.service';
 import { FirestoreService } from '../../../../core/firestore/firestore.service';
 import { Speaker } from '../../models/speaker.model';
@@ -7,12 +14,12 @@ import { Speaker } from '../../models/speaker.model';
 @Component({
   selector: 'app-speakers',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
+  imports: [NgOptimizedImage],
   template: `
     <div class="min-h-screen bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
         <!-- Header -->
-        <div class="text-center mb-16 animate-fade-in-up">
+        <div class="text-center mb-10 animate-fade-in-up">
           <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
             Speakers {{ eventConfig.year }}
           </h1>
@@ -21,60 +28,115 @@ import { Speaker } from '../../models/speaker.model';
           </p>
         </div>
 
-        <!-- Speakers Grid or Empty state -->
         @if (isLoading()) {
           <div class="text-center py-16 text-gray-500">Chargement des intervenants...</div>
         } @else if (speakers().length > 0) {
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            @for (s of speakers(); track s.id || $index) {
-              <div
-                class="group bg-white rounded-2xl border border-gray-200 p-6 flex flex-col items-center text-center transition-all duration-300 hover:shadow-md hover:border-gray-300 animate-fade-in-up"
-                [style.animationDelay]="$index * 80 + 'ms'"
+          <!-- Filter chips -->
+          <div
+            class="flex flex-wrap justify-center gap-2 mb-10"
+            role="group"
+            aria-label="Filtrer les intervenants par thématique"
+          >
+            @for (c of chips; track c.value) {
+              <button
+                type="button"
+                class="px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA4335] focus-visible:ring-offset-2"
+                [class]="
+                  selectedTopic() === c.value
+                    ? 'bg-[#EA4335] text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                "
+                [attr.aria-pressed]="selectedTopic() === c.value"
+                (click)="selectedTopic.set(c.value)"
               >
-                <div class="relative mb-5">
-                  <img
-                    [src]="s.photo || 'assets/logo.png'"
-                    [alt]="s.name"
-                    class="w-28 h-28 rounded-full object-cover border-2 border-gray-100 shadow-xs group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-
-                <h3 class="text-lg font-bold text-gray-900 mb-1">
-                  {{ s.name }}
-                </h3>
-
-                <p class="text-sm text-gray-500 mb-4 line-clamp-2 px-2">
-                  {{ s.title }}
-                </p>
-
-                <div class="mt-auto">
-                  @if (s.socials.linkedin) {
-                    <a
-                      [href]="s.socials.linkedin"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-                      aria-label="LinkedIn Profile"
-                    >
-                      <svg
-                        class="w-4 h-4"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
-                        />
-                      </svg>
-                    </a>
-                  }
-                </div>
-              </div>
+                {{ c.label }}
+              </button>
             }
           </div>
+
+          @if (filteredSpeakers().length === 0) {
+            <!-- Empty state: filter without result -->
+            <div class="text-center py-16">
+              <p class="text-lg text-gray-500">
+                Aucun intervenant dans cette catégorie pour l'instant.
+              </p>
+            </div>
+          } @else {
+            <!-- Speakers Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              @for (s of filteredSpeakers(); track s.id || $index) {
+                <div
+                  class="group bg-white rounded-2xl border border-gray-200 p-6 flex flex-col items-center text-center transition-all duration-300 hover:shadow-md hover:border-gray-300 animate-fade-in-up"
+                  [style.animationDelay]="$index * 80 + 'ms'"
+                >
+                  <div class="relative mb-5">
+                    @if (s.photo) {
+                      <img
+                        [ngSrc]="s.photo"
+                        width="112"
+                        height="112"
+                        [alt]="s.name"
+                        class="w-28 h-28 rounded-full object-cover border-2 border-gray-100 shadow-xs group-hover:scale-105 transition-transform duration-300"
+                      />
+                    } @else {
+                      <div
+                        class="w-28 h-28 rounded-full border-2 border-gray-100 bg-gray-100 flex items-center justify-center text-2xl font-bold text-gray-500 group-hover:scale-105 transition-transform duration-300"
+                        role="img"
+                        [attr.aria-label]="s.name"
+                      >
+                        {{ initials(s.name) }}
+                      </div>
+                    }
+                  </div>
+
+                  <h3 class="text-lg font-bold text-gray-900 mb-1">
+                    {{ s.name }}
+                  </h3>
+
+                  <p class="text-sm text-gray-500 mb-4 line-clamp-2 px-2">
+                    {{ s.title }}
+                  </p>
+
+                  <div class="mt-auto">
+                    @if (s.socials.linkedin) {
+                      <a
+                        [href]="s.socials.linkedin"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                        aria-label="LinkedIn Profile"
+                      >
+                        <svg
+                          class="w-4 h-4"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+                          />
+                        </svg>
+                      </a>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
         } @else {
-          <div class="text-center py-16">
-            <p class="text-lg text-gray-500">Les intervenants seront annoncés prochainement.</p>
+          <!-- Empty state: no published speaker yet -->
+          <div class="text-center py-16 ">
+            <p class="text-lg text-gray-500 mb-2">
+              Le Call for Speakers est en cours - les intervenants seront annoncés prochainement.
+            </p>
+            <a
+              [href]="eventConfig.cfpUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center px-6 py-3 rounded-full bg-[#EA4335] text-white font-medium hover:opacity-90 transition-opacity duration-200"
+            >
+              Proposer un talk
+            </a>
           </div>
         }
 
@@ -153,6 +215,33 @@ export default class Speakers implements OnInit {
 
   speakers = signal<Speaker[]>([]);
   isLoading = signal(true);
+
+  // Filtre par thématique
+  readonly chips = [
+    { value: 'all', label: 'Tous' },
+    { value: 'AI/ML', label: 'AI/ML' },
+    { value: 'Mobile', label: 'Mobile' },
+    { value: 'Web', label: 'Web' },
+    { value: 'Cloud', label: 'Cloud' },
+    { value: 'Design/Autre', label: 'Design/Autre' },
+  ];
+
+  selectedTopic = signal<string>('all');
+
+  filteredSpeakers = computed(() => {
+    const topic = this.selectedTopic();
+    const list = this.speakers();
+    return topic === 'all' ? list : list.filter((s) => s.topics?.includes(topic));
+  });
+
+  initials(name: string): string {
+    return (name ?? '')
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0].toUpperCase())
+      .join('');
+  }
 
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
