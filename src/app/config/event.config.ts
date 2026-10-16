@@ -28,6 +28,7 @@ export const EVENT_CONFIG: EventConfig = {
     'Le plus grand rassemblement tech de la région des Grands Lacs, réunissant développeurs, étudiants, élèves, entrepreneurs, etc.',
   registrationUrl:
     'https://gdg.community.dev/events/details/google-gdg-kivu-presents-devfest-kivu-2025/cohost-gdg-kivu',
+  cfpUrl: 'https://bit.ly/3Vx4FyU',
   contact: {
     email: 'gdgkivu@gmail.com',
     phone: '+243999537410',

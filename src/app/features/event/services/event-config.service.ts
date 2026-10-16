@@ -84,6 +84,7 @@ export class EventConfigService {
       theme: doc.theme || EVENT_CONFIG.theme,
       description: doc.description || EVENT_CONFIG.description,
       registrationUrl: doc.registrationUrl ?? EVENT_CONFIG.registrationUrl,
+      cfpUrl: doc.cfpUrl ?? EVENT_CONFIG.cfpUrl,
       venue: doc.venue || EVENT_CONFIG.venue,
       contact: doc.contact || EVENT_CONFIG.contact,
       impactStats: doc.impactStats || EVENT_CONFIG.impactStats,
@@ -167,6 +168,9 @@ export class EventConfigService {
 
   get firebase() {
     return this.config().firebase;
+  }
+  get cfpUrl(): string | undefined {
+    return this.config().cfpUrl;
   }
 
   // Helper methods

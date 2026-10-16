@@ -22,6 +22,7 @@ export interface EventConfig {
   };
   theme: string;
   description: string;
+  cfpUrl?: string;
   registrationUrl: string;
   contact: {
     email: string;
@@ -119,6 +120,7 @@ export interface EventDocument {
   theme: string;
   description: string;
   registrationUrl: string;
+  cfpUrl?: string;
   contact: EventConfig['contact'];
   impactStats: EventConfig['impactStats'];
   engagementYear: number;
