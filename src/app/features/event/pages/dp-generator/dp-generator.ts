@@ -17,6 +17,7 @@ import { Generator } from './generator/generator';
 import html2canvas from 'html2canvas-pro';
 import { ImageCropperComponent, ImageCroppedEvent } from 'ngx-image-cropper';
 import { EventConfigService } from '../../services/event-config.service';
+import { AuthService } from '../../../../core/auth/services/auth.service';
 import { RoleService } from '../../../../core/auth/services/role.service';
 import {
   ROLE_LIST,
@@ -34,12 +35,19 @@ import { DpTemplateConfig } from '../../models/event.model';
 export default class DpGenerator implements OnInit, OnDestroy {
   eventConfig = inject(EventConfigService);
   roleService = inject(RoleService);
+  authService = inject(AuthService);
 
   readonly roles = ROLE_LIST;
   readonly roleMeta = ROLE_META;
 
   selectedRole = signal<ParticipantRole>('attendee');
   selectedTemplate = signal<DpTemplate>('classic');
+
+  // Modal de connexion pour rôles réservés
+  showAuthModal = signal(false);
+  pendingRole = signal<ParticipantRole | null>(null);
+  isLoggingIn = signal(false);
+  authError = signal<string | null>(null);
 
   // Config DP lue depuis le document de l'édition (events/{editionId}.dpTemplate)
   dpConfig = computed<DpTemplateConfig | null>(
@@ -65,7 +73,7 @@ export default class DpGenerator implements OnInit, OnDestroy {
   desktopScale = 1;
   private resizeObserver?: ResizeObserver;
 
-  activeTab: 'profile' | 'dp' = 'profile';
+  activeTab: 'profile' | 'dp' = 'dp';
   uiState: 'initial' | 'imageVisible' | 'templateVisible' = 'initial';
 
   fullName = '';
@@ -151,9 +159,14 @@ export default class DpGenerator implements OnInit, OnDestroy {
     this.isMobile = typeof window !== 'undefined' ? window.innerWidth <= 768 : false;
 
     if (this.isMobile && typeof window !== 'undefined') {
-      const PADDING = 48;
-      const availableWidth = window.innerWidth - PADDING;
-      this.mobileScale = availableWidth / 900;
+      const availableWidth = Math.min(window.innerWidth - 32, 420);
+      // Sur mobile, l'overlay a un header (~45px) et les contrôles/inputs (~210px), plus les marges (~40px)
+      // La hauteur maximale allouée pour le canvas d'aperçu est d'environ 38vh à 42vh
+      const maxCanvasHeight = Math.max(180, window.innerHeight * 0.38);
+      const scaleByWidth = availableWidth / 837;
+      const scaleByHeight = maxCanvasHeight / 837;
+      // On prend le min pour que le canvas ET les contrôles tiennent sur l'écran sans masquer les boutons
+      this.mobileScale = Math.min(scaleByWidth, scaleByHeight);
     } else {
       this.mobileScale = 1;
     }
@@ -187,7 +200,11 @@ export default class DpGenerator implements OnInit, OnDestroy {
   closeMobileOverlay() {
     this.showOverlay = false;
     this.showPreviewOverlay = false;
-    this.uiState = 'initial';
+    if (this.previewImage) {
+      this.uiState = 'templateVisible';
+    } else {
+      this.uiState = 'initial';
+    }
     this.restoreBodyScroll();
   }
 
@@ -220,9 +237,55 @@ export default class DpGenerator implements OnInit, OnDestroy {
   }
 
   // Rôle & template
+  onRoleChange(role: ParticipantRole) {
+    this.selectRole(role);
+  }
+
   selectRole(role: ParticipantRole) {
-    if (ROLE_META[role].adminOnly && !this.roleService.isAdmin()) return;
+    if (ROLE_META[role].adminOnly && !this.roleService.isAdmin()) {
+      this.pendingRole.set(role);
+      this.authError.set(null);
+      this.showAuthModal.set(true);
+      return;
+    }
     this.selectedRole.set(role);
+  }
+
+  closeAuthModal() {
+    this.showAuthModal.set(false);
+    this.pendingRole.set(null);
+    this.authError.set(null);
+  }
+
+  async loginWithGoogle() {
+    if (this.isLoggingIn()) return;
+    this.isLoggingIn.set(true);
+    this.authError.set(null);
+
+    try {
+      const user = await this.authService.signInWithGoogle();
+      if (user) {
+        // Laisser à RoleService le temps de synchroniser le profil
+        await this.roleService.ensureProfile(user);
+        if (this.roleService.isAdmin()) {
+          const roleToApply = this.pendingRole();
+          if (roleToApply) {
+            this.selectedRole.set(roleToApply);
+          }
+          this.closeAuthModal();
+        } else {
+          this.authError.set(
+            "Ce compte est connecté mais ne dispose pas des privilèges organisateur requis pour ce badge.",
+          );
+        }
+      }
+    } catch (err: any) {
+      if (err?.code !== 'auth/popup-closed-by-user') {
+        this.authError.set(err?.message || 'Erreur lors de la connexion.');
+      }
+    } finally {
+      this.isLoggingIn.set(false);
+    }
   }
 
   setTemplate(t: DpTemplate) {
@@ -298,7 +361,14 @@ export default class DpGenerator implements OnInit, OnDestroy {
       this.previewImage = this.tempCroppedImage;
 
       this.uiState = 'imageVisible';
-      setTimeout(() => (this.uiState = 'templateVisible'), 100);
+      this.cdr.detectChanges();
+
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          this.uiState = 'templateVisible';
+          this.cdr.detectChanges();
+        }, 50);
+      });
 
       if (this.isMobile) {
         this.openMobileOverlay();
