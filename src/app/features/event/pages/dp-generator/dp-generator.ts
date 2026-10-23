@@ -24,6 +24,7 @@ import {
   ROLE_META,
   ParticipantRole,
   DpTemplate,
+  ROLE_THEME,
 } from '../../models/participant-role.model';
 import { DpTemplateConfig } from '../../models/event.model';
 
@@ -35,20 +36,16 @@ import { DpTemplateConfig } from '../../models/event.model';
 export default class DpGenerator implements OnInit, OnDestroy {
   eventConfig = inject(EventConfigService);
   roleService = inject(RoleService);
-  authService = inject(AuthService);
+
 
   readonly roles = ROLE_LIST;
+  readonly roleTheme = ROLE_THEME; // mêmes couleurs que le DP exporté
   readonly roleMeta = ROLE_META;
   readonly maxNameLength = 50;
 
   selectedRole = signal<ParticipantRole>('attendee');
   selectedTemplate = signal<DpTemplate>('classic');
 
-  // Modal de connexion pour rôles réservés
-  showAuthModal = signal(false);
-  pendingRole = signal<ParticipantRole | null>(null);
-  isLoggingIn = signal(false);
-  authError = signal<string | null>(null);
 
   // Config DP lue depuis le document de l'édition (events/{editionId}.dpTemplate)
   dpConfig = computed<DpTemplateConfig | null>(
@@ -244,50 +241,11 @@ export default class DpGenerator implements OnInit, OnDestroy {
 
   selectRole(role: ParticipantRole) {
     if (ROLE_META[role].adminOnly && !this.roleService.isAdmin()) {
-      this.pendingRole.set(role);
-      this.authError.set(null);
-      this.showAuthModal.set(true);
       return;
     }
     this.selectedRole.set(role);
   }
 
-  closeAuthModal() {
-    this.showAuthModal.set(false);
-    this.pendingRole.set(null);
-    this.authError.set(null);
-  }
-
-  async loginWithGoogle() {
-    if (this.isLoggingIn()) return;
-    this.isLoggingIn.set(true);
-    this.authError.set(null);
-
-    try {
-      const user = await this.authService.signInWithGoogle();
-      if (user) {
-        // Laisser à RoleService le temps de synchroniser le profil
-        await this.roleService.ensureProfile(user);
-        if (this.roleService.isAdmin()) {
-          const roleToApply = this.pendingRole();
-          if (roleToApply) {
-            this.selectedRole.set(roleToApply);
-          }
-          this.closeAuthModal();
-        } else {
-          this.authError.set(
-            "Ce compte est connecté mais ne dispose pas des privilèges organisateur requis pour ce badge.",
-          );
-        }
-      }
-    } catch (err: any) {
-      if (err?.code !== 'auth/popup-closed-by-user') {
-        this.authError.set(err?.message || 'Erreur lors de la connexion.');
-      }
-    } finally {
-      this.isLoggingIn.set(false);
-    }
-  }
 
   setTemplate(t: DpTemplate) {
     // nom, photo, citation et rôle vivent dans ce composant : rien n'est perdu
