@@ -136,6 +136,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
   countdownRunning = signal(false);
   isEventPast = signal(false);
   isEventOngoing = signal(false);
+  eventStatus = signal<'loading' | 'upcoming' | 'ongoing' | 'past' | 'error'>('loading');
 
   // Successive & Multi-day Context Signals
   targetTitle = signal("L'événement commence dans");
@@ -145,6 +146,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
   activeDayLocation = signal('');
 
   private countdownInterval: any;
+  private confettiTimeouts: any[] = [];
   private endTime = 0;
   private readonly STORAGE_KEY = 'countdown_end_time';
 
@@ -152,26 +154,46 @@ export default class HomeComponent implements OnInit, OnDestroy {
     this.evaluateEventStatus();
 
     effect(() => {
-      // Re-evaluate whenever the event document changes
+      // Re-evaluate whenever status or event document changes
+      this.eventConfig.status();
       this.eventConfig.eventDocument();
-      if (isPlatformBrowser(this.platformId)) {
-        this.evaluateEventStatus();
-      }
+      this.evaluateEventStatus();
     });
   }
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.evaluateEventStatus();
+      this.triggerConfetti();
     }
   }
 
   evaluateEventStatus(): void {
+    // 0. Handle data loading state to prevent premature "Édition terminée"
+    const serviceStatus = this.eventConfig.status();
+    if (serviceStatus === 'loading') {
+      this.eventStatus.set('loading');
+      this.isEventPast.set(false);
+      this.isEventOngoing.set(false);
+      this.countdownRunning.set(false);
+      return;
+    }
+
+    if (serviceStatus === 'error' && !this.eventConfig.eventDocument()) {
+      this.eventStatus.set('error');
+      this.isEventPast.set(false);
+      this.isEventOngoing.set(false);
+      this.countdownRunning.set(false);
+      return;
+    }
+
     const config = this.eventConfig.getConfig();
     const festivalDays: FestivalDaySchedule[] = this.eventConfig.getFestivalDays(config);
     const now = Date.now();
 
     if (!festivalDays || festivalDays.length === 0) {
+      this.stopInterval();
+      this.eventStatus.set('past');
       this.isEventPast.set(true);
       this.isEventOngoing.set(false);
       this.countdownRunning.set(false);
@@ -179,10 +201,11 @@ export default class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // 1. Check if ANY day of the current edition is currently active (ongoing)
-    const activeDay = festivalDays.find((d) => now >= d.startMs && now <= d.endMs);
+    // 1. Check if ANY day of the current edition is currently active (ongoing: start <= now < end)
+    const activeDay = festivalDays.find((d) => now >= d.startMs && now < d.endMs);
     if (activeDay) {
       this.stopInterval();
+      this.eventStatus.set('ongoing');
       this.isEventPast.set(false);
       this.isEventOngoing.set(true);
       this.countdownRunning.set(false);
@@ -192,9 +215,10 @@ export default class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // 2. Check if there is an upcoming day in the CURRENT event edition
+    // 2. Check if there is an upcoming day in the CURRENT event edition (start > now)
     const nextUpcomingDay = festivalDays.find((d) => d.startMs > now);
     if (nextUpcomingDay) {
+      this.eventStatus.set('upcoming');
       this.isEventPast.set(false);
       this.isEventOngoing.set(false);
       this.countdownRunning.set(true);
@@ -227,6 +251,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
 
     // 3. All days of current edition have finished -> Event is past / completed for this edition
     this.stopInterval();
+    this.eventStatus.set('past');
     this.isEventPast.set(true);
     this.isEventOngoing.set(false);
     this.countdownRunning.set(false);
@@ -283,12 +308,94 @@ export default class HomeComponent implements OnInit, OnDestroy {
     } catch {}
   }
 
+  private triggerConfetti(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    try {
+      // Respect prefers-reduced-motion: skip animation entirely if user prefers it
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+      }
+    } catch {
+      // Ignore matchMedia access errors in strict sandboxes
+    }
+
+    // Cancel any in-flight confetti from a previous navigation before starting a new burst
+    for (const t of this.confettiTimeouts) clearTimeout(t);
+    this.confettiTimeouts = [];
+
+    // Lazy load confetti outside Angular zone to avoid triggering unnecessary change detection
+    this.ngZone.runOutsideAngular(async () => {
+      try {
+        const confettiModule = await import('canvas-confetti');
+        const confetti = confettiModule.default || confettiModule;
+
+        // Iconic Google colors + white highlight
+        const googleColors = ['#4285F4', '#EA4335', '#FBBC04', '#34A853', '#FFFFFF'];
+
+        // Stage 1: Burst from left & right sides
+        const t1 = setTimeout(() => {
+          confetti({
+            particleCount: 50,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0.12, y: 0.72 },
+            colors: googleColors,
+            ticks: 200,
+            gravity: 1.1,
+            scalar: 0.9,
+            disableForReducedMotion: true,
+          });
+          confetti({
+            particleCount: 50,
+            angle: 120,
+            spread: 55,
+            origin: { x: 0.88, y: 0.72 },
+            colors: googleColors,
+            ticks: 200,
+            gravity: 1.1,
+            scalar: 0.9,
+            disableForReducedMotion: true,
+          });
+        }, 300);
+        this.confettiTimeouts.push(t1);
+
+        // Stage 2: Gentle raining particles from top center
+        const t2 = setTimeout(() => {
+          confetti({
+            particleCount: 40,
+            spread: 80,
+            origin: { x: 0.5, y: 0.2 },
+            colors: googleColors,
+            ticks: 180,
+            gravity: 0.85,
+            scalar: 0.8,
+            disableForReducedMotion: true,
+          });
+        }, 750);
+        this.confettiTimeouts.push(t2);
+      } catch {
+        // Safe fallback if confetti module cannot load
+      }
+    });
+  }
+
   formatTime(value: number): string {
     return String(value).padStart(2, '0');
   }
 
   ngOnDestroy(): void {
     this.stopInterval();
+    for (const t of this.confettiTimeouts) {
+      clearTimeout(t);
+    }
+    this.confettiTimeouts = [];
+    if (isPlatformBrowser(this.platformId)) {
+      import('canvas-confetti').then((m) => {
+        const c = m.default || m;
+        try { c.reset(); } catch {}
+      }).catch(() => {});
+    }
   }
 
   NowDate = new Date();

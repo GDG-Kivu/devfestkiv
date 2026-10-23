@@ -162,7 +162,7 @@ import { CommonModule } from '@angular/common';
       }
 
       .nav-link:hover {
-        color: var(--color-primary);
+        color: var(--color-primary-dark, #d99500);
       }
 
       .nav-link:hover::after {
@@ -170,7 +170,8 @@ import { CommonModule } from '@angular/common';
       }
 
       .nav-link.nav-active {
-        color: var(--color-primary);
+        color: var(--color-primary-dark, #d99500);
+        font-weight: 600;
       }
 
       .nav-link.nav-active::after {

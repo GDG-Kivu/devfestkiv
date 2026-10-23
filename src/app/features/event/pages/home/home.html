@@ -1,9 +1,9 @@
 <!-- Hero Section -->
 <section class="hero-section relative overflow-hidden bg-white min-h-[85vh] flex items-center">
     <!-- Subtle background decoration -->
-    <div class="absolute inset-0 overflow-hidden opacity-40 animate-fade-in">
-        <div class="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-pulse-slow"></div>
-        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse-slow">
+    <div class="absolute inset-0 overflow-hidden opacity-30 animate-fade-in pointer-events-none">
+        <div class="absolute -top-40 -right-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse-slow">
         </div>
     </div>
 
@@ -12,37 +12,55 @@
 
             <!-- Left Content -->
             <div class="text-center lg:text-left space-y-6 md:space-y-8">
-                <!-- Event Badge -->
-                <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium animate-slide-down"
+                <!-- Event Badge: skeleton during loading, real data after -->
+                @if (eventStatus() === 'loading') {
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-gray-100 rounded-full animate-pulse"
+                    style="animation-delay: 0.1s;" aria-hidden="true">
+                    <span class="w-2 h-2 bg-gray-300 rounded-full"></span>
+                    <span class="inline-block h-3 w-40 bg-gray-300 rounded-full"></span>
+                </div>
+                } @else {
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-50 text-amber-900 border border-amber-200/70 rounded-full text-xs sm:text-sm font-medium animate-slide-down shadow-xs"
                     style="animation-delay: 0.1s;">
-                    <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                    <span class="w-2 h-2 bg-primary-dark rounded-full animate-pulse"></span>
                     <span>{{ eventConfig.getFormattedDateBadge() }}</span>
                 </div>
+                }
 
                 <!-- Main Heading -->
                 <div class="animate-slide-up" style="animation-delay: 0.2s;">
                     <h1 class="text-5xl sm:text-6xl md:text-6xl lg:text-7xl font-bold text-text leading-tight mb-4">
                         DevFest Kivu
+                        <!-- Year: skeleton during loading -->
+                        @if (eventStatus() === 'loading') {
+                        <span class="block mt-2">
+                            <span class="inline-block h-12 sm:h-14 lg:h-16 w-36 bg-gray-200 rounded-xl animate-pulse" aria-hidden="true"></span>
+                        </span>
+                        } @else {
                         <span class="block text-primary mt-2">{{ eventConfig.year }}</span>
+                        }
                     </h1>
-                    <p
-                        class="text-base sm:text-lg md:text-xl lg:text-2xl text-text/70 font-light leading-relaxed px-2 sm:px-0">
+                    <p class="text-base sm:text-lg md:text-xl lg:text-2xl text-text/70 font-light leading-relaxed px-2 sm:px-0">
                         Le plus grand rassemblement tech de la région des Grands Lacs, réunissant développeurs,
                         étudiants, élèves, entrepreneurs, etc.
                     </p>
                 </div>
 
-                <!-- CTA Buttons -->
+                <!-- CTA Button: skeleton during loading, real link after -->
                 <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up"
                     style="animation-delay: 0.4s;">
-                    <a href="{{ registrationUrl }}" target="_blank" class="btn btn-primary group w-fit mx-auto lg:mx-0">
-                        <span>Voir les details</span>
+                    @if (eventStatus() === 'loading') {
+                    <div class="h-11 w-44 bg-gray-200 rounded-xl animate-pulse mx-auto lg:mx-0" aria-hidden="true"></div>
+                    } @else {
+                    <a [href]="eventConfig.registrationUrl" target="_blank" class="btn btn-primary group w-fit mx-auto lg:mx-0">
+                        <span>Voir les détails</span>
                         <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
                     </a>
+                    }
                 </div>
 
                 <!-- Technology Tags -->
@@ -66,10 +84,10 @@
                             class="w-full h-full object-cover" fill
                             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 35vw, 25vw" decoding="async"
                             loading="lazy" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent">
                         </div>
                         <div class="absolute bottom-2 left-2 right-2 lg:bottom-4 lg:left-4 lg:right-4">
-                            <p class="text-white font-semibold text-xs lg:text-sm">DevFest Kivu 2023</p>
+                            <p class="text-white font-semibold text-xs lg:text-sm">DevFest Kivu</p>
                         </div>
                     </div>
 
@@ -80,7 +98,7 @@
                             class="w-full h-full object-cover" fill priority
                             sizes="(max-width: 640px) 55vw, (max-width: 1024px) 40vw, 30vw" />
                         <div
-                            class="absolute inset-0 bg-gradient-to-t from-secondary/80 via-secondary/20 to-transparent">
+                            class="absolute inset-0 bg-gradient-to-t from-black/75 via-secondary/20 to-transparent">
                         </div>
                         <div class="absolute bottom-2 left-2 right-2 lg:bottom-4 lg:left-4 lg:right-4">
                             <p class="text-white font-semibold text-xs lg:text-sm">Notre Communauté</p>
@@ -94,38 +112,39 @@
                             class="w-full h-full object-cover" fill
                             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 35vw, 25vw" decoding="async"
                             loading="lazy" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-accent/80 via-accent/20 to-transparent">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent">
                         </div>
                         <div class="absolute bottom-2 left-2 right-2 lg:bottom-4 lg:left-4 lg:right-4">
                             <p class="text-white font-semibold text-xs lg:text-sm">Innovation & Tech</p>
                         </div>
                     </div>
 
-                    <!-- Floating Stats Badge -->
+                    <!-- Floating Stats Badge: participants count from CMS, other stats are static -->
                     <div
                         class="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-40 w-full lg:w-auto flex justify-center px-4 lg:px-0">
                         <div
-                            class="bg-white rounded-xl lg:rounded-2xl p-4 sm:p-5 lg:p-6 shadow-xl lg:shadow-2xl border border-gray-100 inline-flex items-center gap-3 sm:gap-4 lg:gap-6 hover:scale-105 transition-transform duration-300">
+                            class="bg-white/95 backdrop-blur-sm rounded-xl lg:rounded-2xl p-4 sm:p-5 lg:p-6 shadow-xl lg:shadow-2xl border border-gray-100 inline-flex items-center gap-3 sm:gap-4 lg:gap-6 hover:scale-105 transition-transform duration-300">
                             <div class="text-center">
-                                <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-primary whitespace-nowrap">{{
-                                    impactStats[1].number }}+</div>
+                                @if (eventStatus() === 'loading') {
+                                <div class="h-7 w-14 bg-gray-200 rounded-lg animate-pulse mx-auto mb-1" aria-hidden="true"></div>
+                                } @else {
+                                <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-primary-dark whitespace-nowrap">
+                                    {{ eventConfig.impactStats[1]?.number }}+
+                                </div>
+                                }
                                 <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">
                                     Participants
                                 </div>
                             </div>
                             <div class="w-px h-12 bg-gray-200"></div>
                             <div class="text-center">
-                                <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-secondary whitespace-nowrap">
-                                    20+</div>
-                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">Speakers
-                                </div>
+                                <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-secondary whitespace-nowrap">20+</div>
+                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">Speakers</div>
                             </div>
                             <div class="w-px h-12 bg-gray-200"></div>
                             <div class="text-center">
-                                <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-accent whitespace-nowrap">
-                                    100%</div>
-                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">Gratuit
-                                </div>
+                                <div class="text-lg sm:text-2xl lg:text-3xl font-bold text-blue-600 whitespace-nowrap">100%</div>
+                                <div class="text-[10px] sm:text-xs text-text/60 whitespace-nowrap mt-1 lg:mt-0">Gratuit</div>
                             </div>
                         </div>
                     </div>
@@ -146,8 +165,57 @@
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 text-center relative z-10">
 
+        <!-- CAS 0: Chargement des données Firestore -->
+        @if (eventStatus() === 'loading') {
+        <!-- Festive animated skeleton: pulsing Google-color dots + blank countdown placeholders -->
+        <div class="max-w-xl mx-auto text-center py-6">
+            <!-- Animated Google dots -->
+            <div class="flex items-center justify-center gap-2 mb-6">
+                <span class="inline-block w-3 h-3 rounded-full bg-[#4285F4] animate-bounce" style="animation-delay: 0ms;"></span>
+                <span class="inline-block w-3 h-3 rounded-full bg-[#EA4335] animate-bounce" style="animation-delay: 120ms;"></span>
+                <span class="inline-block w-3 h-3 rounded-full bg-[#FBBC04] animate-bounce" style="animation-delay: 240ms;"></span>
+                <span class="inline-block w-3 h-3 rounded-full bg-[#34A853] animate-bounce" style="animation-delay: 360ms;"></span>
+            </div>
+            <!-- Skeleton bars -->
+            <div class="h-5 w-40 bg-white/10 rounded-full mx-auto mb-3 animate-pulse"></div>
+            <div class="h-8 w-56 bg-white/15 rounded-xl mx-auto mb-8 animate-pulse"></div>
+            <!-- Skeleton countdown cards -->
+            <div class="flex justify-center gap-3 sm:gap-4 md:gap-6">
+                <div class="h-20 w-16 sm:w-20 md:w-24 bg-white/10 rounded-2xl animate-pulse"></div>
+                <div class="h-20 w-16 sm:w-20 md:w-24 bg-white/10 rounded-2xl animate-pulse" style="animation-delay: 150ms;"></div>
+                <div class="h-20 w-16 sm:w-20 md:w-24 bg-white/10 rounded-2xl animate-pulse" style="animation-delay: 300ms;"></div>
+                <div class="h-20 w-16 sm:w-20 md:w-24 bg-white/10 rounded-2xl animate-pulse" style="animation-delay: 450ms;"></div>
+            </div>
+        </div>
+        }
+
+        <!-- CAS 0 bis: Erreur de chargement Firestore — loader festif sans fausses informations -->
+        @else if (eventStatus() === 'error') {
+        <div class="max-w-md mx-auto text-center py-6 animate-fade-in">
+            <!-- Spinning Google ring -->
+            <div class="relative inline-flex items-center justify-center w-20 h-20 mb-6">
+                <svg class="w-20 h-20 animate-spin" style="animation-duration: 2s;" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+                    <circle cx="40" cy="40" r="34" stroke="#4285F4" stroke-width="6" stroke-dasharray="53 160" stroke-linecap="round"/>
+                    <circle cx="40" cy="40" r="34" stroke="#EA4335" stroke-width="6" stroke-dasharray="53 160" stroke-dashoffset="-53" stroke-linecap="round"/>
+                    <circle cx="40" cy="40" r="34" stroke="#FBBC04" stroke-width="6" stroke-dasharray="53 160" stroke-dashoffset="-106" stroke-linecap="round"/>
+                    <circle cx="40" cy="40" r="34" stroke="#34A853" stroke-width="6" stroke-dasharray="53 160" stroke-dashoffset="-159" stroke-linecap="round"/>
+                </svg>
+                <!-- Inner G icon -->
+                <span class="absolute text-white font-bold text-xl select-none" aria-hidden="true">G</span>
+            </div>
+            <!-- Bouncing dots -->
+            <div class="flex items-center justify-center gap-2 mb-4">
+                <span class="inline-block w-2 h-2 rounded-full bg-[#4285F4] animate-bounce" style="animation-delay: 0ms;"></span>
+                <span class="inline-block w-2 h-2 rounded-full bg-[#EA4335] animate-bounce" style="animation-delay: 150ms;"></span>
+                <span class="inline-block w-2 h-2 rounded-full bg-[#FBBC04] animate-bounce" style="animation-delay: 300ms;"></span>
+                <span class="inline-block w-2 h-2 rounded-full bg-[#34A853] animate-bounce" style="animation-delay: 450ms;"></span>
+            </div>
+            <p class="text-gray-400 text-sm">Chargement des informations en cours…</p>
+        </div>
+        }
+
         <!-- CAS 1: Événement Clôturé -->
-        @if (isEventPast()) {
+        @else if (isEventPast()) {
         <div class="max-w-2xl mx-auto text-center animate-fade-in">
             <!-- Status Badge -->
             <div
@@ -160,9 +228,8 @@
                 Rendez-vous à la prochaine édition !
             </h2>
 
-            <p class="text-gray-300 text-sm sm:text-base  mx-auto mb-8 leading-relaxed">
-                Cette édition du {{ eventConfig.fullName || 'DevFest Kivu' }} est désormais clôturée. Restez connectés
-                pour découvrir les dates de la prochaine édition.
+            <p class="text-gray-300 text-sm sm:text-base mx-auto mb-8 leading-relaxed">
+                Cette édition est désormais clôturée. Restez connectés pour découvrir les dates de la prochaine édition.
             </p>
 
             <div class="flex flex-wrap items-center justify-center gap-4">
@@ -197,8 +264,7 @@
             </h2>
 
             <p class="text-gray-300 text-sm sm:text-base mx-auto mb-8 leading-relaxed">
-                Le festival {{ eventConfig.fullName || 'DevFest Kivu' }} se déroule actuellement. Suivez les
-                interventions et posez vos questions en direct !
+                Le festival se déroule actuellement. Suivez les interventions et posez vos questions en direct !
             </p>
 
             <div class="flex flex-wrap items-center justify-center gap-4">
@@ -253,7 +319,7 @@
             </div>
 
             <!-- Separator -->
-            <div class="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-bold -mt-4">:</div>
+            <div class="text-2xl sm:text-3xl md:text-4xl text-primary/70 font-bold -mt-4">:</div>
 
             <!-- Hours -->
             <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
@@ -266,7 +332,7 @@
             </div>
 
             <!-- Separator -->
-            <div class="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-bold -mt-4">:</div>
+            <div class="text-2xl sm:text-3xl md:text-4xl text-primary/70 font-bold -mt-4">:</div>
 
             <!-- Minutes -->
             <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
@@ -279,7 +345,7 @@
             </div>
 
             <!-- Separator -->
-            <div class="text-2xl sm:text-3xl md:text-4xl text-gray-600 font-bold -mt-4">:</div>
+            <div class="text-2xl sm:text-3xl md:text-4xl text-primary/70 font-bold -mt-4">:</div>
 
             <!-- Seconds -->
             <div class="flex flex-col items-center flex-1 max-w-[90px] sm:max-w-[110px] md:max-w-[130px]">
@@ -315,18 +381,33 @@
                 Notre Impact
             </h2>
             <p class="text-sm sm:text-base md:text-lg text-text/70 max-w-2xl mx-auto px-4 leading-relaxed">
-                <span class="text-primary font-semibold">{{ engagementYear }} années d'engagement</span> pour
-                l'écosystème technologique de la région
+                @if (eventStatus() === 'loading') {
+                <span class="inline-block h-5 w-48 bg-gray-200 rounded-full animate-pulse" aria-hidden="true"></span>
+                } @else {
+                <span class="text-primary-dark font-semibold">{{ eventConfig.engagementYear }} années d'engagement</span>
+                } pour l'écosystème technologique de la région
             </p>
         </div>
 
         <!-- Stats Grid -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-10 md:mb-12">
-            @for (stat of impactStats; track $index) {
+            @if (eventStatus() === 'loading') {
+            <!-- Skeleton stats grid -->
+            @for (_ of [1,2,3,4]; track $index) {
+            <div class="group text-center">
+                <div class="bg-white rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-100 h-full flex flex-col items-center justify-center gap-3">
+                    <div class="h-10 w-20 bg-gray-200 rounded-lg animate-pulse"></div>
+                    <div class="h-4 w-24 bg-gray-200 rounded-md animate-pulse"></div>
+                    <div class="h-3 w-32 bg-gray-100 rounded-md animate-pulse"></div>
+                </div>
+            </div>
+            }
+            } @else {
+            @for (stat of eventConfig.impactStats; track $index) {
             <div class="group text-center">
                 <div
-                    class="bg-gray-50 rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-100 hover:border-primary/30 transition-all duration-300 hover:shadow-lg h-full">
-                    <div class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-2 md:mb-3">
+                    class="bg-white rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 lg:p-10 border border-gray-100 hover:border-gray-200 transition-all duration-300 shadow-xs hover:shadow-md h-full">
+                    <div class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-dark mb-2 md:mb-3">
                         {{ stat.number }}
                     </div>
                     <div class="text-xs sm:text-sm md:text-base text-text font-semibold mb-1 md:mb-2">
@@ -338,7 +419,7 @@
                 </div>
             </div>
             }
-        </div>
+            }
 
         <!-- Call to Action -->
         <div class="text-center px-4">
@@ -355,7 +436,6 @@
             </p>
         </div>
     </div>
-</section>
 
 <!-- Past Events Gallery -->
 <app-past-events-gallery></app-past-events-gallery>
@@ -384,9 +464,30 @@
 
             <!-- Scrolling wrapper -->
             <div class="overflow-hidden mb-10 md:mb-12">
+                @if (eventStatus() === 'loading') {
+                <!-- Skeleton for partners during loading -->
+                <div class="flex gap-4 sm:gap-6 overflow-hidden">
+                    @for (_ of [1,2,3]; track $index) {
+                    <div class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] bg-white rounded-xl md:rounded-2xl p-6 md:p-8 border border-gray-100">
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="flex-shrink-0 w-14 h-14 bg-gray-200 rounded-lg animate-pulse"></div>
+                            <div class="flex-1 space-y-2">
+                                <div class="h-4 w-28 bg-gray-200 rounded-md animate-pulse"></div>
+                                <div class="h-3 w-20 bg-gray-100 rounded-md animate-pulse"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="h-3 w-full bg-gray-100 rounded animate-pulse"></div>
+                            <div class="h-3 w-4/5 bg-gray-100 rounded animate-pulse"></div>
+                            <div class="h-3 w-2/3 bg-gray-100 rounded animate-pulse"></div>
+                        </div>
+                    </div>
+                    }
+                </div>
+                } @else {
                 <div class="flex gap-4 sm:gap-6 animate-scroll-partners hover:pause-animation">
                     <!-- First set of partners -->
-                    @for (partner of supports; track $index) {
+                    @for (partner of eventConfig.supports; track $index) {
                     <div
                         class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] group bg-white rounded-xl md:rounded-2xl p-6 md:p-8 border border-gray-100 hover:border-primary/20 transition-all duration-300 hover:shadow-lg">
 
@@ -403,7 +504,7 @@
                                 <h4 class="text-base sm:text-lg font-semibold text-text mb-1 truncate">
                                     {{ partner.name }}
                                 </h4>
-                                <p class="text-xs sm:text-sm text-primary font-medium">
+                                <p class="text-xs sm:text-sm text-primary-dark font-medium">
                                     {{ partner.role }}
                                 </p>
                             </div>
@@ -414,18 +515,18 @@
                             {{ partner.quote }}
                         </p>
                     </div>
-
                     }
 
-                    <!-- Duplicate set for seamless loop -->
-                    @for (partner of supports; track $index) {
+                    <!-- Duplicate set for seamless loop (hidden from screen readers) -->
+                    @for (partner of eventConfig.supports; track $index) {
                     <div
-                        class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] group bg-white rounded-xl md:rounded-2xl p-6 md:p-8 border border-gray-100 hover:border-primary/20 transition-all duration-300 hover:shadow-lg">
+                        class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] group bg-white rounded-xl md:rounded-2xl p-6 md:p-8 border border-gray-100 hover:border-primary/20 transition-all duration-300 hover:shadow-lg"
+                        aria-hidden="true">
                         <!-- Partner Logo/Image -->
                         <div class="flex items-start gap-4 mb-4">
                             <div
                                 class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 border-2 border-gray-100 group-hover:border-primary/30 rounded-lg flex items-center justify-center bg-white p-1">
-                                <a [href]="partner.link" target="_blank" rel="noopener noreferrer"
+                                <a [href]="partner.link" target="_blank" rel="noopener noreferrer" tabindex="-1"
                                     class="w-full h-full flex items-center justify-center">
                                     <img [src]="partner.logo" [alt]="partner.name"
                                         class="max-w-full max-h-full object-contain" loading="lazy" />
@@ -435,7 +536,7 @@
                                 <h4 class="text-base sm:text-lg font-semibold text-text mb-1 truncate">
                                     {{ partner.name }}
                                 </h4>
-                                <p class="text-xs sm:text-sm text-primary font-medium">
+                                <p class="text-xs sm:text-sm text-primary-dark font-medium">
                                     {{ partner.role }}
                                 </p>
                             </div>
@@ -448,6 +549,7 @@
                     </div>
                     }
                 </div>
+                }
             </div>
         </div>
 
@@ -489,12 +591,12 @@
 </style>
 
 <!-- Generator Section -->
-<section class="relative overflow-hidden bg-background  py-16 md:py-20">
-    <!-- Animated Background Elements -->
-    <div class="absolute inset-0 opacity-20">
-        <div class="absolute top-10 left-10 w-20 h-20 bg-primary rounded-full animate-pulse"></div>
-        <div class="absolute bottom-16 right-20 w-16 h-16 bg-secondary rounded-full animate-bounce"></div>
-        <div class="absolute top-1/3 right-1/4 w-24 h-24 bg-accent rounded-lg rotate-12 animate-float"></div>
+<section class="relative overflow-hidden bg-background py-16 md:py-20">
+    <!-- Animated Background Elements - Subtle & Soft -->
+    <div class="absolute inset-0 opacity-15 pointer-events-none">
+        <div class="absolute top-10 left-10 w-28 h-28 bg-primary/30 rounded-full blur-2xl"></div>
+        <div class="absolute bottom-16 right-20 w-28 h-28 bg-secondary/30 rounded-full blur-2xl"></div>
+        <div class="absolute top-1/3 right-1/4 w-32 h-32 bg-blue-500/20 rounded-2xl blur-2xl"></div>
     </div>
 
     <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
@@ -503,7 +605,7 @@
             Générateur de Photo de Profil
         </h2>
         <p class="text-base sm:text-lg md:text-xl text-text/80 max-w-3xl mx-auto leading-relaxed mb-10">
-            Personnalisez votre <span class="text-primary font-semibold">DP officiel DevFest Kivu</span>
+            Personnalisez votre <span class="text-primary-dark font-semibold">DP officiel DevFest Kivu</span>
             et montrez votre participation à l’événement !
         </p>
 
@@ -522,7 +624,7 @@
         <!-- Illustration -->
         <div class="mt-12 flex justify-center">
             <img [ngSrc]="'/assets/logo.png'" alt="Exemple DP"
-                class="w-40 h-40 rounded-full shadow-lg border-4 border-primary animate-fade-in-up" width="160"
+                class="w-40 h-40 rounded-full shadow-lg border-4 border-primary-dark/80 animate-fade-in-up" width="160"
                 height="160" decoding="async" loading="lazy">
         </div>
     </div>
