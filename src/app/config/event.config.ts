@@ -124,6 +124,19 @@ export const EVENT_CONFIG: EventConfig = {
   ],
   pastEvents: [
     {
+      title: 'DevFest Kivu 2025',
+      description:
+        'Grand festival annuel avec des speakers internationaux et des workshops innovants sur les dernières technologies.',
+      date: 'Novembre 2025',
+      location: 'Bukavu',
+      category: 'Festival',
+      participants: '400+',
+      tags: ['AI/ML', 'Web', 'Mobile'],
+      badgeColor: 'text-blue-700 bg-blue-100',
+      dotColor: 'bg-blue-500',
+      albumUrl: 'https://photos.app.goo.gl/ZnqAHwBeRQXn7PUS6',
+    },
+    {
       title: 'DevFest Kivu 2024',
       description:
         'Grand festival annuel avec des speakers internationaux et des workshops innovants sur les dernières technologies.',
@@ -134,6 +147,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['AI/ML', 'Web', 'Mobile'],
       badgeColor: 'text-blue-700 bg-blue-100',
       dotColor: 'bg-blue-500',
+      albumUrl: 'https://photos.app.goo.gl/ha4m6AS4LcAAYtm28',
     },
     {
       title: 'DevFest Kivu 2023',
@@ -146,6 +160,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['AI/ML', 'Cloud', 'Mobile'],
       badgeColor: 'text-blue-700 bg-blue-100',
       dotColor: 'bg-blue-500',
+      albumUrl: 'https://photos.app.goo.gl/ha4m6AS4LcAAYtm28',
     },
     {
       title: 'DevFest Kivu 2022',
@@ -158,6 +173,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['AI/ML', 'Cloud', 'Mobile'],
       badgeColor: 'text-blue-700 bg-blue-100',
       dotColor: 'bg-blue-500',
+      albumUrl: 'https://photos.app.goo.gl/ha4m6AS4LcAAYtm28',
     },
     {
       title: 'DevFest Kivu 2021',
@@ -170,6 +186,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['AI/ML', 'Cloud', 'Mobile'],
       badgeColor: 'text-blue-700 bg-blue-100',
       dotColor: 'bg-blue-500',
+      albumUrl: 'https://photos.app.goo.gl/ha4m6AS4LcAAYtm28',
     },
     {
       title: 'DevFest Kivu 2020',
@@ -182,6 +199,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['AI/ML', 'Cloud', 'Mobile'],
       badgeColor: 'text-blue-700 bg-blue-100',
       dotColor: 'bg-blue-500',
+      albumUrl: 'https://photos.app.goo.gl/ha4m6AS4LcAAYtm28',
     },
     {
       title: 'AI/ML Meetup',
@@ -194,6 +212,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['AI', 'Machine Learning', 'Data'],
       badgeColor: 'text-purple-700 bg-purple-100',
       dotColor: 'bg-purple-500',
+      albumUrl: 'https://photos.app.goo.gl/kd1N1nXvLF7HNbXs5',
     },
     {
       title: 'Malakisi-Lancement',
@@ -206,6 +225,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['Angular', 'Kotlin', 'Firebase'],
       badgeColor: 'text-indigo-700 bg-indigo-100',
       dotColor: 'bg-indigo-500',
+      albumUrl: 'https://photos.app.goo.gl/kd1N1nXvLF7HNbXs5',
     },
     {
       title: 'DevFest Kivu 2019',
@@ -218,6 +238,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['Web', 'Mobile', 'Community'],
       badgeColor: 'text-green-700 bg-green-100',
       dotColor: 'bg-green-500',
+      albumUrl: 'https://photos.app.goo.gl/ha4m6AS4LcAAYtm28',
     },
     {
       title: 'Web Development Bootcamp',
@@ -230,6 +251,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['Web', 'JavaScript', 'HTML/CSS'],
       badgeColor: 'text-orange-700 bg-orange-100',
       dotColor: 'bg-orange-500',
+      albumUrl: 'https://photos.app.goo.gl/kd1N1nXvLF7HNbXs5',
     },
     {
       title: 'Mobile App Challenge',
@@ -242,6 +264,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['Mobile', 'Android', 'iOS'],
       badgeColor: 'text-red-700 bg-red-100',
       dotColor: 'bg-red-500',
+      albumUrl: 'https://photos.app.goo.gl/kd1N1nXvLF7HNbXs5',
     },
   ],
   agenda: {

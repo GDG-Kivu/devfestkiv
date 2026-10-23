@@ -89,9 +89,17 @@
                         </div>
 
                         <!-- Action button -->
-                        <button class="btn btn-sm w-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm">
+                        @if (item.albumUrl) {
+                        <a [href]="item.albumUrl" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-sm w-full bg-white/20 hover:bg-white/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white text-white backdrop-blur-sm">
                             Voir les photos
-                        </button>
+                        </a>
+                        } @else {
+                        <span class="btn btn-sm w-full bg-white/10 text-white/70 backdrop-blur-sm cursor-not-allowed"
+                            aria-disabled="true">
+                            Photos bientôt disponibles
+                        </span>
+                        }
                     </div>
                 </div>
             </div>
@@ -143,9 +151,17 @@
                                 }}</span>
                             }
                         </div>
-                        <button class="btn btn-sm w-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm">
+                        @if (item.albumUrl) {
+                        <a [href]="item.albumUrl" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-sm w-full bg-white/20 hover:bg-white/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white text-white backdrop-blur-sm">
                             Voir les photos
-                        </button>
+                        </a>
+                        } @else {
+                        <span class="btn btn-sm w-full bg-white/10 text-white/70 backdrop-blur-sm cursor-not-allowed"
+                            aria-disabled="true">
+                            Photos bientôt disponibles
+                        </span>
+                        }
                     </div>
                 </div>
             </div>
@@ -201,9 +217,17 @@
                                 }}</span>
                             }
                         </div>
-                        <button class="btn btn-sm w-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm">
+                        @if (item.albumUrl) {
+                        <a [href]="item.albumUrl" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-sm w-full bg-white/20 hover:bg-white/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white text-white backdrop-blur-sm">
                             Voir les photos
-                        </button>
+                        </a>
+                        } @else {
+                        <span class="btn btn-sm w-full bg-white/10 text-white/70 backdrop-blur-sm cursor-not-allowed"
+                            aria-disabled="true">
+                            Photos bientôt disponibles
+                        </span>
+                        }
                     </div>
                 </div>
             </div>
@@ -255,9 +279,17 @@
                                 }}</span>
                             }
                         </div>
-                        <button class="btn btn-sm w-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm">
+                        @if (item.albumUrl) {
+                        <a [href]="item.albumUrl" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-sm w-full bg-white/20 hover:bg-white/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white text-white backdrop-blur-sm">
                             Voir les photos
-                        </button>
+                        </a>
+                        } @else {
+                        <span class="btn btn-sm w-full bg-white/10 text-white/70 backdrop-blur-sm cursor-not-allowed"
+                            aria-disabled="true">
+                            Photos bientôt disponibles
+                        </span>
+                        }
                     </div>
                 </div>
             </div>

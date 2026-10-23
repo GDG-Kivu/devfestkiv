@@ -79,7 +79,10 @@
     [class.translate-y-0]="uiState === 'templateVisible' && fullName"
     [class.opacity-0]="uiState !== 'templateVisible' || !fullName"
     [class.translate-y-20]="uiState !== 'templateVisible' || !fullName">
-    <span class="text-white px-4 py-1 rounded-full text-lg font-semibold" [ngClass]="{
+    <span class="inline-block max-w-[90%] whitespace-normal break-words text-center leading-tight text-white px-4 py-1 rounded-full text-lg font-semibold"
+      [class.text-sm]="fullName.length > 20 && fullName.length <= 35"
+      [class.text-xs]="fullName.length > 35"
+      [ngClass]="{
         'bg-amber-600': profileTheme === 'yellow',
         'bg-blue-600': profileTheme === 'blue',
         'bg-green-600': profileTheme === 'green',

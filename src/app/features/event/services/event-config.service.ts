@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { EVENT_CONFIG } from '../../../config/event.config';
-import { EventConfig, EventDocument } from '../models/event.model';
+import { DpTemplateConfig, EventConfig, EventDocument } from '../models/event.model';
 import { FirestoreService } from '../../../core/firestore/firestore.service';
 
 export interface FestivalDaySchedule {
@@ -50,18 +50,27 @@ const FRENCH_DAYS = [
 export class EventConfigService {
   private config = signal<EventConfig>(EVENT_CONFIG);
   readonly eventDocument = signal<EventDocument | null>(null);
+  readonly dpTemplateConfig = signal<DpTemplateConfig | null>(null);
 
-  constructor() {
-    const fs = inject(FirestoreService, { optional: true });
-    if (fs) {
-      fs.getCurrentEventWithFallback().subscribe((eventDoc) => {
-        if (eventDoc) {
-          this.eventDocument.set(eventDoc);
-          this.syncFromDocument(eventDoc);
-        }
-      });
+constructor() {
+  const fs = inject(FirestoreService, { optional: true });
+
+  if (!fs) return;
+
+  fs.getCurrentEventWithFallback().subscribe((eventDoc) => {
+    if (!eventDoc) {
+      this.eventDocument.set(null);
+      this.dpTemplateConfig.set(null);
+      return;
     }
-  }
+
+    const dpConfig = eventDoc.dpTemplate ?? null;
+
+    this.dpTemplateConfig.set(dpConfig);
+    this.eventDocument.set(eventDoc);
+    this.syncFromDocument(eventDoc);
+  });
+}
 
   private syncFromDocument(doc: EventDocument): void {
     const normalizeDate = (d: any, fallback: Date): Date => {
