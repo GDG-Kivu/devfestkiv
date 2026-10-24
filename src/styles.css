@@ -45,29 +45,39 @@ to use them :
 /* global variable */
 @theme {
   /* Primary brand colors */
-  --color-primary: #f9ab00; /* Blue 500 */
-  --color-secondary: #34a853; /* Green 500 */
-  --color-accent: #f9ab00; /* Yellow 600 */
-  --color-danger: #ea4335; /* Red 500 */
+  --color-primary: #f9ab00; /* DevFest Yellow */
+  --color-primary-dark: #d99500; /* High-contrast darker yellow */
+  --color-secondary: #34a853; /* Google Green */
+  --color-secondary-dark: #2d9247;
+  --color-accent: #f9ab00;
+  --color-accent-dark: #d99500;
+  --color-danger: #ea4335; /* Google Red */
+  --color-danger-dark: #d33828;
+  --color-blue: #4285f4; /* Google Blue */
+  --color-blue-dark: #3367d6;
 
-  --background: #faf5e8;
+  --background: #fafafa;
 
-  /* Halftones */
-  --color-primary-halftone: #ffd427;
-  --color-secondary-halftone: #5cdb6d;
-  --color-accent-halftone: #ffd427;
-  --color-danger-halftone: #ff7daf;
+  /* Halftones & hover states */
+  --color-primary-halftone: #d99500;
+  --color-secondary-halftone: #2d9247;
+  --color-accent-halftone: #d99500;
+  --color-danger-halftone: #d33828;
 
   /* Pastels */
-  --color-primary-pastel: #ffe7a5;
-  --color-secondary-pastel: #ccf6c5;
-  --color-accent-pastel: #ffe7a5;
-  --color-danger-pastel: #f8d8d8;
+  --color-primary-pastel: #fff2cc;
+  --color-secondary-pastel: #e6f4ea;
+  --color-accent-pastel: #fff2cc;
+  --color-danger-pastel: #fce8e6;
+  --color-blue-pastel: #e8f0fe;
   --color-orange-100: #ffedd5;     /* Light orange for gradients */
 
-  /* Grayscale */
-  --color-background: #f0f0f0; /* Off White */
-  --color-text: #1e1e1e; /* Black 02 */
+  /* Grayscale & Backgrounds */
+  --color-background: #fafafa; /* Modern Off-white */
+  --color-background-alt: #f5f6f8; /* Soft alternative section bg */
+  --color-dark-section: #111827; /* Rich dark section */
+  --color-text: #1e1e1e; /* Deep text */
+  --color-text-muted: #5f6368;
 
   /* Spacing */
   --spacing-xs: 4px;
@@ -80,12 +90,9 @@ to use them :
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 20px;
-  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
-
-/* body {
-    background-color: var(--background);
-} */
 
 /* Button Utility Classes - Mobile First & Modern */
 .btn {
@@ -93,8 +100,8 @@ to use them :
   align-items: center;
   justify-content: center;
   font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
   cursor: pointer;
   text-decoration: none;
   user-select: none;
@@ -103,7 +110,7 @@ to use them :
   overflow: hidden;
   padding: 8px 18px; /* Default padding */
   font-size: 0.875rem; /* Default font size */
-  border-radius: 0.375rem; /* Consistent rounded corners */
+  border-radius: 0.5rem; /* Consistent rounded corners */
 }
 
 /* Responsive adjustments */
@@ -130,9 +137,10 @@ to use them :
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.35);
   transform: translate(-50%, -50%);
   transition: width 0.6s, height 0.6s;
+  pointer-events: none;
 }
 
 .btn:active::before {
@@ -140,8 +148,8 @@ to use them :
   height: 300px;
 }
 
-.btn:focus {
-  outline: 2px solid var(--color-primary);
+.btn:focus-visible {
+  outline: 2px solid var(--color-blue);
   outline-offset: 2px;
 }
 
@@ -149,6 +157,7 @@ to use them :
   opacity: 0.5;
   cursor: not-allowed;
   transform: none !important;
+  box-shadow: none !important;
 }
 
 .btn:active:not(:disabled) {
@@ -157,65 +166,88 @@ to use them :
 
 .btn-primary {
   background-color: var(--color-primary);
-  color: white;
-  box-shadow: 0 2px 8px rgba(249, 171, 0, 0.25);
+  color: #111827;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(249, 171, 0, 0.28);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--color-primary-halftone);
-  box-shadow: 0 4px 12px rgba(249, 171, 0, 0.35);
+  background-color: var(--color-primary-dark);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(217, 149, 0, 0.35);
 }
 
 .btn-secondary {
   background-color: var(--color-secondary);
-  color: white;
-  box-shadow: 0 2px 8px rgba(52, 168, 83, 0.25);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(52, 168, 83, 0.25);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: var(--color-secondary-halftone);
-  box-shadow: 0 4px 12px rgba(52, 168, 83, 0.35);
+  background-color: var(--color-secondary-dark);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(45, 146, 71, 0.35);
 }
 
 .btn-outline {
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary-dark);
+  color: var(--color-primary-dark);
   background-color: transparent;
+  font-weight: 600;
 }
 
 .btn-outline:hover:not(:disabled) {
   background-color: var(--color-primary);
-  color: white;
-  box-shadow: 0 4px 12px rgba(249, 171, 0, 0.35);
+  border-color: var(--color-primary);
+  color: #111827;
+  box-shadow: 0 4px 14px rgba(249, 171, 0, 0.25);
 }
 
 .btn-ghost {
-  color: var(--color-primary);
+  color: var(--color-primary-dark);
   background-color: transparent;
+  font-weight: 600;
 }
 
 .btn-ghost:hover:not(:disabled) {
   background-color: var(--color-primary-pastel);
+  color: var(--color-primary-dark);
 }
 
 .btn-danger {
   background-color: var(--color-danger);
-  color: white;
-  box-shadow: 0 2px 8px rgba(234, 67, 53, 0.25);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(234, 67, 53, 0.25);
 }
 
 .btn-danger:hover:not(:disabled) {
-  background-color: var(--color-danger-halftone);
-  box-shadow: 0 4px 12px rgba(234, 67, 53, 0.35);
+  background-color: var(--color-danger-dark);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(211, 56, 40, 0.35);
 }
 
 .btn-text {
-    background-color: var(--color-text);
-    color: white;
+  background-color: var(--color-text);
+  color: #ffffff;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .btn-text:hover:not(:disabled) {
-    background-color: #333;
+  background-color: #2d3748;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* view transition setup */
@@ -327,3 +359,130 @@ to use them :
 .animate-float-right {
   animation: float-right 3.5s ease-in forwards;
 }
+
+/* ==========================================================================
+   Interactive 3D Flip Card System (DevFest Kivu Experience)
+   ========================================================================== */
+.flip-card-container {
+  perspective: 1200px;
+  cursor: pointer;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+  border-radius: 1rem;
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* Hover flip on devices supporting hover */
+@media (hover: hover) and (pointer: fine) {
+  .flip-card-container:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+}
+
+/* Click / Touch / Focus flip state */
+.flip-card-container.is-flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Accessible focus visible on card */
+.flip-card-container:focus-visible {
+  outline: 3px solid var(--color-blue);
+  outline-offset: 4px;
+}
+
+/* Graceful fallback for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .flip-card-inner {
+    transition: none !important;
+  }
+  .flip-card-container:hover .flip-card-inner,
+  .flip-card-container.is-flipped .flip-card-inner {
+    transform: none !important;
+  }
+  .flip-card-container.is-flipped .flip-card-front {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .flip-card-container.is-flipped .flip-card-back {
+    opacity: 1;
+    transform: none;
+    z-index: 10;
+  }
+}
+
+/* ==========================================================================
+   Smooth Height Animated Accordion
+   ========================================================================== */
+.accordion-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accordion-wrapper.is-open {
+  grid-template-rows: 1fr;
+}
+
+.accordion-body {
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Cultural & Identity Graphical Textures (Kivu + DevFest)
+   ========================================================================== */
+.bg-tech-mesh {
+  background-image: radial-gradient(rgba(66, 133, 244, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-tech-mesh-dark {
+  background-image: radial-gradient(rgba(249, 171, 0, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.kivu-subtle-pattern {
+  background-image: url('/assets/back.png');
+  background-repeat: repeat;
+  background-size: 320px 320px;
+}
+
+/* ==========================================================================
+   Infinite Partners Marquee Scroll
+   ========================================================================== */
+@keyframes scrollPartners {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-scroll-partners {
+  display: flex;
+  width: max-content;
+  animation: scrollPartners 30s linear infinite;
+}
+
+.animate-scroll-partners:hover,
+.hover\:pause-animation:hover .animate-scroll-partners {
+  animation-play-state: paused;
+}

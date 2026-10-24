@@ -477,14 +477,26 @@ export class FirestoreService {
   }
 
   private localEventFallback(editionId: string): EventDocument | undefined {
-    if (editionId !== String(EVENT_CONFIG.edition)) return undefined;
+    const year = parseInt(editionId, 10) || EVENT_CONFIG.year || 2026;
+    const isConfigYear = String(EVENT_CONFIG.edition) === editionId;
     return {
       editionId,
-      edition: EVENT_CONFIG.edition,
-      year: EVENT_CONFIG.year,
-      name: EVENT_CONFIG.name,
-      fullName: EVENT_CONFIG.fullName,
-      date: EVENT_CONFIG.date,
+      edition: year,
+      year,
+      name: isConfigYear ? EVENT_CONFIG.name : `DevFest Kivu ${year}`,
+      fullName: isConfigYear ? EVENT_CONFIG.fullName : `DevFest Kivu ${year}`,
+      date: isConfigYear
+        ? EVENT_CONFIG.date
+        : {
+            start: new Date(`${year}-11-28T09:00:00`),
+            end: new Date(`${year}-11-29T18:00:00`),
+            display: {
+              start: 28,
+              end: 29,
+              month: 'Novembre',
+              year,
+            },
+          },
       venue: EVENT_CONFIG.venue,
       theme: EVENT_CONFIG.theme,
       description: EVENT_CONFIG.description,
@@ -494,20 +506,54 @@ export class FirestoreService {
       engagementYear: EVENT_CONFIG.engagementYear,
       maxQuestionsPerUser: DEFAULT_QUESTIONS_PER_USER,
       isPublished: true,
+      agenda: isConfigYear ? EVENT_CONFIG.agenda : undefined,
     };
   }
 
   private normalizeEventDates(event: EventDocument): EventDocument {
-    const normalize = (value: EventDocument['date']['start']): Date => {
-      if (value instanceof Date) return value;
-      return formattedTimestamp(value as Timestamp);
+    if (!event) return event;
+    const normalize = (value: any, isEnd: boolean, startRef?: Date): Date => {
+      if (value instanceof Date && !isNaN(value.getTime())) return value;
+      if (value && typeof value.toDate === 'function') {
+        const d = value.toDate();
+        if (d instanceof Date && !isNaN(d.getTime())) return d;
+      }
+      if (value && typeof value.seconds === 'number') {
+        const d = new Date(value.seconds * 1000);
+        if (!isNaN(d.getTime())) return d;
+      }
+      if (typeof value === 'string' && value.trim()) {
+        const str = value.trim();
+        if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+          const [y, m, day] = str.split('-').map(Number);
+          return new Date(y, m - 1, day, isEnd ? 18 : 9, 0, 0);
+        }
+        const parsed = new Date(str);
+        if (!isNaN(parsed.getTime())) return parsed;
+      }
+      if (isEnd && startRef && !isNaN(startRef.getTime())) {
+        return new Date(startRef.getTime() + 9 * 3600 * 1000);
+      }
+      return EVENT_CONFIG.date.start;
     };
+
+    const start = normalize(event.date?.start, false);
+    let end = normalize(event.date?.end, true, start);
+    if (end.getTime() < start.getTime()) {
+      end = new Date(start.getTime() + 9 * 3600 * 1000);
+    }
+
     return {
       ...event,
       date: {
-        ...event.date,
-        start: normalize(event.date.start),
-        end: normalize(event.date.end),
+        start,
+        end,
+        display: event.date?.display || {
+          start: start.getDate(),
+          end: end.getDate(),
+          month: 'Novembre',
+          year: start.getFullYear(),
+        },
       },
     };
   }

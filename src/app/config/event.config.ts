@@ -3,18 +3,18 @@ import { EventConfig } from '../features/event/models/event.model';
 export type { EventConfig } from '../features/event/models/event.model';
 
 export const EVENT_CONFIG: EventConfig = {
-  edition: 2025,
-  year: 2025,
+  edition: 2026,
+  year: 2026,
   name: 'DevFest Kivu',
-  fullName: 'DevFest Kivu 2025',
+  fullName: 'DevFest Kivu 2026',
   date: {
-    start: new Date('2025-11-29T09:00:00'),
-    end: new Date('2025-11-29T18:00:00'),
+    start: new Date('2026-12-04T09:00:00'),
+    end: new Date('2026-12-05T18:00:00'),
     display: {
-      start: 29,
-      end: 29,
-      month: 'Novembre',
-      year: 2025,
+      start: 4,
+      end: 5,
+      month: 'Décembre',
+      year: 2026,
     },
   },
   venue: {
@@ -271,11 +271,23 @@ export const EVENT_CONFIG: EventConfig = {
     days: [
       {
         id: 'day1',
-        name: 'DevFest Kivu',
-        date: '29 Nov',
-        fullDate: 'Samedi 29 Novembre 2025',
-        location: 'Centre de Conférences DevFest',
+        name: 'DevFest Kivu - Jour 1',
+        date: '28 Nov',
+        fullDate: 'Samedi 28 Novembre 2026',
+        location: 'Hotel Panorama Bukavu',
         isActive: true,
+        startsAt: '09:00',
+        endsAt: '18:00',
+      },
+      {
+        id: 'day2',
+        name: 'DevFest Kivu - Jour 2',
+        date: '29 Nov',
+        fullDate: 'Dimanche 29 Novembre 2026',
+        location: 'Hotel Panorama Bukavu',
+        isActive: true,
+        startsAt: '09:00',
+        endsAt: '18:00',
       },
     ],
   },
