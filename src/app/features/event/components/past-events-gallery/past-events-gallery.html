@@ -24,11 +24,12 @@
     <div class="gallery-row mb-3 md:mb-4">
         <div class="scroll-left-to-right">
             @for (item of firstRowEvents; track $index) {
-            <div class="gallery-item group">
+            <div class="gallery-item group relative w-[220px] sm:w-[260px] md:w-[320px] h-[280px] sm:h-[340px] md:h-[420px] shrink-0 overflow-hidden rounded-[20px]">
                 <!-- Dynamic image based on event type -->
                 <img [ngSrc]="'/assets/past_events/first-' + ($index + 1) + '.jpg'" [alt]="item.title"
                     class="gallery-image" fill sizes="(max-width: 640px) 70vw, (max-width: 1024px) 35vw, 25vw"
-                    decoding="async" loading="lazy" />
+                    [priority]="$index === 0"
+                    decoding="async" />
 
                 <!-- Category Badge -->
                 <div class="absolute top-4 left-4 z-10">
@@ -107,7 +108,7 @@
 
             <!-- Duplicate set for seamless loop -->
             @for (item of firstRowEvents; track $index) {
-            <div class="gallery-item group">
+            <div class="gallery-item group relative w-[220px] sm:w-[260px] md:w-[320px] h-[280px] sm:h-[340px] md:h-[420px] shrink-0 overflow-hidden rounded-[20px]">
                 <img [ngSrc]="'/assets/past_events/first-' + ($index + 1) + '.jpg'" [alt]="item.title"
                     class="gallery-image" fill sizes="(max-width: 640px) 70vw, (max-width: 1024px) 35vw, 25vw"
                     decoding="async" loading="lazy" />
@@ -173,7 +174,7 @@
     <div class="gallery-row">
         <div class="scroll-right-to-left">
             @for (item of secondRowEvents; track $index) {
-            <div class="gallery-item group">
+            <div class="gallery-item group relative w-[220px] sm:w-[260px] md:w-[320px] h-[280px] sm:h-[340px] md:h-[420px] shrink-0 overflow-hidden rounded-[20px]">
                 <img [ngSrc]="'/assets/past_events/second-' + ($index + 1) + '.jpg'" [alt]="item.title"
                     class="gallery-image" fill sizes="(max-width: 640px) 70vw, (max-width: 1024px) 35vw, 25vw"
                     decoding="async" loading="lazy" />
@@ -235,7 +236,7 @@
 
             <!-- Duplicate set -->
             @for (item of secondRowEvents; track $index) {
-            <div class="gallery-item group">
+            <div class="gallery-item group relative w-[220px] sm:w-[260px] md:w-[320px] h-[280px] sm:h-[340px] md:h-[420px] shrink-0 overflow-hidden rounded-[20px]">
                 <img [ngSrc]="'/assets/past_events/second-' + ($index + 1) + '.jpg'" [alt]="item.title"
                     class="gallery-image" fill sizes="(max-width: 640px) 70vw, (max-width: 1024px) 35vw, 25vw"
                     decoding="async" loading="lazy" />

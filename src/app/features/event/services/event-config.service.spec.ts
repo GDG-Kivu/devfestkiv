@@ -81,6 +81,7 @@ describe('EventConfigService & Festival Scheduling', () => {
         end: activeEnd,
         display: { start: activeStart.getDate(), end: activeEnd.getDate(), month: 'Novembre', year: 2026 },
       },
+      agenda: { days: [] },
     };
 
     eventSubject.next(testDoc);
@@ -258,3 +259,5 @@ describe('EventConfigService & Festival Scheduling', () => {
 
     expect(service.status()).toBe('loaded');
     expect(service.errorMessage()).toBeNull();
+  });
+});

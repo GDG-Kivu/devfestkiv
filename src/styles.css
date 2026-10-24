@@ -359,3 +359,130 @@ to use them :
 .animate-float-right {
   animation: float-right 3.5s ease-in forwards;
 }
+
+/* ==========================================================================
+   Interactive 3D Flip Card System (DevFest Kivu Experience)
+   ========================================================================== */
+.flip-card-container {
+  perspective: 1200px;
+  cursor: pointer;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+  border-radius: 1rem;
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* Hover flip on devices supporting hover */
+@media (hover: hover) and (pointer: fine) {
+  .flip-card-container:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+}
+
+/* Click / Touch / Focus flip state */
+.flip-card-container.is-flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Accessible focus visible on card */
+.flip-card-container:focus-visible {
+  outline: 3px solid var(--color-blue);
+  outline-offset: 4px;
+}
+
+/* Graceful fallback for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .flip-card-inner {
+    transition: none !important;
+  }
+  .flip-card-container:hover .flip-card-inner,
+  .flip-card-container.is-flipped .flip-card-inner {
+    transform: none !important;
+  }
+  .flip-card-container.is-flipped .flip-card-front {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .flip-card-container.is-flipped .flip-card-back {
+    opacity: 1;
+    transform: none;
+    z-index: 10;
+  }
+}
+
+/* ==========================================================================
+   Smooth Height Animated Accordion
+   ========================================================================== */
+.accordion-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accordion-wrapper.is-open {
+  grid-template-rows: 1fr;
+}
+
+.accordion-body {
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Cultural & Identity Graphical Textures (Kivu + DevFest)
+   ========================================================================== */
+.bg-tech-mesh {
+  background-image: radial-gradient(rgba(66, 133, 244, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-tech-mesh-dark {
+  background-image: radial-gradient(rgba(249, 171, 0, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.kivu-subtle-pattern {
+  background-image: url('/assets/back.png');
+  background-repeat: repeat;
+  background-size: 320px 320px;
+}
+
+/* ==========================================================================
+   Infinite Partners Marquee Scroll
+   ========================================================================== */
+@keyframes scrollPartners {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-scroll-partners {
+  display: flex;
+  width: max-content;
+  animation: scrollPartners 30s linear infinite;
+}
+
+.animate-scroll-partners:hover,
+.hover\:pause-animation:hover .animate-scroll-partners {
+  animation-play-state: paused;
+}

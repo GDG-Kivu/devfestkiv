@@ -369,6 +369,9 @@ export class EventConfigService {
 
       const dayEnd = new Date(dayDate);
       dayEnd.setHours(endH, endM, 0, 0);
+      if (dayEnd.getTime() <= dayStart.getTime()) {
+        dayEnd.setDate(dayEnd.getDate() + 1);
+      }
 
       const dayMonth = FRENCH_MONTHS[dayDate.getMonth()];
       const dayWeek = FRENCH_DAYS[dayDate.getDay()];
