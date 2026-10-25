@@ -27,6 +27,7 @@ import {
   ROLE_THEME,
 } from '../../models/participant-role.model';
 import { DpTemplateConfig } from '../../models/event.model';
+import { ShareService } from '../../services/share.service';
 
 @Component({
   selector: 'app-dp-generator',
@@ -36,16 +37,42 @@ import { DpTemplateConfig } from '../../models/event.model';
 export default class DpGenerator implements OnInit, OnDestroy {
   eventConfig = inject(EventConfigService);
   roleService = inject(RoleService);
-
+  private shareService = inject(ShareService);
 
   readonly roles = ROLE_LIST;
   readonly roleTheme = ROLE_THEME; // mêmes couleurs que le DP exporté
   readonly roleMeta = ROLE_META;
   readonly maxNameLength = 50;
 
+  isSharing = signal(false);
+  toast = signal<{ text: string; kind: 'success' | 'error' } | null>(null);
+  private toastTimer?: ReturnType<typeof setTimeout>;
+
+  // Panneau de secours : partage natif bloqué (iOS) ou desktop sans partage de fichiers
+  sharePanel = signal<{ file: File; canNative: boolean } | null>(null);
+
+  private readonly roleIntro: Record<ParticipantRole, string> = {
+    attendee: 'Je serai au',
+    speaker: 'Je serai speaker au',
+    organizer: "Je fais partie de l'équipe organisatrice du",
+    Facilitator: 'Je serai bénévole au',
+  };
+
+  get shareLink(): string {
+    return typeof window !== 'undefined' ? `${window.location.origin}/dp-generator` : '';
+  }
+
+  shareMessage = computed(() => {
+    const hashtag = this.dpConfig()?.hashtag || `#DevFestKivu${this.eventConfig.year}`;
+    return (
+      `${this.roleIntro[this.effectiveRole()]} ${this.eventConfig.fullName} ! 🎉\n` +
+      `📅 ${this.eventConfig.getFormattedDateBadge()}\n` +
+      `Crée ton badge : ${this.shareLink}\n${hashtag}`
+    );
+  });
+
   selectedRole = signal<ParticipantRole>('attendee');
   selectedTemplate = signal<DpTemplate>('classic');
-
 
   // Config DP lue depuis le document de l'édition (events/{editionId}.dpTemplate)
   dpConfig = computed<DpTemplateConfig | null>(
@@ -139,6 +166,7 @@ export default class DpGenerator implements OnInit, OnDestroy {
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
     }
+    clearTimeout(this.toastTimer);
   }
 
   private setupDesktopObserver() {
@@ -198,6 +226,7 @@ export default class DpGenerator implements OnInit, OnDestroy {
   closeMobileOverlay() {
     this.showOverlay = false;
     this.showPreviewOverlay = false;
+    this.sharePanel.set(null);
     if (this.previewImage) {
       this.uiState = 'templateVisible';
     } else {
@@ -214,6 +243,7 @@ export default class DpGenerator implements OnInit, OnDestroy {
 
   setActiveTab(tab: 'profile' | 'dp') {
     this.activeTab = tab;
+    this.sharePanel.set(null);
     if (this.previewImage) {
       this.uiState = 'imageVisible';
       setTimeout(() => (this.uiState = 'templateVisible'), 10);
@@ -245,7 +275,6 @@ export default class DpGenerator implements OnInit, OnDestroy {
     }
     this.selectedRole.set(role);
   }
-
 
   setTemplate(t: DpTemplate) {
     // nom, photo, citation et rôle vivent dans ce composant : rien n'est perdu
@@ -350,7 +379,8 @@ export default class DpGenerator implements OnInit, OnDestroy {
   }
 
   // Capture & Download
-  private async captureElement(elementId: string, fileName: string) {
+  /** Rend la zone en PNG (clone hors écran + html2canvas-pro). null si échec. */
+  private async renderToBlob(elementId: string): Promise<Blob | null> {
     const elById = document.getElementById(elementId);
     const elByData = document.querySelector(
       `[data-capture-zone="${elementId}"]`,
@@ -361,7 +391,7 @@ export default class DpGenerator implements OnInit, OnDestroy {
     if (!el) {
       console.error(`Élément ${elementId} introuvable`);
       alert('Impossible de trouver la zone à capturer.');
-      return;
+      return null;
     }
 
     const clone = el.cloneNode(true) as HTMLElement;
@@ -371,10 +401,9 @@ export default class DpGenerator implements OnInit, OnDestroy {
     clone.style.zIndex = '-10';
     clone.classList.add('dp-capture-clone');
 
-    const imgs = clone.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
-    imgs.forEach((img) => {
+    clone.querySelectorAll('img').forEach((img) => {
       try {
-        img.crossOrigin = 'anonymous';
+        (img as HTMLImageElement).crossOrigin = 'anonymous';
       } catch (e) {
         // ignore
       }
@@ -390,52 +419,54 @@ export default class DpGenerator implements OnInit, OnDestroy {
         height: clone.offsetHeight || undefined,
         scale: 2,
       });
-
-      await new Promise<void>((resolve) => {
-        canvas.toBlob((blob) => {
-          if (!blob) {
-            console.error('Échec de la conversion du canvas en blob');
-            resolve();
-            return;
-          }
-
-          const safeName = `${fileName.replace(/\s+/g, '_')}.png`;
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = safeName;
-          a.rel = 'noopener noreferrer';
-          document.body.appendChild(a);
-
-          try {
-            a.click();
-          } catch (err) {
-            const opened = window.open(url, '_blank', 'noopener,noreferrer');
-            if (!opened) {
-              alert(
-                'Impossible de lancer le téléchargement automatiquement. Désactivez le bloqueur de pop-ups et essayez à nouveau.',
-              );
-            }
-          } finally {
-            setTimeout(() => {
-              try {
-                document.body.removeChild(a);
-              } catch (e) {}
-              URL.revokeObjectURL(url);
-            }, 1500);
-            resolve();
-          }
-        }, 'image/png');
-      });
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) console.error('Échec de la conversion du canvas en blob');
+      return blob;
     } catch (e) {
       console.error('Erreur lors de html2canvas/capture:', e);
       alert(
         'Une erreur est survenue lors de l’exportation. Vérifiez la console pour plus d’infos.',
       );
+      return null;
     } finally {
       this.isExporting = false;
       if (clone.parentNode) document.body.removeChild(clone);
     }
+  }
+
+  private toSafeName(baseName: string): string {
+    return `${baseName.replace(/\s+/g, '_')}.png`;
+  }
+
+  private downloadBlob(blob: Blob, safeName: string) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = safeName;
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    try {
+      a.click();
+    } catch (err) {
+      const opened = window.open(url, '_blank', 'noopener,noreferrer');
+      if (!opened) {
+        alert(
+          'Impossible de lancer le téléchargement automatiquement. Désactivez le bloqueur de pop-ups et essayez à nouveau.',
+        );
+      }
+    } finally {
+      setTimeout(() => {
+        try {
+          document.body.removeChild(a);
+        } catch (e) {}
+        URL.revokeObjectURL(url);
+      }, 1500);
+    }
+  }
+
+  private async captureElement(elementId: string, fileName: string) {
+    const blob = await this.renderToBlob(elementId);
+    if (blob) this.downloadBlob(blob, this.toSafeName(fileName));
   }
 
   private scrollToPreview() {
@@ -453,6 +484,72 @@ export default class DpGenerator implements OnInit, OnDestroy {
   async captureGeneratorDP() {
     await this.captureElement('dp-capture-zone-generator', `${this.fullName || 'mon-dp'}-devfest`);
     this.scrollToPreview();
+  }
+
+  async shareCurrentDP() {
+    if (this.isSharing()) return;
+    this.isSharing.set(true);
+    this.sharePanel.set(null);
+    try {
+      const isProfile = this.activeTab === 'profile';
+      const elementId = isProfile ? 'dp-capture-zone-profile' : 'dp-capture-zone-generator';
+      const baseName = isProfile
+        ? `${this.fullName || 'ma-photo'}-profil`
+        : `${this.fullName || 'mon-dp'}-devfest`;
+
+      const blob = await this.renderToBlob(elementId);
+      if (!blob) return;
+
+      const file = new File([blob], this.toSafeName(baseName), { type: 'image/png' });
+
+      if (this.shareService.canShareFiles(file)) {
+        // Mobile (et desktop compatible) : feuille de partage native avec l'image attachée
+        const done = await this.shareService.shareFile(
+          file,
+          this.eventConfig.fullName,
+          this.shareMessage(),
+        );
+        if (!done) this.sharePanel.set({ file, canNative: true }); // bloqué (iOS) → 2e tap
+        return;
+      }
+
+      // Desktop sans partage de fichiers : on télécharge l'image et on propose de copier le message
+      this.downloadBlob(blob, file.name);
+      this.sharePanel.set({ file, canNative: false });
+    } finally {
+      this.isSharing.set(false);
+    }
+  }
+
+  async shareFromPanel() {
+    const panel = this.sharePanel();
+    if (!panel) return;
+    const done = await this.shareService.shareFile(
+      panel.file,
+      this.eventConfig.fullName,
+      this.shareMessage(),
+    );
+    if (done) this.sharePanel.set(null);
+  }
+
+  async copyShareMessage() {
+    const ok = await this.shareService.copyToClipboard(this.shareMessage());
+    this.showToast(
+      ok
+        ? 'Message copié dans le presse-papier !'
+        : 'Copie impossible : sélectionnez le texte et copiez-le.',
+      ok ? 'success' : 'error',
+    );
+  }
+
+  closeSharePanel() {
+    this.sharePanel.set(null);
+  }
+
+  private showToast(text: string, kind: 'success' | 'error' = 'success') {
+    clearTimeout(this.toastTimer);
+    this.toast.set({ text, kind });
+    this.toastTimer = setTimeout(() => this.toast.set(null), 3000);
   }
 
   // Preload assets (best-effort)
