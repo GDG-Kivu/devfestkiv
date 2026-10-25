@@ -40,40 +40,39 @@
     </div>
 
     <!-- Nom + flèche -->
-    <div
-      class="absolute top-80 left-24 w-[286px] z-20 mt-4 ml-4 space-y-2 transition-all duration-500 ease-out delay-100"
-      [class.opacity-100]="uiState === 'templateVisible'"
-      [class.translate-x-0]="uiState === 'templateVisible'"
-      [class.opacity-0]="uiState !== 'templateVisible'"
-      [class.-translate-x-full]="uiState !== 'templateVisible'"
+
+<div
+  class="absolute top-80 left-24 w-[286px] z-20 mt-4 ml-4 space-y-2 transition-all duration-500 ease-out delay-100"
+  [class.opacity-100]="uiState === 'templateVisible'"
+  [class.translate-x-0]="uiState === 'templateVisible'"
+  [class.opacity-0]="uiState !== 'templateVisible'"
+  [class.-translate-x-full]="uiState !== 'templateVisible'"
+>
+  <!-- flex-wrap : chaque pastille est une boîte unique, jamais coupée sur deux lignes -->
+  <div class="flex flex-wrap items-center gap-1.5">
+    <span
+      class="inline-block max-w-full whitespace-normal break-words bg-secondary text-white px-3 py-1 rounded-md leading-tight font-semibold"
+      [ngClass]="fullName.length > 35 ? 'text-lg' : fullName.length > 20 ? 'text-xl' : 'text-2xl'"
+      [style.background-color]="secondaryColor"
+      >&#64;{{ fullName }}</span
     >
-      <p class="text-2xl font-light">
-        <span
-          class="inline-block max-w-full whitespace-normal break-words align-middle bg-secondary text-white px-3 py-1 rounded-md leading-tight text-2xl font-semibold"
-          [class.text-xl]="fullName.length > 20 && fullName.length <= 35"
-          [class.text-lg]="fullName.length > 35"
-          [style.background-color]="secondaryColor"
-        >
-          &#64;{{ fullName }}
-        </span>
 
-        <span
-          class="text-text px-3 py-1 rounded-md"
-          [ngClass]="{
-            'bg-white': generatorTheme === 'default',
-            'bg-gray-100': generatorTheme === 'white',
-          }"
-        >
-          sera au :
-        </span>
-      </p>
+    <span
+      class="inline-block whitespace-nowrap text-2xl font-light text-text px-3 py-1 rounded-md leading-tight"
+      [ngClass]="{
+        'bg-white': generatorTheme === 'default',
+        'bg-gray-100': generatorTheme === 'white',
+      }"
+      >sera au :</span
+    >
+  </div>
 
-      <img
-        src="assets/arrow.png"
-        alt="Flèche"
-        class="w-32 h-48 object-contain -rotate-23 ml-10 block"
-      />
-    </div>
+  <img
+    src="assets/arrow.png"
+    alt="Flèche"
+    class="w-32 h-48 object-contain -rotate-23 ml-10 block"
+  />
+</div>
 
     <!-- Bloc d'informations DevFest -->
     <div
