@@ -186,7 +186,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
     this.ngZone.runOutsideAngular(() => {
       this.slideshowInterval = setInterval(() => {
         this.ngZone.run(() => {
-          this.heroSlideIndex.update(i => (i + 1) % this.heroSlides.length);
+          this.heroSlideIndex.update((i) => (i + 1) % this.heroSlides.length);
         });
       }, 4000);
     });
@@ -240,7 +240,9 @@ export default class HomeComponent implements OnInit, OnDestroy {
       this.isEventPast.set(false);
       this.isEventOngoing.set(true);
       this.countdownRunning.set(false);
-      this.activeDayBadge.set(festivalDays.length > 1 ? `${activeDay.name} en direct` : 'Événement en direct');
+      this.activeDayBadge.set(
+        festivalDays.length > 1 ? `${activeDay.name} en direct` : 'Événement en direct',
+      );
       this.activeDayLocation.set(activeDay.location);
       this.resetTimeSignals();
       return;
@@ -259,18 +261,14 @@ export default class HomeComponent implements OnInit, OnDestroy {
         this.targetTitle.set(
           festivalDays.length > 1 ? 'Le Jour 1 commence dans' : "L'événement commence dans",
         );
-        this.targetSubTitle.set(
-          'Rendez-vous pour une expérience technologique unique.',
-        );
+        this.targetSubTitle.set('Rendez-vous pour une expérience technologique unique.');
         this.targetBadge.set(
           festivalDays.length > 1 ? `Jour 1 / ${festivalDays.length}` : 'Bientôt disponible',
         );
       } else {
         // Successive Day in Multi-day Festival (e.g. Day 1 has ended, Day 2 is next!)
         this.targetTitle.set(`Le ${nextUpcomingDay.name} commence dans`);
-        this.targetSubTitle.set(
-          'Préparez-vous pour la suite des sessions et ateliers.',
-        );
+        this.targetSubTitle.set('Préparez-vous pour la suite des sessions et ateliers.');
         this.targetBadge.set(`Jour ${nextUpcomingDay.dayNumber} / ${festivalDays.length}`);
       }
 
@@ -360,7 +358,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
       try {
         const confettiModule = await import('canvas-confetti');
         const confetti = confettiModule.default || confettiModule;
-        
+
         // Iconic Google colors + white highlight
         const googleColors = ['#4285F4', '#EA4335', '#FBBC04', '#34A853', '#FFFFFF'];
 
@@ -423,10 +421,14 @@ export default class HomeComponent implements OnInit, OnDestroy {
     }
     this.confettiTimeouts = [];
     if (isPlatformBrowser(this.platformId)) {
-      import('canvas-confetti').then((m) => {
-        const c = m.default || m;
-        try { c.reset(); } catch {}
-      }).catch(() => {});
+      import('canvas-confetti')
+        .then((m) => {
+          const c = m.default || m;
+          try {
+            c.reset();
+          } catch {}
+        })
+        .catch(() => {});
     }
   }
 
@@ -521,8 +523,10 @@ export default class HomeComponent implements OnInit, OnDestroy {
     {
       id: 'pillar-conferences',
       title: 'Conférences & Keynotes',
-      frontDescription: 'Interventions d’experts locaux et internationaux sur les technologies d’avant-garde.',
-      backDetails: 'Explorez l’IA générative, le Cloud Computing, le Web moderne et les architectures logicielles avec des retours d’expérience concrets.',
+      frontDescription:
+        'Interventions d’experts locaux et internationaux sur les technologies d’avant-garde.',
+      backDetails:
+        'Explorez l’IA générative, le Cloud Computing, le Web moderne et les architectures logicielles avec des retours d’expérience concrets.',
       iconPath: '/assets/micro.png',
       width: 288,
       height: 288,
@@ -537,7 +541,8 @@ export default class HomeComponent implements OnInit, OnDestroy {
       id: 'pillar-workshops',
       title: 'Workshops & Codelabs',
       frontDescription: 'Sessions hands-on immersives pour coder et prototyper en direct.',
-      backDetails: 'Montez en compétences sur Angular, Flutter, Firebase et les outils Google avec l’accompagnement de mentors expérimentés.',
+      backDetails:
+        'Montez en compétences sur Angular, Flutter, Firebase et les outils Google avec l’accompagnement de mentors expérimentés.',
       iconPath: '/assets/illustrations/bracket.png',
       width: 277,
       height: 243,
@@ -552,7 +557,8 @@ export default class HomeComponent implements OnInit, OnDestroy {
       id: 'pillar-community',
       title: 'Communauté & Networking',
       frontDescription: 'Rencontrez les talents et bâtisseurs de la scène tech des Grands Lacs.',
-      backDetails: 'Échangez avec des recruteurs, fondateurs de startups congolaises et passionnés de technologie pour créer des opportunités durables.',
+      backDetails:
+        'Échangez avec des recruteurs, fondateurs de startups congolaises et passionnés de technologie pour créer des opportunités durables.',
       iconPath: '/assets/equipe.png',
       width: 288,
       height: 288,
@@ -567,7 +573,8 @@ export default class HomeComponent implements OnInit, OnDestroy {
       id: 'pillar-innovation',
       title: 'Démos & Défis Tech',
       frontDescription: 'Mise en lumière des innovations conçues au Kivu et pour l’Afrique.',
-      backDetails: 'Découvrez des projets et applications innovantes apportant des réponses technologiques réelles aux enjeux économiques et sociaux locaux.',
+      backDetails:
+        'Découvrez des projets et applications innovantes apportant des réponses technologiques réelles aux enjeux économiques et sociaux locaux.',
       iconPath: '/assets/mains.png',
       width: 288,
       height: 288,
@@ -583,38 +590,44 @@ export default class HomeComponent implements OnInit, OnDestroy {
   // Practical Information Accordions Data (computed so venue/date are dynamic)
   get practicalInfoItems() {
     const venue = this.eventConfig.venue;
-    const dateRange = this.eventConfig.getFormattedDateRange ? this.eventConfig.getFormattedDateRange() : '4 et 5 Décembre 2026';
+    const dateRange = this.eventConfig.getFormattedDateRange
+      ? this.eventConfig.getFormattedDateRange()
+      : '4 et 5 Décembre 2026';
     return [
       {
         id: 'faq-1',
         question: 'Où et quand se déroulera le DevFest Kivu ?',
-        answer: `Le DevFest Kivu se déroule ${dateRange} à ${venue.conferenceCenter || 'Bukavu'} (${venue.fullLocation || 'RD Congo'}), offrant un cadre exceptionnel face au Lac Kivu. Les sessions débutent dès 09h00.`,
+        answer: `Le DevFest Kivu se déroule ${dateRange} à ${venue.conferenceCenter || 'Bukavu'} (${venue.fullLocation || 'RD Congo'}), offrant un cadre exceptionnel. Les sessions débutent dès 09h00.`,
         category: 'Lieu & Dates',
       },
-    {
-      id: 'faq-2',
-      question: 'L\'accès est-il totalement gratuit ?',
-      answer: 'Oui ! Conformément aux valeurs des communautés GDG, le DevFest Kivu est 100% gratuit et ouvert à tous. Cependant, en raison du nombre limité de places dans la salle de conférence, l’inscription préalable (RSVP) est obligatoire.',
-      category: 'Billetterie',
-    },
-    {
-      id: 'faq-3',
-      question: 'Dois-je obligatoirement apporter mon ordinateur portable ?',
-      answer: 'Un ordinateur portable est très utile si vous souhaitez coder durant les workshops pratiques et codelabs. Pour assister aux keynotes, panels et conférences d’inspiration, votre curiosité et votre carnet de notes suffisent amplement.',
-      category: 'Matériel',
-    },
-    {
-      id: 'faq-4',
-      question: 'À qui s’adresse cet événement ?',
-      answer: 'À toute personne passionnée ou curieuse de numérique : développeurs juniors et seniors, étudiants, lycéens, designers UI/UX, entrepreneurs, porteurs de projets et professionnels de la région des Grands Lacs.',
-      category: 'Public',
-    },
-    {
-      id: 'faq-5',
-      question: 'Comment proposer une conférence ou devenir sponsor ?',
-      answer: 'Les candidatures d’intervenants s’effectuent via le Call for Speakers. Pour soutenir l’événement et mettre en avant votre marque auprès de la jeunesse tech du Kivu, contactez notre équipe via la page Partenaires ou par e-mail à gdgkivu@gmail.com.',
-      category: 'Participation',
-    },
-  ];
+      {
+        id: 'faq-2',
+        question: "L'accès est-il totalement gratuit ?",
+        answer:
+          'Oui ! Conformément aux valeurs des communautés GDG, le DevFest Kivu est 100% gratuit et ouvert à tous. Cependant, en raison du nombre limité de places dans la salle de conférence, l’inscription préalable (RSVP) est obligatoire.',
+        category: 'Billetterie',
+      },
+      {
+        id: 'faq-3',
+        question: 'Dois-je obligatoirement apporter mon ordinateur portable ?',
+        answer:
+          'Un ordinateur portable est très utile si vous souhaitez coder durant les workshops pratiques et codelabs. Pour assister aux keynotes, panels et conférences d’inspiration, votre curiosité et votre carnet de notes suffisent amplement.',
+        category: 'Matériel',
+      },
+      {
+        id: 'faq-4',
+        question: 'À qui s’adresse cet événement ?',
+        answer:
+          'À toute personne passionnée ou curieuse de numérique : développeurs juniors et seniors, étudiants, lycéens, designers UI/UX, entrepreneurs, porteurs de projets et professionnels de la région des Grands Lacs.',
+        category: 'Public',
+      },
+      {
+        id: 'faq-5',
+        question: 'Comment proposer une conférence ou devenir sponsor ?',
+        answer:
+          'Les candidatures d’intervenants s’effectuent via le Call for Speakers. Pour soutenir l’événement et mettre en avant votre marque auprès de la jeunesse tech du Kivu, contactez notre équipe via la page Partenaires ou par e-mail à gdgkivu@gmail.com.',
+        category: 'Participation',
+      },
+    ];
   }
 }
