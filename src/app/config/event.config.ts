@@ -3,18 +3,18 @@ import { EventConfig } from '../features/event/models/event.model';
 export type { EventConfig } from '../features/event/models/event.model';
 
 export const EVENT_CONFIG: EventConfig = {
-  edition: 2025,
-  year: 2025,
+  edition: 2026,
+  year: 2026,
   name: 'DevFest Kivu',
-  fullName: 'DevFest Kivu 2025',
+  fullName: 'DevFest Kivu 2026',
   date: {
-    start: new Date('2025-11-29T09:00:00'),
-    end: new Date('2025-11-29T18:00:00'),
+    start: new Date('2026-12-04T09:00:00'),
+    end: new Date('2026-12-05T18:00:00'),
     display: {
-      start: 29,
-      end: 29,
-      month: 'Novembre',
-      year: 2025,
+      start: 4,
+      end: 5,
+      month: 'Décembre',
+      year: 2026,
     },
   },
   venue: {
@@ -28,6 +28,7 @@ export const EVENT_CONFIG: EventConfig = {
     'Le plus grand rassemblement tech de la région des Grands Lacs, réunissant développeurs, étudiants, élèves, entrepreneurs, etc.',
   registrationUrl:
     'https://gdg.community.dev/events/details/google-gdg-kivu-presents-devfest-kivu-2025/cohost-gdg-kivu',
+  cfpUrl: 'https://bit.ly/3Vx4FyU',
   contact: {
     email: 'gdgkivu@gmail.com',
     phone: '+243999537410',
@@ -123,6 +124,19 @@ export const EVENT_CONFIG: EventConfig = {
   ],
   pastEvents: [
     {
+      title: 'DevFest Kivu 2025',
+      description:
+        'Grand festival annuel avec des speakers internationaux et des workshops innovants sur les dernières technologies.',
+      date: 'Novembre 2025',
+      location: 'Bukavu',
+      category: 'Festival',
+      participants: '400+',
+      tags: ['AI/ML', 'Web', 'Mobile'],
+      badgeColor: 'text-blue-700 bg-blue-100',
+      dotColor: 'bg-blue-500',
+      albumUrl: 'https://photos.app.goo.gl/ZnqAHwBeRQXn7PUS6',
+    },
+    {
       title: 'DevFest Kivu 2024',
       description:
         'Grand festival annuel avec des speakers internationaux et des workshops innovants sur les dernières technologies.',
@@ -133,6 +147,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['AI/ML', 'Web', 'Mobile'],
       badgeColor: 'text-blue-700 bg-blue-100',
       dotColor: 'bg-blue-500',
+      albumUrl: 'https://photos.app.goo.gl/ha4m6AS4LcAAYtm28',
     },
     {
       title: 'DevFest Kivu 2023',
@@ -145,6 +160,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['AI/ML', 'Cloud', 'Mobile'],
       badgeColor: 'text-blue-700 bg-blue-100',
       dotColor: 'bg-blue-500',
+      albumUrl: 'https://photos.app.goo.gl/ha4m6AS4LcAAYtm28',
     },
     {
       title: 'DevFest Kivu 2022',
@@ -157,6 +173,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['AI/ML', 'Cloud', 'Mobile'],
       badgeColor: 'text-blue-700 bg-blue-100',
       dotColor: 'bg-blue-500',
+      albumUrl: 'https://photos.app.goo.gl/ha4m6AS4LcAAYtm28',
     },
     {
       title: 'DevFest Kivu 2021',
@@ -169,6 +186,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['AI/ML', 'Cloud', 'Mobile'],
       badgeColor: 'text-blue-700 bg-blue-100',
       dotColor: 'bg-blue-500',
+      albumUrl: 'https://photos.app.goo.gl/ha4m6AS4LcAAYtm28',
     },
     {
       title: 'DevFest Kivu 2020',
@@ -181,6 +199,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['AI/ML', 'Cloud', 'Mobile'],
       badgeColor: 'text-blue-700 bg-blue-100',
       dotColor: 'bg-blue-500',
+      albumUrl: 'https://photos.app.goo.gl/ha4m6AS4LcAAYtm28',
     },
     {
       title: 'AI/ML Meetup',
@@ -193,6 +212,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['AI', 'Machine Learning', 'Data'],
       badgeColor: 'text-purple-700 bg-purple-100',
       dotColor: 'bg-purple-500',
+      albumUrl: 'https://photos.app.goo.gl/kd1N1nXvLF7HNbXs5',
     },
     {
       title: 'Malakisi-Lancement',
@@ -205,6 +225,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['Angular', 'Kotlin', 'Firebase'],
       badgeColor: 'text-indigo-700 bg-indigo-100',
       dotColor: 'bg-indigo-500',
+      albumUrl: 'https://photos.app.goo.gl/kd1N1nXvLF7HNbXs5',
     },
     {
       title: 'DevFest Kivu 2019',
@@ -217,6 +238,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['Web', 'Mobile', 'Community'],
       badgeColor: 'text-green-700 bg-green-100',
       dotColor: 'bg-green-500',
+      albumUrl: 'https://photos.app.goo.gl/ha4m6AS4LcAAYtm28',
     },
     {
       title: 'Web Development Bootcamp',
@@ -229,6 +251,7 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['Web', 'JavaScript', 'HTML/CSS'],
       badgeColor: 'text-orange-700 bg-orange-100',
       dotColor: 'bg-orange-500',
+      albumUrl: 'https://photos.app.goo.gl/kd1N1nXvLF7HNbXs5',
     },
     {
       title: 'Mobile App Challenge',
@@ -241,17 +264,30 @@ export const EVENT_CONFIG: EventConfig = {
       tags: ['Mobile', 'Android', 'iOS'],
       badgeColor: 'text-red-700 bg-red-100',
       dotColor: 'bg-red-500',
+      albumUrl: 'https://photos.app.goo.gl/kd1N1nXvLF7HNbXs5',
     },
   ],
   agenda: {
     days: [
       {
         id: 'day1',
-        name: 'DevFest Kivu',
-        date: '29 Nov',
-        fullDate: 'Samedi 29 Novembre 2025',
-        location: 'Centre de Conférences DevFest',
+        name: 'DevFest Kivu - Jour 1',
+        date: '28 Nov',
+        fullDate: 'Samedi 28 Novembre 2026',
+        location: 'Hotel Panorama Bukavu',
         isActive: true,
+        startsAt: '09:00',
+        endsAt: '18:00',
+      },
+      {
+        id: 'day2',
+        name: 'DevFest Kivu - Jour 2',
+        date: '29 Nov',
+        fullDate: 'Dimanche 29 Novembre 2026',
+        location: 'Hotel Panorama Bukavu',
+        isActive: true,
+        startsAt: '09:00',
+        endsAt: '18:00',
       },
     ],
   },

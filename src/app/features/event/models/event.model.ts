@@ -22,6 +22,7 @@ export interface EventConfig {
   };
   theme: string;
   description: string;
+  cfpUrl?: string;
   registrationUrl: string;
   contact: {
     email: string;
@@ -51,6 +52,7 @@ export interface EventConfig {
     tags: string[];
     badgeColor: string;
     dotColor: string;
+    albumUrl?: string;
   }>;
   agenda: {
     days: Array<{
@@ -93,6 +95,13 @@ export interface EventAlbum {
 }
 
 export interface DpTemplateConfig {
+  /** Nouveau nom préféré pour l'image de fond ; frameUrl reste supporté pour compatibilité. */
+  backgroundUrl?: string;
+  logoUrl?: string;
+  accentColor?: string;
+  year?: number;
+  date?: string;
+  location?: string;
   frameUrl?: string;
   badgeLayout?: string;
   primaryColor?: string;
@@ -119,6 +128,7 @@ export interface EventDocument {
   theme: string;
   description: string;
   registrationUrl: string;
+  cfpUrl?: string;
   contact: EventConfig['contact'];
   impactStats: EventConfig['impactStats'];
   engagementYear: number;

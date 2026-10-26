@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { EVENT_CONFIG } from '../../../config/event.config';
-import { EventConfig, EventDocument } from '../models/event.model';
+import { DpTemplateConfig, EventConfig, EventDocument } from '../models/event.model';
 import { FirestoreService } from '../../../core/firestore/firestore.service';
 
 export interface FestivalDaySchedule {
@@ -50,30 +50,70 @@ const FRENCH_DAYS = [
 export class EventConfigService {
   private config = signal<EventConfig>(EVENT_CONFIG);
   readonly eventDocument = signal<EventDocument | null>(null);
+  readonly dpTemplateConfig = signal<DpTemplateConfig | null>(null);
+  readonly status = signal<'loading' | 'loaded' | 'error'>('loading');
+  readonly errorMessage = signal<string | null>(null);
 
   constructor() {
     const fs = inject(FirestoreService, { optional: true });
-    if (fs) {
-      fs.getCurrentEventWithFallback().subscribe((eventDoc) => {
-        if (eventDoc) {
-          this.eventDocument.set(eventDoc);
-          this.syncFromDocument(eventDoc);
-        }
-      });
+
+    if (!fs) {
+      this.status.set('loaded');
+      return;
     }
+
+    fs.getCurrentEventWithFallback().subscribe({
+      next: (eventDoc) => {
+        if (!eventDoc) {
+          this.status.set('loaded');
+          return;
+        }
+
+        const dpConfig = eventDoc.dpTemplate ?? null;
+
+        this.dpTemplateConfig.set(dpConfig);
+        this.eventDocument.set(eventDoc);
+        this.syncFromDocument(eventDoc);
+        this.status.set('loaded');
+        this.errorMessage.set(null);
+      },
+      error: (err) => {
+        this.status.set('error');
+        this.errorMessage.set(err?.message || 'Erreur lors de la synchronisation Firestore.');
+      },
+    });
   }
 
   private syncFromDocument(doc: EventDocument): void {
-    const normalizeDate = (d: any, fallback: Date): Date => {
-      if (d instanceof Date) return d;
-      if (d && typeof d.toDate === 'function') return d.toDate();
-      if (d && typeof d.seconds === 'number') return new Date(d.seconds * 1000);
-      if (typeof d === 'string') return new Date(d);
+    const normalizeDate = (d: any, fallback: Date, isEnd = false): Date => {
+      if (d instanceof Date && !isNaN(d.getTime())) return d;
+      if (d && typeof d.toDate === 'function') {
+        const dt = d.toDate();
+        if (dt instanceof Date && !isNaN(dt.getTime())) return dt;
+      }
+      if (d && typeof d.seconds === 'number') {
+        const dt = new Date(d.seconds * 1000);
+        if (!isNaN(dt.getTime())) return dt;
+      }
+      if (typeof d === 'string' && d.trim()) {
+        const str = d.trim();
+        if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+          const [y, m, day] = str.split('-').map(Number);
+          const dt = new Date(y, m - 1, day, isEnd ? 18 : 9, 0, 0);
+          if (!isNaN(dt.getTime())) return dt;
+        }
+        const parsed = new Date(str);
+        if (!isNaN(parsed.getTime())) return parsed;
+      }
       return fallback;
     };
 
-    const startDate = normalizeDate(doc.date?.start, EVENT_CONFIG.date.start);
-    const endDate = normalizeDate(doc.date?.end, EVENT_CONFIG.date.end);
+    const startDate = normalizeDate(doc.date?.start, EVENT_CONFIG.date.start, false);
+    let endDate = normalizeDate(doc.date?.end, new Date(startDate.getTime() + 9 * 3600 * 1000), true);
+
+    if (endDate.getTime() < startDate.getTime()) {
+      endDate = new Date(startDate.getTime() + 9 * 3600 * 1000);
+    }
 
     const updated: EventConfig = {
       ...EVENT_CONFIG,
@@ -84,6 +124,7 @@ export class EventConfigService {
       theme: doc.theme || EVENT_CONFIG.theme,
       description: doc.description || EVENT_CONFIG.description,
       registrationUrl: doc.registrationUrl ?? EVENT_CONFIG.registrationUrl,
+      cfpUrl: doc.cfpUrl ?? EVENT_CONFIG.cfpUrl,
       venue: doc.venue || EVENT_CONFIG.venue,
       contact: doc.contact || EVENT_CONFIG.contact,
       impactStats: doc.impactStats || EVENT_CONFIG.impactStats,
@@ -94,7 +135,12 @@ export class EventConfigService {
       date: {
         start: startDate,
         end: endDate,
-        display: doc.date?.display || EVENT_CONFIG.date.display,
+        display: doc.date?.display || {
+          start: startDate.getDate(),
+          end: endDate.getDate(),
+          month: FRENCH_MONTHS[startDate.getMonth()] || EVENT_CONFIG.date.display.month,
+          year: startDate.getFullYear(),
+        },
       },
     };
     this.config.set(updated);
@@ -167,6 +213,9 @@ export class EventConfigService {
 
   get firebase() {
     return this.config().firebase;
+  }
+  get cfpUrl(): string | undefined {
+    return this.config().cfpUrl;
   }
 
   // Helper methods
@@ -260,8 +309,14 @@ export class EventConfigService {
    */
   getFestivalDays(overrideConfig?: EventConfig): FestivalDaySchedule[] {
     const config = overrideConfig || this.config();
-    const startDate = config.date?.start ? new Date(config.date.start) : new Date();
-    const endDate = config.date?.end ? new Date(config.date.end) : new Date(startDate.getTime() + 9 * 3600 * 1000);
+    let startDate = config.date?.start ? new Date(config.date.start) : new Date(EVENT_CONFIG.date.start);
+    if (isNaN(startDate.getTime())) {
+      startDate = new Date(EVENT_CONFIG.date.start);
+    }
+    let endDate = config.date?.end ? new Date(config.date.end) : new Date(startDate.getTime() + 9 * 3600 * 1000);
+    if (isNaN(endDate.getTime()) || endDate.getTime() < startDate.getTime()) {
+      endDate = new Date(startDate.getTime() + 9 * 3600 * 1000);
+    }
 
     const pad = (n: number) => String(n).padStart(2, '0');
     const defaultStartHours = !isNaN(startDate.getHours()) ? startDate.getHours() : 9;
@@ -274,7 +329,8 @@ export class EventConfigService {
     // Calculate number of days between start and end date
     const sCal = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
     const eCal = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-    const dayCount = Math.max(1, Math.round((eCal.getTime() - sCal.getTime()) / (24 * 3600 * 1000)) + 1);
+    const diffDays = Math.round((eCal.getTime() - sCal.getTime()) / (24 * 3600 * 1000));
+    const dayCount = Math.max(1, (diffDays >= 0 ? diffDays : 0) + 1);
 
     const totalDays = Math.max(dayCount, daysConfig.length || 1);
     const schedules: FestivalDaySchedule[] = [];
@@ -313,6 +369,9 @@ export class EventConfigService {
 
       const dayEnd = new Date(dayDate);
       dayEnd.setHours(endH, endM, 0, 0);
+      if (dayEnd.getTime() <= dayStart.getTime()) {
+        dayEnd.setDate(dayEnd.getDate() + 1);
+      }
 
       const dayMonth = FRENCH_MONTHS[dayDate.getMonth()];
       const dayWeek = FRENCH_DAYS[dayDate.getDay()];

@@ -73,12 +73,137 @@ import { DpTemplateConfig } from '../../../../../event/models/event.model';
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
+                  <label class="block text-xs font-semibold text-gray-700 mb-1">Image d'Arrière-Plan (URL)</label>
+                  <input
+                    type="text"
+                    name="backgroundUrl"
+                    [(ngModel)]="config.backgroundUrl"
+                    placeholder="assets/dp-layout.png ou https://..."
+                    class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#EA4335]/40"
+                  />
+                  <p class="text-[11px] text-gray-400 mt-1">Image de fond principale du badge DP (ou fallback frameUrl).</p>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-gray-700 mb-1">URL du Logo</label>
+                  <input
+                    type="text"
+                    name="logoUrl"
+                    [(ngModel)]="config.logoUrl"
+                    placeholder="assets/logo-1.png ou https://..."
+                    class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#EA4335]/40"
+                  />
+                  <p class="text-[11px] text-gray-400 mt-1">Logo officiel affiché sur le badge.</p>
+                </div>
+              </div>
+
+              <!-- Couleurs personnalisées -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-700 mb-1">Couleur Primaire (Fond quote)</label>
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="color"
+                      name="primaryColorPicker"
+                      [ngModel]="config.primaryColor || '#FFE7A5'"
+                      (ngModelChange)="config.primaryColor = $event"
+                      class="w-8 h-8 rounded-lg cursor-pointer border border-gray-300 p-0"
+                    />
+                    <input
+                      type="text"
+                      name="primaryColor"
+                      [(ngModel)]="config.primaryColor"
+                      placeholder="#FFE7A5"
+                      class="flex-1 px-3 py-2 border border-gray-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#EA4335]/40"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-gray-700 mb-1">Couleur Secondaire (@Nom)</label>
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="color"
+                      name="secondaryColorPicker"
+                      [ngModel]="config.secondaryColor || '#4285F4'"
+                      (ngModelChange)="config.secondaryColor = $event"
+                      class="w-8 h-8 rounded-lg cursor-pointer border border-gray-300 p-0"
+                    />
+                    <input
+                      type="text"
+                      name="secondaryColor"
+                      [(ngModel)]="config.secondaryColor"
+                      placeholder="#4285F4"
+                      class="flex-1 px-3 py-2 border border-gray-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#EA4335]/40"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-gray-700 mb-1">Couleur d'Accent (Bordures)</label>
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="color"
+                      name="accentColorPicker"
+                      [ngModel]="config.accentColor || '#FBBC04'"
+                      (ngModelChange)="config.accentColor = $event"
+                      class="w-8 h-8 rounded-lg cursor-pointer border border-gray-300 p-0"
+                    />
+                    <input
+                      type="text"
+                      name="accentColor"
+                      [(ngModel)]="config.accentColor"
+                      placeholder="#FBBC04"
+                      class="flex-1 px-3 py-2 border border-gray-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#EA4335]/40"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Lieu, Date & Année -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-700 mb-1">Lieu personnalisé</label>
+                  <input
+                    type="text"
+                    name="location"
+                    [(ngModel)]="config.location"
+                    placeholder="Bukavu, RD Congo"
+                    class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#EA4335]/40"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-gray-700 mb-1">Date affichée</label>
+                  <input
+                    type="text"
+                    name="date"
+                    [(ngModel)]="config.date"
+                    placeholder="Ex: 28 Nov 2026"
+                    class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#EA4335]/40"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-gray-700 mb-1">Année</label>
+                  <input
+                    type="number"
+                    name="year"
+                    [(ngModel)]="config.year"
+                    placeholder="2026"
+                    class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#EA4335]/40"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
                   <label class="block text-xs font-semibold text-gray-700 mb-1">Hashtag de l'Événement</label>
                   <input
                     type="text"
                     name="hashtag"
                     [(ngModel)]="config.hashtag"
-                    placeholder="#DevFestKivu2025 #GDGKivu"
+                    placeholder="#DevFestKivu #GDGKivu"
                     class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#EA4335]/40"
                   />
                 </div>

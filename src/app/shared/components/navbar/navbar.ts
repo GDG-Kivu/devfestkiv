@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   },
   template: `
     <nav
-      class="bg-white/80 backdrop-blur-md border-b border-gray-100/60 shadow-xs transition-colors duration-200"
+      class="bg-white/90 backdrop-blur-md transition-colors duration-200"
     >
       <div class="max-w-7xl mx-auto px-md sm:px-lg lg:px-xl">
         <div class="flex justify-between items-center h-16">
@@ -162,7 +162,7 @@ import { CommonModule } from '@angular/common';
       }
 
       .nav-link:hover {
-        color: var(--color-primary);
+        color: var(--color-primary-dark, #d99500);
       }
 
       .nav-link:hover::after {
@@ -170,7 +170,8 @@ import { CommonModule } from '@angular/common';
       }
 
       .nav-link.nav-active {
-        color: var(--color-primary);
+        color: var(--color-primary-dark, #d99500);
+        font-weight: 600;
       }
 
       .nav-link.nav-active::after {

@@ -2,13 +2,13 @@
     <div class="max-w-7xl mx-auto px-md sm:px-lg lg:px-xl mb-8 md:mb-12">
         <!--Section Header -->
         <div class="text-center">
-            <div class="inline-flex items-center bg-primary/10 rounded-full px-4 py-2 mb-4">
-                <svg class="w-4 h-4 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="inline-flex items-center bg-amber-50 text-amber-900 border border-amber-200/70 rounded-full px-4 py-1.5 mb-4 shadow-xs">
+                <svg class="w-4 h-4 text-primary-dark mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                     </path>
                 </svg>
-                <span class="text-primary text-sm font-medium">Galerie Photos</span>
+                <span class="text-sm font-medium">Galerie Photos</span>
             </div>
             <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-text mb-3 md:mb-4">
                 Nos Événements Passés
@@ -24,11 +24,12 @@
     <div class="gallery-row mb-3 md:mb-4">
         <div class="scroll-left-to-right">
             @for (item of firstRowEvents; track $index) {
-            <div class="gallery-item group">
+            <div class="gallery-item group relative w-[220px] sm:w-[260px] md:w-[320px] h-[280px] sm:h-[340px] md:h-[420px] shrink-0 overflow-hidden rounded-[20px]">
                 <!-- Dynamic image based on event type -->
                 <img [ngSrc]="'/assets/past_events/first-' + ($index + 1) + '.jpg'" [alt]="item.title"
                     class="gallery-image" fill sizes="(max-width: 640px) 70vw, (max-width: 1024px) 35vw, 25vw"
-                    decoding="async" loading="lazy" />
+                    [priority]="$index === 0"
+                    decoding="async" />
 
                 <!-- Category Badge -->
                 <div class="absolute top-4 left-4 z-10">
@@ -89,9 +90,17 @@
                         </div>
 
                         <!-- Action button -->
-                        <button class="btn btn-sm w-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm">
+                        @if (item.albumUrl) {
+                        <a [href]="item.albumUrl" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-sm w-full bg-white/20 hover:bg-white/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white text-white backdrop-blur-sm">
                             Voir les photos
-                        </button>
+                        </a>
+                        } @else {
+                        <span class="btn btn-sm w-full bg-white/10 text-white/70 backdrop-blur-sm cursor-not-allowed"
+                            aria-disabled="true">
+                            Photos bientôt disponibles
+                        </span>
+                        }
                     </div>
                 </div>
             </div>
@@ -99,7 +108,7 @@
 
             <!-- Duplicate set for seamless loop -->
             @for (item of firstRowEvents; track $index) {
-            <div class="gallery-item group">
+            <div class="gallery-item group relative w-[220px] sm:w-[260px] md:w-[320px] h-[280px] sm:h-[340px] md:h-[420px] shrink-0 overflow-hidden rounded-[20px]">
                 <img [ngSrc]="'/assets/past_events/first-' + ($index + 1) + '.jpg'" [alt]="item.title"
                     class="gallery-image" fill sizes="(max-width: 640px) 70vw, (max-width: 1024px) 35vw, 25vw"
                     decoding="async" loading="lazy" />
@@ -143,9 +152,17 @@
                                 }}</span>
                             }
                         </div>
-                        <button class="btn btn-sm w-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm">
+                        @if (item.albumUrl) {
+                        <a [href]="item.albumUrl" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-sm w-full bg-white/20 hover:bg-white/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white text-white backdrop-blur-sm">
                             Voir les photos
-                        </button>
+                        </a>
+                        } @else {
+                        <span class="btn btn-sm w-full bg-white/10 text-white/70 backdrop-blur-sm cursor-not-allowed"
+                            aria-disabled="true">
+                            Photos bientôt disponibles
+                        </span>
+                        }
                     </div>
                 </div>
             </div>
@@ -157,7 +174,7 @@
     <div class="gallery-row">
         <div class="scroll-right-to-left">
             @for (item of secondRowEvents; track $index) {
-            <div class="gallery-item group">
+            <div class="gallery-item group relative w-[220px] sm:w-[260px] md:w-[320px] h-[280px] sm:h-[340px] md:h-[420px] shrink-0 overflow-hidden rounded-[20px]">
                 <img [ngSrc]="'/assets/past_events/second-' + ($index + 1) + '.jpg'" [alt]="item.title"
                     class="gallery-image" fill sizes="(max-width: 640px) 70vw, (max-width: 1024px) 35vw, 25vw"
                     decoding="async" loading="lazy" />
@@ -201,9 +218,17 @@
                                 }}</span>
                             }
                         </div>
-                        <button class="btn btn-sm w-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm">
+                        @if (item.albumUrl) {
+                        <a [href]="item.albumUrl" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-sm w-full bg-white/20 hover:bg-white/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white text-white backdrop-blur-sm">
                             Voir les photos
-                        </button>
+                        </a>
+                        } @else {
+                        <span class="btn btn-sm w-full bg-white/10 text-white/70 backdrop-blur-sm cursor-not-allowed"
+                            aria-disabled="true">
+                            Photos bientôt disponibles
+                        </span>
+                        }
                     </div>
                 </div>
             </div>
@@ -211,7 +236,7 @@
 
             <!-- Duplicate set -->
             @for (item of secondRowEvents; track $index) {
-            <div class="gallery-item group">
+            <div class="gallery-item group relative w-[220px] sm:w-[260px] md:w-[320px] h-[280px] sm:h-[340px] md:h-[420px] shrink-0 overflow-hidden rounded-[20px]">
                 <img [ngSrc]="'/assets/past_events/second-' + ($index + 1) + '.jpg'" [alt]="item.title"
                     class="gallery-image" fill sizes="(max-width: 640px) 70vw, (max-width: 1024px) 35vw, 25vw"
                     decoding="async" loading="lazy" />
@@ -255,9 +280,17 @@
                                 }}</span>
                             }
                         </div>
-                        <button class="btn btn-sm w-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm">
+                        @if (item.albumUrl) {
+                        <a [href]="item.albumUrl" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-sm w-full bg-white/20 hover:bg-white/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white text-white backdrop-blur-sm">
                             Voir les photos
-                        </button>
+                        </a>
+                        } @else {
+                        <span class="btn btn-sm w-full bg-white/10 text-white/70 backdrop-blur-sm cursor-not-allowed"
+                            aria-disabled="true">
+                            Photos bientôt disponibles
+                        </span>
+                        }
                     </div>
                 </div>
             </div>
