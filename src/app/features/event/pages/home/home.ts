@@ -360,7 +360,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
       try {
         const confettiModule = await import('canvas-confetti');
         const confetti = confettiModule.default || confettiModule;
-
+        
         // Iconic Google colors + white highlight
         const googleColors = ['#4285F4', '#EA4335', '#FBBC04', '#34A853', '#FFFFFF'];
 
