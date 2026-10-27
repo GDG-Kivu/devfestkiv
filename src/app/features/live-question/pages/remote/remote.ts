@@ -8,7 +8,7 @@ import { FirestoreService } from '../../../../core/firestore/firestore.service';
       <div class="bg-white shadow-2xl rounded-3xl p-6 w-72 border border-gray-200 space-y-6">
         <!-- HEADER -->
         <div class="text-center">
-          <h1 class="text-lg font-bold text-gray-800">DevFestKivu 2025</h1>
+          <h1 class="text-lg font-bold text-gray-800">DevFestKivu 2026</h1>
           <p class="text-sm text-gray-500">Télécommande Virtuelle</p>
         </div>
 

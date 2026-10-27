@@ -8,8 +8,9 @@ import { Footer } from '../shared/components/footer/footer';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Navbar, Footer, RouterOutlet],
   template: `
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
     <app-navbar />
-    <main class="site-main">
+    <main id="main-content" tabindex="-1" class="site-main">
       <router-outlet />
     </main>
     <app-footer />
@@ -17,6 +18,19 @@ import { Footer } from '../shared/components/footer/footer';
   styles: `
     .site-main {
       min-height: calc(100dvh - 64px);
+    }
+    .skip-link {
+    position: absolute;
+    left: 0.5rem;
+    top: -4rem;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    background: #1a1a1a;
+    color: #fff;
+    border-radius: 0.5rem;
+    }
+    .skip-link:focus {
+    top: 0.5rem;
     }
   `,
 })

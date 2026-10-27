@@ -11,13 +11,12 @@ import { CommonModule } from '@angular/common';
   },
   template: `
     <nav
-      class="bg-white/90 backdrop-blur-md transition-colors duration-200"
-    >
+      class="bg-white/90 backdrop-blur-md transition-colors duration-200" aria-label="Navigation principale">
       <div class="max-w-7xl mx-auto px-md sm:px-lg lg:px-xl">
         <div class="flex justify-between items-center h-16">
           <!-- Logo Section -->
           <div class="flex-shrink-0 flex items-center">
-            <a routerLink="/" class="flex items-center space-x-3">
+            <a routerLink="/" class="flex items-center space-x-3" aria-label="DevFest Kivu, retour à l'accueil">
               <img
                 src="/assets/logo-1.png"
                 alt="DevFest Kivu Logo"
@@ -35,9 +34,9 @@ import { CommonModule } from '@angular/common';
                 <a
                   [routerLink]="item.path"
                   routerLinkActive="nav-active"
+                  ariaCurrentWhenActive="page"
                   [routerLinkActiveOptions]="item.path === '/' ? { exact: true } : { exact: false }"
                   class="nav-link text-sm xl:text-base text-gray-500"
-                  [attr.aria-current]="item.path === '/' ? 'page' : null"
                 >
                   {{ item.label }}
                 </a>
@@ -54,12 +53,15 @@ import { CommonModule } from '@angular/common';
           <div class="lg:hidden">
             <button
               (click)="toggleMobileMenu()"
-              class="relative inline-flex items-center justify-center p-sm text-text hover:text-primary hover:bg-background/50 transition-all duration-300 rounded-sm group"
+              class="relative inline-flex items-center justify-center p-sm text-text hover:text-primary-dark hover:bg-background/50 transition-all duration-300 rounded-sm group"
               [class.rotate-90]="isMobileMenuOpen()"
               [attr.aria-expanded]="isMobileMenuOpen()"
-              aria-label="Toggle navigation menu"
+              aria-controls="mobile-menu"
+              [attr.aria-label]="
+              isMobileMenuOpen() ? 'Fermer le menu de navigation' : 'Ouvrir le menu de navigation'
+              "
             >
-              <div class="relative w-6 h-6">
+              <div class="relative w-6 h-6" aria-hidden="true">
                 <svg
                   class="absolute inset-0 w-6 h-6 transition-all duration-300"
                   [class.opacity-0]="isMobileMenuOpen()"
@@ -67,6 +69,8 @@ import { CommonModule } from '@angular/common';
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  aria-hidden="true"
+                  focusable="false"
                 >
                   <path
                     stroke-linecap="round"
@@ -82,6 +86,8 @@ import { CommonModule } from '@angular/common';
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  aria-hidden="true"
+                  focusable="false"
                 >
                   <path
                     stroke-linecap="round"
@@ -97,9 +103,9 @@ import { CommonModule } from '@angular/common';
       </div>
 
       <!-- Mobile Navigation Menu -->
-      <div
+      <div id="mobile-menu"
         class="lg:hidden bg-white/95 backdrop-blur-sm border-t border-background overflow-hidden transition-all duration-500 ease-in-out"
-        [class.invisible]="!isReady()"
+        [class.invisible]="!isReady() || !isMobileMenuOpen()"
         [class.max-h-0]="!isMobileMenuOpen()"
         [class.max-h-screen]="isMobileMenuOpen()"
       >
@@ -114,9 +120,10 @@ import { CommonModule } from '@angular/common';
             <a
               [routerLink]="item.path"
               routerLinkActive="nav-active-mobile"
+              ariaCurrentWhenActive="page"
               [routerLinkActiveOptions]="item.path === '/' ? { exact: true } : { exact: false }"
               (click)="closeMobileMenu()"
-              class="block px-sm py-md text-base font-medium text-text hover:text-primary transition-all duration-300 border-l-4 border-transparent hover:translate-x-1 hover:border-primary"
+              class="block px-sm py-md text-base font-medium text-text hover:text-primary-dark transition-all duration-300 border-l-4 border-transparent hover:translate-x-1 hover:border-primary"
               [style.transitionDelay]="i * 50 + 'ms'"
             >
               {{ item.label }}
@@ -162,7 +169,7 @@ import { CommonModule } from '@angular/common';
       }
 
       .nav-link:hover {
-        color: var(--color-primary-dark, #d99500);
+        color: #b45309;
       }
 
       .nav-link:hover::after {
@@ -170,12 +177,18 @@ import { CommonModule } from '@angular/common';
       }
 
       .nav-link.nav-active {
-        color: var(--color-primary-dark, #d99500);
+        color: #b45309;
         font-weight: 600;
       }
 
       .nav-link.nav-active::after {
         width: 100%;
+      }
+
+      .nav-link:focus-visible {
+        outline: 2px solid #b45309;
+        outline-offset: 2px;
+        border-radius: 4px;
       }
 
       /* Hide active line when hovering other links */
@@ -185,7 +198,7 @@ import { CommonModule } from '@angular/common';
 
       /* Mobile active state */
       .nav-active-mobile {
-        color: var(--color-primary) !important;
+        color: #b45309 !important;
         border-left-color: var(--color-primary) !important;
       }
 

@@ -46,7 +46,7 @@ to use them :
 @theme {
   /* Primary brand colors */
   --color-primary: #f9ab00; /* DevFest Yellow */
-  --color-primary-dark: #d99500; /* High-contrast darker yellow */
+  --color-primary-dark: #b45309; /* contraste ~5:1 sur blanc */
   --color-secondary: #34a853; /* Google Green */
   --color-secondary-dark: #2d9247;
   --color-accent: #f9ab00;
@@ -178,14 +178,14 @@ to use them :
 }
 
 .btn-secondary {
-  background-color: var(--color-secondary);
+  background-color: #188038;
   color: #ffffff;
   font-weight: 600;
   box-shadow: 0 2px 10px rgba(52, 168, 83, 0.25);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: var(--color-secondary-dark);
+  background-color: #137333;
   color: #ffffff;
   box-shadow: 0 4px 14px rgba(45, 146, 71, 0.35);
 }
@@ -212,20 +212,20 @@ to use them :
 
 .btn-ghost:hover:not(:disabled) {
   background-color: var(--color-primary-pastel);
-  color: var(--color-primary-dark);
+  color: #92400e;
 }
 
 .btn-danger {
-  background-color: var(--color-danger);
+  background-color: var(--color-danger-dark);
   color: #ffffff;
   font-weight: 600;
-  box-shadow: 0 2px 10px rgba(234, 67, 53, 0.25);
+  box-shadow: 0 2px 10px rgba(211, 56, 40, 0.25);
 }
 
 .btn-danger:hover:not(:disabled) {
-  background-color: var(--color-danger-dark);
+  background-color: #b3261e;
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(211, 56, 40, 0.35);
+  box-shadow: 0 4px 14px rgba(179, 38, 30, 0.35);
 }
 
 .btn-text {
@@ -485,4 +485,4 @@ to use them :
 .animate-scroll-partners:hover,
 .hover\:pause-animation:hover .animate-scroll-partners {
   animation-play-state: paused;
-}
+}
