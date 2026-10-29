@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject, signal } from '@angular/core';
+﻿import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { LiveQuestion } from '../../models/live-question.model';
@@ -100,27 +100,33 @@ import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
         <!-- Question Form Section (Always available, frictionless anonymous/authenticated submission) -->
         <div class="pt-3 border-t border-gray-100 flex-shrink-0">
           <form #QuestionForm="ngForm" (ngSubmit)="addQuestion(QuestionForm)" class="space-y-3">
-            <div class="flex items-center justify-between text-xs text-gray-500">
-              <div class="flex items-center gap-2">
-                @if (isGoogleUser()) {
-                  <span class="flex items-center gap-1.5 text-blue-700 font-medium">
-                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                    Poser en tant que <strong>{{ currentUserName() }}</strong>
-                  </span>
-                } @else {
-                  <span class="flex items-center gap-1.5 text-green-700 font-medium bg-green-50 px-2.5 py-0.5 rounded-full border border-green-200/60">
-                    <span class="w-2 h-2 rounded-full bg-[#34A853]"></span>
-                    Mode Anonyme
-                  </span>
-                }
+            <div class="flex flex-col gap-2 mb-1">
+              <!-- Si Google user: choix anonyme/identifié -->
+              @if (isGoogleUser()) {
+                <div class="flex items-center gap-3 flex-wrap">
+                  <span class="text-xs text-gray-500 font-medium">Poser en tant que :</span>
+                  <label class="flex items-center gap-1.5 cursor-pointer">
+                    <input type="radio" [checked]="useAnonymous()" (change)="useAnonymous.set(true)" name="postAs" class="accent-green-600">
+                    <span class="text-xs text-green-700 font-medium">Anonyme</span>
+                  </label>
+                  <label class="flex items-center gap-1.5 cursor-pointer">
+                    <input type="radio" [checked]="!useAnonymous()" (change)="useAnonymous.set(false)" name="postAs" class="accent-blue-600">
+                    <span class="text-xs text-blue-700 font-medium">{{ currentUserName() }}</span>
+                  </label>
+                </div>
+              } @else {
+                <span class="flex items-center gap-1.5 text-green-700 font-medium bg-green-50 px-2.5 py-0.5 rounded-full border border-green-200/60 text-xs w-fit">
+                  <span class="w-2 h-2 rounded-full bg-[#34A853]"></span>
+                  Mode Anonyme
+                </span>
+              }
+              <div class="flex justify-end">
+                <span class="text-[11px] text-gray-400 font-mono">{{ 1000 - QuestionFormValue.length }} caractères restants</span>
               </div>
-              <span class="text-[11px] text-gray-400 font-mono">
-                {{ 1000 - QuestionFormValue.length }} caractères restants
-              </span>
             </div>
 
             <!-- Optional pseudonym for anonymous participants -->
-            @if (!isGoogleUser()) {
+            @if (!isGoogleUser() || useAnonymous()) {
               <div>
                 <input
                   type="text"
@@ -216,6 +222,7 @@ export default class QuestionsDialog implements OnInit, OnDestroy {
   customAuthorName: string = '';
   questions: LiveQuestion[] = [];
   isSubmitting = false;
+  readonly useAnonymous = signal(true); // par défaut anonyme
   readonly questionsLoading = signal(true);
 
   ngOnInit() {
@@ -262,7 +269,7 @@ export default class QuestionsDialog implements OnInit, OnDestroy {
       // Ensure auth session is ready (Google session preserved, or anonymous created)
       const user = await this.auth.ensureAnonymousOrAuthenticated();
       
-      const authorName = this.isGoogleUser()
+      const authorName = this.isGoogleUser() && !this.useAnonymous()
         ? this.currentUserName()
         : (this.customAuthorName.trim() || 'Participant Anonyme');
 
