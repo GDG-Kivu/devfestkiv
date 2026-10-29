@@ -210,10 +210,6 @@
         <!-- CAS 1: Événement Clôturé -->
         @else if (isEventPast()) {
         <div class="max-w-2xl mx-auto text-center animate-fade-in">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-gray-300 border border-white/10 text-xs font-semibold mb-4">
-                <span class="w-2 h-2 rounded-full bg-gray-400"></span>
-                <span>Édition terminée</span>
-            </div>
             <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight mb-3">
                 Rendez-vous à la prochaine édition !
             </h2>
@@ -246,7 +242,7 @@
                 L'événement est en direct
             </h2>
             <p class="text-gray-300 text-sm sm:text-base mx-auto mb-8 leading-relaxed">
-                Le festival se déroule actuellement à l'Hôtel Panorama Bukavu. Suivez les interventions et posez vos questions en direct !
+                Le festival se déroule actuellement. Suivez les interventions et posez vos questions en direct !
             </p>
             <div class="flex flex-wrap items-center justify-center gap-4">
                 <a [routerLink]="'/agenda'" class="btn btn-primary group inline-flex items-center">

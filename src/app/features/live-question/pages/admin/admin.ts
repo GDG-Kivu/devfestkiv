@@ -22,9 +22,6 @@ import { SessionForm } from './sessions/session-form/session-form';
         <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-xs border border-gray-100">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Espace d'Administration
-              </span>
               <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">
                 Tableau de Bord Administrateur
               </h1>
