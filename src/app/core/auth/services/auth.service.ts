@@ -6,8 +6,6 @@ import {
   GoogleAuthProvider,
   signInAnonymously as firebaseSignInAnonymously,
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
   signOut as firebaseSignOut,
   User,
 } from '@angular/fire/auth';
@@ -32,12 +30,6 @@ export class AuthService {
         this.initialized.set(true);
       });
 
-      // Handle redirect result for mobile Google sign-in
-      getRedirectResult(this.auth).then((result) => {
-        if (result?.user) {
-          this.user.set(result.user);
-        }
-      }).catch(() => {});
     }
   }
 
@@ -80,18 +72,14 @@ export class AuthService {
   /**
    * Signs in with Google popup.
    */
+  /**
+   * Signs in with Google popup (works on all platforms including mobile browsers).
+   * Must be called synchronously from a user gesture (click handler).
+   */
   async signInWithGoogle(): Promise<User | null> {
     if (!this.browser) return null;
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
-
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    if (isMobile) {
-      await signInWithRedirect(this.auth, provider);
-      return null; // La page va recharger après le redirect
-    }
-
     const result = await signInWithPopup(this.auth, provider);
     return result.user;
   }
