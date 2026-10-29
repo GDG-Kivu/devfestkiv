@@ -248,7 +248,14 @@ export default class QuestionsDialog implements OnInit, OnDestroy {
   currentUserName(): string {
     const user = this.auth.user();
     if (!user) return 'Participant';
-    return user.displayName || user.email?.split('@')[0] || 'Participant';
+    if (user.displayName) return user.displayName;
+    // Chercher displayName dans providerData (Google fournit toujours un displayName)
+    if (user.providerData?.length) {
+      for (const p of user.providerData) {
+        if (p?.displayName) return p.displayName;
+      }
+    }
+    return 'Participant';
   }
 
   async addQuestion(form: NgForm) {
