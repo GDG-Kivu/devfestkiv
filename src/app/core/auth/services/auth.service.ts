@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+﻿import { isPlatformBrowser } from '@angular/common';
 import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import {
   Auth,
@@ -6,6 +6,8 @@ import {
   GoogleAuthProvider,
   signInAnonymously as firebaseSignInAnonymously,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signOut as firebaseSignOut,
   User,
 } from '@angular/fire/auth';
@@ -29,6 +31,13 @@ export class AuthService {
         this.user.set(user);
         this.initialized.set(true);
       });
+
+      // Handle redirect result for mobile Google sign-in
+      getRedirectResult(this.auth).then((result) => {
+        if (result?.user) {
+          this.user.set(result.user);
+        }
+      }).catch(() => {});
     }
   }
 
@@ -75,6 +84,14 @@ export class AuthService {
     if (!this.browser) return null;
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
+
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      await signInWithRedirect(this.auth, provider);
+      return null; // La page va recharger après le redirect
+    }
+
     const result = await signInWithPopup(this.auth, provider);
     return result.user;
   }
