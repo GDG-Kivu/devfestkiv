@@ -1,4 +1,4 @@
-# DevFest Kivu — Application Web Officielle
+# 🌟 DevFest Kivu — Application Web Officielle
 
 [![Angular](https://img.shields.io/badge/Angular-20.3-DD0031?style=for-the-badge&logo=angular&logoColor=white)](https://angular.dev/)
 [![Firebase](https://img.shields.io/badge/Firebase-Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
