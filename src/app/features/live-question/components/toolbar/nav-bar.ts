@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, signal } from '@angular/core';
+﻿import { Component, ElementRef, inject, signal } from '@angular/core';
 import {
   NavigationCancel,
   NavigationEnd,
@@ -148,9 +148,10 @@ export class NavBar {
     return name.slice(0, 2).toUpperCase();
   }
 
-  async signIn(): Promise<void> {
-    try {
-      const user = await this.authService.signInWithGoogle();
+  signIn(): void {
+    // Appel direct sans await avant signInWithPopup pour
+    // ne pas bloquer le popup sur mobile (user gesture doit etre synchrone)
+    this.authService.signInWithGoogle().then(async (user) => {
       if (user) {
         const profile = await this.roles.ensureProfile(user);
         if (profile?.role === 'admin' && profile.disabled !== true) {
@@ -159,9 +160,9 @@ export class NavBar {
           await this.router.navigateByUrl('/presenter');
         }
       }
-    } catch {
-      // Popup closed or cancelled
-    }
+    }).catch(() => {
+      // Popup fermé ou annulé par l'utilisateur
+    });
   }
 
   async signOut(): Promise<void> {

@@ -37,7 +37,7 @@ export class Generator {
     const illustrations: Partial<Record<ParticipantRole, string>> = {
       speaker: 'assets/micro.png',
       organizer: 'assets/equipe.png',
-      volunteer: 'assets/mains.png',
+      Facilitator: 'assets/mains.png',
     };
 
     return illustrations[this.role()] ?? null;

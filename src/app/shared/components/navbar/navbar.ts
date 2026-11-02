@@ -169,7 +169,7 @@ import { CommonModule } from '@angular/common';
       }
 
       .nav-link:hover {
-        color: #b45309;
+        color: var(--color-primary-dark, #d99500);
       }
 
       .nav-link:hover::after {
@@ -177,7 +177,7 @@ import { CommonModule } from '@angular/common';
       }
 
       .nav-link.nav-active {
-        color: #b45309;
+        color: var(--color-primary-dark, #d99500);
         font-weight: 600;
       }
 
@@ -198,7 +198,7 @@ import { CommonModule } from '@angular/common';
 
       /* Mobile active state */
       .nav-active-mobile {
-        color: #b45309 !important;
+        color: var(--color-primary) !important;
         border-left-color: var(--color-primary) !important;
       }
 

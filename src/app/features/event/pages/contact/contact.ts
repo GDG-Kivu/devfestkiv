@@ -34,7 +34,7 @@ import { EventConfigService } from '../../services/event-config.service';
                   <h3 class="text-xs font-semibold text-gray-500 tracking-wider">Email</h3>
                   <a
                     href="mailto:{{ eventConfig.contact.email }}"
-                    class="text-sm font-semibold text-primary hover:underline"
+                    class="text-sm font-semibold hover:underline"
                   >
                     {{ eventConfig.contact.email }}
                   </a>
@@ -45,7 +45,7 @@ import { EventConfigService } from '../../services/event-config.service';
                   <h3 class="text-xs font-semibold text-gray-500 tracking-wider">Téléphone</h3>
                   <a
                     href="tel:{{ eventConfig.contact.phone }}"
-                    class="text-sm font-semibold text-gray-800 hover:text-primary"
+                    class="text-sm font-semibold text-gray-800 hover:underline"
                   >
                     {{ eventConfig.contact.phone }}
                   </a>

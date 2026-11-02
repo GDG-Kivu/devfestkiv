@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ContactService } from '../../../features/event/services/contact.service';
+import { EventConfigService } from '../../../features/event/services/event-config.service';
+import { ShareService } from '../../../features/event/services/share.service';
 
 @Component({
   selector: 'app-footer',
@@ -161,7 +163,27 @@ import { ContactService } from '../../../features/event/services/contact.service
                 </svg>
               </a>
             </div>
-
+            <button
+              type="button"
+              (click)="shareEvent()"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-400/70 text-amber-300 text-xs font-bold cursor-pointer hover:bg-amber-400 hover:text-gray-950 transition-colors"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="1.5"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
+                />
+              </svg>
+              Partager l'événement
+            </button>
             <!-- Newsletter -->
             <div class="space-y-2 pt-1">
               <p class="text-xs font-bold text-gray-200">Restez informé des actualités :</p>
@@ -214,15 +236,17 @@ import { ContactService } from '../../../features/event/services/contact.service
                   }
                 </button>
               </form>
-              <p
-                class="text-xs pt-0.5 min-h-4"
-                role="status"
-                aria-live="polite"
-                [class.text-emerald-300]="feedbackType() === 'success'"
-                [class.text-rose-300]="feedbackType() === 'error'"
-              >
-                {{ newsletterFeedback() }}
-              </p>
+              @if (newsletterFeedback()) {
+                <p
+                  class="text-xs pt-0.5 min-h-4"
+                  role="status"
+                  aria-live="polite"
+                  [class.text-emerald-700]="feedbackType() === 'success'"
+                  [class.text-rose-700]="feedbackType() === 'error'"
+                >
+                  {{ newsletterFeedback() }}
+                </p>
+              }
             </div>
           </div>
         </div>
@@ -235,17 +259,61 @@ import { ContactService } from '../../../features/event/services/contact.service
         </div>
       </div>
     </footer>
+    @if (toast(); as t) {
+      <div
+        role="status"
+        aria-live="polite"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] px-4 py-2.5 rounded-xl shadow-xl ring-1 ring-black/10 text-sm font-semibold flex items-center gap-2"
+        [class.bg-amber-400]="t.kind === 'success'"
+        [class.text-gray-950]="t.kind === 'success'"
+        [class.bg-rose-600]="t.kind === 'error'"
+        [class.text-white]="t.kind === 'error'"
+      >
+        <span aria-hidden="true">{{ t.kind === 'success' ? '✓' : '⚠' }}</span>
+        {{ t.text }}
+      </div>
+    }
   `,
   styles: ``,
 })
 export class Footer {
   private contactService = inject(ContactService);
+  private shareService = inject(ShareService);
+  private eventConfig = inject(EventConfigService);
   currentYear = new Date().getFullYear();
 
   newsletterEmail = '';
   isSubscribing = signal(false);
   newsletterFeedback = signal<string | null>(null);
   feedbackType = signal<'success' | 'error'>('success');
+
+  // Toast de partage
+  toast = signal<{ text: string; kind: 'success' | 'error' } | null>(null);
+  private toastTimer?: ReturnType<typeof setTimeout>;
+
+  async shareEvent(): Promise<void> {
+    const url = window.location.origin;
+    const title = this.eventConfig.fullName;
+    const text = `Rejoins-moi au ${title} ! 📅 ${this.eventConfig.getFormattedDateBadge()}`;
+
+    // 1) Partage natif (WhatsApp, X, LinkedIn… selon les apps installées)
+    if (await this.shareService.shareUrl(title, text, url)) return;
+
+    // 2) Fallback : copie dans le presse-papier + notification
+    const copied = await this.shareService.copyToClipboard(`${text}\n${url}`);
+    this.showToast(
+      copied
+        ? 'Lien copié dans le presse-papier !'
+        : 'Copie impossible : copiez le lien depuis la barre d’adresse.',
+      copied ? 'success' : 'error',
+    );
+  }
+
+  private showToast(text: string, kind: 'success' | 'error') {
+    clearTimeout(this.toastTimer);
+    this.toast.set({ text, kind });
+    this.toastTimer = setTimeout(() => this.toast.set(null), 3000);
+  }
 
   async subscribeNewsletter(): Promise<void> {
     const email = this.newsletterEmail.trim();

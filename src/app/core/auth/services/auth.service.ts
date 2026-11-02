@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+﻿import { isPlatformBrowser } from '@angular/common';
 import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import {
   Auth,
@@ -29,6 +29,7 @@ export class AuthService {
         this.user.set(user);
         this.initialized.set(true);
       });
+
     }
   }
 
@@ -70,6 +71,10 @@ export class AuthService {
 
   /**
    * Signs in with Google popup.
+   */
+  /**
+   * Signs in with Google popup (works on all platforms including mobile browsers).
+   * Must be called synchronously from a user gesture (click handler).
    */
   async signInWithGoogle(): Promise<User | null> {
     if (!this.browser) return null;

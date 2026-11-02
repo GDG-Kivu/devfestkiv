@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-50">
+﻿<div class="min-h-screen bg-gray-50">
   <div class="max-w-4xl mx-auto px-4 py-16">
     <!-- Header -->
     <div class="text-center mb-12">
@@ -12,11 +12,11 @@
 
     <!-- Multi-Day Tab Switcher -->
     @if (festivalDays().length > 1) {
-      <div class="flex items-center justify-center gap-2 mb-8 overflow-x-auto pb-2">
+      <div class="flex flex-wrap items-center justify-center gap-2 mb-8 pb-2">
         <button
           type="button"
           (click)="selectedDayId.set('all')"
-          class="px-4 py-2 rounded-lg text-sm font-semibold transition cursor-pointer"
+          class="px-2 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap"
           [class.bg-blue-600]="selectedDayId() === 'all'"
           [class.text-white]="selectedDayId() === 'all'"
           [class.bg-white]="selectedDayId() !== 'all'"
@@ -24,14 +24,15 @@
           [class.border]="selectedDayId() !== 'all'"
           [class.border-gray-300]="selectedDayId() !== 'all'"
         >
-          Toutes les journées
+          <span class="sm:hidden">Tout</span>
+          <span class="hidden sm:inline">Toutes les journées</span>
         </button>
 
         @for (day of festivalDays(); track day.id) {
           <button
             type="button"
             (click)="selectedDayId.set(day.id)"
-            class="px-4 py-2 rounded-lg text-sm font-semibold transition cursor-pointer"
+            class="px-2 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap"
             [class.bg-blue-600]="selectedDayId() === day.id"
             [class.text-white]="selectedDayId() === day.id"
             [class.bg-white]="selectedDayId() !== day.id"
@@ -39,7 +40,7 @@
             [class.border]="selectedDayId() !== day.id"
             [class.border-gray-300]="selectedDayId() !== day.id"
           >
-            {{ day.name }} ({{ day.date }})
+            {{ day.name }}<span class="hidden sm:inline"> ({{ day.date }})</span>
           </button>
         }
       </div>

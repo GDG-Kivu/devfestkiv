@@ -127,7 +127,7 @@ import { Speaker } from '../../models/speaker.model';
           <!-- Empty state: no published speaker yet -->
           <div class="text-center py-16 ">
             <p class="text-lg text-gray-500 mb-2">
-              Le Call for Speakers est en cours - les intervenants seront annoncés prochainement.
+              Les intervenants seront annoncés prochainement.
             </p>
             <a
               [href]="eventConfig.cfpUrl"
