@@ -1,0 +1,120 @@
+<!-- Official DevFest Kivu 3D T-Shirt Showcase Section -->
+<section class="py-16 md:py-24 bg-white relative overflow-hidden border-b border-gray-100" id="tshirt">
+  <!-- Subtle ambient decorative glow matching site design tokens -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-40">
+    <div class="hidden md:block absolute -top-24 -right-24 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
+    <div class="hidden md:block absolute -bottom-24 -left-24 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 relative z-10 w-full">
+    <!-- Section Badge -->
+    <div class="flex items-center justify-center lg:justify-start mb-6 lg:mb-8">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-amber-50 text-amber-900 border border-amber-200/80 rounded-full text-xs sm:text-sm font-semibold shadow-xs">
+        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        <span>Merchandise Officiel</span>
+      </div>
+    </div>
+
+    <!-- Responsive Grid: 3D Model on Left, Details on Right -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      
+      <!-- Left Column: 3D Interactive Model Viewer -->
+      <div class="lg:col-span-6 w-full">
+        <div class="relative bg-gradient-to-b from-gray-50/90 to-gray-100/60 rounded-3xl p-4 sm:p-6 border border-gray-200/80 shadow-card hover:shadow-card-hover transition-shadow duration-300">
+          
+          <!-- 3D Indicator Badge -->
+          <div class="absolute top-4 left-4 z-10 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md border border-gray-200 text-xs font-semibold text-gray-700 shadow-xs">
+            <svg class="w-3.5 h-3.5 text-primary-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path>
+            </svg>
+            <span>Vue 3D Interactive</span>
+          </div>
+
+          <!-- Model-Viewer Custom Element -->
+          <model-viewer
+            src="assets/models/devfest-kivu-tshirt.glb"
+            poster="assets/t-shirt.png"
+            alt="T-shirt Officiel DevFest Kivu"
+            auto-rotate
+            camera-controls
+            touch-action="pan-y"
+            shadow-intensity="1.5"
+            shadow-softness="0.8"
+            exposure="1"
+            interaction-prompt="auto"
+            class="h-[380px] sm:h-[450px] lg:h-[480px] w-full bg-transparent focus:outline-none"
+          ></model-viewer>
+
+          <!-- Interactive Control Hint -->
+          <div class="mt-3 flex items-center justify-center gap-2 text-xs text-text-muted select-none">
+            <span class="inline-block animate-bounce">👆</span>
+            <span>Faites glisser pour faire pivoter à 360° • Molette ou pincez pour zoomer</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Product Presentation & Information -->
+      <div class="lg:col-span-6 w-full space-y-6 text-center lg:text-left">
+        <div class="space-y-3">
+          <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-text tracking-tight leading-tight">
+            Le T-Shirt Officiel <span class="text-primary block sm:inline">DevFest Kivu</span>
+          </h2>
+          <p class="text-base sm:text-lg text-text-muted leading-relaxed">
+            Portez fièrement l’esprit de l’innovation et célébrez la communauté tech des Grands Lacs avec l’édition collector du t-shirt officiel DevFest Kivu.
+          </p>
+        </div>
+
+        <!-- Highlights & Features list with emojis / icons -->
+        <ul class="space-y-3.5 text-left pt-1">
+          <li class="flex items-start gap-3.5 bg-gray-50/70 p-3.5 rounded-2xl border border-gray-100 hover:border-gray-200 transition-colors">
+            <span class="text-2xl flex-shrink-0" aria-hidden="true">🎨</span>
+            <div>
+              <h4 class="font-bold text-gray-900 text-sm sm:text-base">Design Exclusif & Édition Limitée</h4>
+              <p class="text-xs sm:text-sm text-text-muted mt-0.5">Graphisme unique intégrant les couleurs emblématiques de Google et l’énergie de la communauté du Kivu.</p>
+            </div>
+          </li>
+          
+          <li class="flex items-start gap-3.5 bg-gray-50/70 p-3.5 rounded-2xl border border-gray-100 hover:border-gray-200 transition-colors">
+            <span class="text-2xl flex-shrink-0" aria-hidden="true">🧵</span>
+            <div>
+              <h4 class="font-bold text-gray-900 text-sm sm:text-base">100% Coton Premium & Confort Supérieur</h4>
+              <p class="text-xs sm:text-sm text-text-muted mt-0.5">Tissu respirant et doux au toucher, parfait pour les sessions intenses de code, hackathons et conférences.</p>
+            </div>
+          </li>
+
+          <li class="flex items-start gap-3.5 bg-gray-50/70 p-3.5 rounded-2xl border border-gray-100 hover:border-gray-200 transition-colors">
+            <span class="text-2xl flex-shrink-0" aria-hidden="true">✨</span>
+            <div>
+              <h4 class="font-bold text-gray-900 text-sm sm:text-base">Flocage Haute Définition Durable</h4>
+              <p class="text-xs sm:text-sm text-text-muted mt-0.5">Impression de haute qualité étudiée pour résister à l’épreuve du temps et aux lavages fréquents.</p>
+            </div>
+          </li>
+
+          <li class="flex items-start gap-3.5 bg-gray-50/70 p-3.5 rounded-2xl border border-gray-100 hover:border-gray-200 transition-colors">
+            <span class="text-2xl flex-shrink-0" aria-hidden="true">🌍</span>
+            <div>
+              <h4 class="font-bold text-gray-900 text-sm sm:text-base">Fierté Communautaire</h4>
+              <p class="text-xs sm:text-sm text-text-muted mt-0.5">Rejoignez le mouvement, affichez votre passion et gardez un souvenir inoubliable de cette édition.</p>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Call to Action Button -->
+        <div class="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+          <button
+            type="button"
+            (click)="navigateToOrder()"
+            class="btn btn-primary group px-6 py-3.5 text-base font-semibold shadow-md inline-flex items-center justify-center w-full sm:w-auto"
+          >
+            <span>Commander mon T-Shirt</span>
+            <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+

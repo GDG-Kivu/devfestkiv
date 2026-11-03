@@ -1,0 +1,10 @@
+/* Model Viewer Custom Styling */
+model-viewer {
+  --poster-color: transparent;
+  outline: none;
+}
+
+model-viewer::part(default-progress-bar) {
+  background-color: var(--color-primary, #f9ab00);
+}
+
