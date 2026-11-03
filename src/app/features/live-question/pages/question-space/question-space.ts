@@ -56,6 +56,8 @@ export default class QuestionSpace implements OnInit, AfterViewChecked, OnDestro
   questions = signal<LiveQuestion[]>([]);
   questionText = signal('');
   questionError = signal('');
+  isSubmitting = signal(false);
+  readonly useAnonymous = signal(true);
   showEmojiPanel = signal(false);
   showReactEmojiPanel = signal(false);
   shouldScrollToBottom = signal(true);
@@ -130,7 +132,36 @@ export default class QuestionSpace implements OnInit, AfterViewChecked, OnDestro
     }
   }
 
-  async submitQuestion() {
+  isGoogleUser(): boolean {
+    const user = this.auth.user();
+    return !!user && !user.isAnonymous;
+  }
+
+  currentUserName(): string {
+    const user = this.auth.user();
+    if (!user) return 'Participant';
+    if (user.displayName) return user.displayName;
+    if (user.providerData?.length) {
+      for (const p of user.providerData) {
+        if (p?.displayName) return p.displayName;
+      }
+    }
+    return user.email ? user.email.split('@')[0] : 'Participant';
+  }
+
+  getAuthorName(question: LiveQuestion): string {
+    const name = question.displayName?.trim();
+    if (!name || name === 'Participant Anonyme') {
+      return 'Participant Anonyme';
+    }
+    if (name.includes('@')) {
+      return name.split('@')[0];
+    }
+    return name;
+  }
+
+  async submitQuestion(): Promise<void> {
+    if (this.isSubmitting()) return;
     const content = this.questionText().trim();
     if (!content) return;
     this.questionError.set('');
@@ -138,30 +169,34 @@ export default class QuestionSpace implements OnInit, AfterViewChecked, OnDestro
     const s = this.selectedSession();
     if (!s) return;
 
-    // Sign in anonymously only at submission if no session exists yet.
-    // Existing Google sessions are preserved by ensureAnonymousOrAuthenticated().
-    const user = await this.auth.ensureAnonymousOrAuthenticated();
-    if (!user) {
-      this.questionError.set('Impossible d\'envoyer votre question. Veuillez réessayer.');
-      return;
-    }
-
-    const authorName = user.isAnonymous
-      ? 'Participant Anonyme'
-      : (user.displayName || user.email?.split('@')[0] || 'Participant');
-
-    const newQuestion: LiveQuestion = {
-      uid: user.uid,
-      contenu: content,
-      time: Date.now().toString(),
-      createdAt: new Date(),
-      displayName: authorName,
-      email: user.email,
-      status: 'pending',
-      reactions: [],
-    };
-
+    this.isSubmitting.set(true);
     try {
+      // Sign in anonymously only at submission if no session exists yet.
+      // Existing Google sessions are preserved by ensureAnonymousOrAuthenticated().
+      const user = await this.auth.ensureAnonymousOrAuthenticated();
+      if (!user) {
+        this.questionError.set('Impossible d\'envoyer votre question. Veuillez réessayer.');
+        return;
+      }
+
+      const isGoogle = this.isGoogleUser();
+      const authorName = isGoogle && !this.useAnonymous()
+        ? this.currentUserName()
+        : 'Participant Anonyme';
+
+      const authorEmail = (isGoogle && !this.useAnonymous()) ? (user.email || null) : null;
+
+      const newQuestion: LiveQuestion = {
+        uid: user.uid,
+        contenu: content,
+        time: Date.now().toString(),
+        createdAt: new Date(),
+        displayName: authorName,
+        email: authorEmail || undefined,
+        status: 'pending',
+        reactions: [],
+      };
+
       await this.fs.addQuestion(s.id, newQuestion);
       this.questionText.set('');
       this.showEmojiPanel.set(false);
@@ -172,6 +207,8 @@ export default class QuestionSpace implements OnInit, AfterViewChecked, OnDestro
           ? 'Vous avez atteint la limite de questions pour cet événement.'
           : "La question n'a pas pu être envoyée. Veuillez réessayer.",
       );
+    } finally {
+      this.isSubmitting.set(false);
     }
   }
 

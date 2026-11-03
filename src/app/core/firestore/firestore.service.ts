@@ -28,7 +28,7 @@ import { EventSubcollection, FIRESTORE_COLLECTIONS, firestorePaths } from './fir
 import { FirestoreResult } from '../../shared/models/firestore-result.model';
 import { FirestorePublicationFilter } from '../../shared/models/firestore-publication-filter.model';
 import { formattedTimestamp } from '../../shared/utils/formatted-timestamp';
-import { catchError, firstValueFrom, map, Observable, of, startWith, switchMap } from 'rxjs';
+import { catchError, firstValueFrom, map, Observable, of, shareReplay, startWith, switchMap } from 'rxjs';
 
 export const DEFAULT_QUESTIONS_PER_USER = 5;
 export const MAX_CONFIGURABLE_QUESTIONS_PER_USER = 100;
@@ -118,11 +118,17 @@ export class FirestoreService {
     );
   }
 
+  private currentEditionId$?: Observable<string>;
+
   getCurrentEditionId(): Observable<string> {
-    return this.getSiteSettings().pipe(
-      map((settings) => settings?.currentEditionId || String(EVENT_CONFIG.edition)),
-      catchError(() => of(String(EVENT_CONFIG.edition))),
-    );
+    if (!this.currentEditionId$) {
+      this.currentEditionId$ = this.getSiteSettings().pipe(
+        map((settings) => settings?.currentEditionId || String(EVENT_CONFIG.edition)),
+        catchError(() => of(String(EVENT_CONFIG.edition))),
+        shareReplay({ bufferSize: 1, refCount: false }),
+      );
+    }
+    return this.currentEditionId$;
   }
 
   getEvent(editionId: string | number): Observable<EventDocument | undefined> {
@@ -377,40 +383,45 @@ export class FirestoreService {
       const quotaRef = doc(this.fs, firestorePaths.questionQuota(id, user.uid));
 
       return runTransaction(this.fs, async (transaction) => {
-        const [eventSnapshot, quotaSnapshot] = await Promise.all([
-          transaction.get(eventRef),
-          transaction.get(quotaRef),
-        ]);
-        const configuredLimit = eventSnapshot.data()?.['maxQuestionsPerUser'];
-        const questionLimit =
-          typeof configuredLimit === 'number' && Number.isInteger(configuredLimit)
-            ? configuredLimit
-            : DEFAULT_QUESTIONS_PER_USER;
+        const quotaSnapshot = await transaction.get(quotaRef);
         const currentCount = quotaSnapshot.exists() ? (quotaSnapshot.data()['count'] as number) : 0;
 
-        if (
-          !Number.isInteger(questionLimit) ||
-          questionLimit < 0 ||
-          questionLimit > MAX_CONFIGURABLE_QUESTIONS_PER_USER
-        ) {
-          throw new Error('The event question limit is invalid.');
-        }
-        if (!Number.isInteger(currentCount) || currentCount >= questionLimit) {
-          throw new Error('Question limit reached.');
+        if (currentCount >= DEFAULT_QUESTIONS_PER_USER) {
+          const eventSnapshot = await transaction.get(eventRef);
+          const configuredLimit = eventSnapshot.data()?.['maxQuestionsPerUser'];
+          const questionLimit =
+            typeof configuredLimit === 'number' && Number.isInteger(configuredLimit)
+              ? configuredLimit
+              : DEFAULT_QUESTIONS_PER_USER;
+
+          if (
+            !Number.isInteger(questionLimit) ||
+            questionLimit < 0 ||
+            questionLimit > MAX_CONFIGURABLE_QUESTIONS_PER_USER
+          ) {
+            throw new Error('The event question limit is invalid.');
+          }
+          if (!Number.isInteger(currentCount) || currentCount >= questionLimit) {
+            throw new Error('Question limit reached.');
+          }
         }
 
-        const authorName = user.displayName
-          ? user.displayName
-          : user.isAnonymous
-            ? 'Participant Anonyme'
-            : user.email
-              ? user.email.split('@')[0]
-              : 'Participant';
+        const isAnonymous =
+          question.displayName === 'Participant Anonyme' ||
+          (!question.displayName && user.isAnonymous);
+
+        const authorName = isAnonymous
+          ? 'Participant Anonyme'
+          : (question.displayName?.trim() ||
+            user.displayName ||
+            (user.email ? user.email.split('@')[0] : 'Participant'));
+
+        const authorEmail = isAnonymous ? null : (user.email || null);
 
         transaction.set(questionRef, {
           contenu: questionContent,
           displayName: authorName,
-          email: user.email || null,
+          email: authorEmail,
           time: question.time,
           uid: user.uid,
           createdAt: serverTimestamp(),

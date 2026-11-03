@@ -1,4 +1,5 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, inject, OnDestroy, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -11,8 +12,8 @@ import { CommonModule } from '@angular/common';
   },
   template: `
     <nav
-      class="bg-white/90 backdrop-blur-md transition-colors duration-200" aria-label="Navigation principale">
-      <div class="max-w-7xl mx-auto px-md sm:px-lg lg:px-xl">
+      class="bg-white/95 border-b border-gray-100 transition-colors duration-200" aria-label="Navigation principale">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <!-- Logo Section -->
           <div class="flex-shrink-0 flex items-center">
@@ -54,7 +55,6 @@ import { CommonModule } from '@angular/common';
             <button
               (click)="toggleMobileMenu()"
               class="relative inline-flex items-center justify-center p-sm text-text hover:text-primary-dark hover:bg-background/50 transition-all duration-300 rounded-sm group"
-              [class.rotate-90]="isMobileMenuOpen()"
               [attr.aria-expanded]="isMobileMenuOpen()"
               aria-controls="mobile-menu"
               [attr.aria-label]="
@@ -65,7 +65,6 @@ import { CommonModule } from '@angular/common';
                 <svg
                   class="absolute inset-0 w-6 h-6 transition-all duration-300"
                   [class.opacity-0]="isMobileMenuOpen()"
-                  [class.rotate-180]="isMobileMenuOpen()"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -82,7 +81,6 @@ import { CommonModule } from '@angular/common';
                 <svg
                   class="absolute inset-0 w-6 h-6 transition-all duration-300"
                   [class.opacity-0]="!isMobileMenuOpen()"
-                  [class.rotate-180]="!isMobileMenuOpen()"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -102,20 +100,40 @@ import { CommonModule } from '@angular/common';
         </div>
       </div>
 
-      <!-- Mobile Navigation Menu -->
-      <div id="mobile-menu"
-        class="lg:hidden bg-white/95 backdrop-blur-sm border-t border-background overflow-hidden transition-all duration-500 ease-in-out"
-        [class.invisible]="!isReady() || !isMobileMenuOpen()"
-        [class.max-h-0]="!isMobileMenuOpen()"
-        [class.max-h-screen]="isMobileMenuOpen()"
+      <!-- Mobile Navigation Menu — full-screen overlay (covers 100% of the viewport) -->
+      @if (isReady() && isMobileMenuOpen()) {
+      <div
+        id="mobile-menu"
+        class="lg:hidden fixed inset-0 z-[100] bg-white flex flex-col h-[100dvh] w-full"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu de navigation"
       >
-        <div
-          class="px-md pt-lg pb-xl space-y-1 transition-all duration-300 delay-100"
-          [class.opacity-0]="!isMobileMenuOpen()"
-          [class.opacity-100]="isMobileMenuOpen()"
-          [class.translate-y-4]="!isMobileMenuOpen()"
-          [class.translate-y-0]="isMobileMenuOpen()"
-        >
+        <!-- Overlay Header with logo and close button -->
+        <div class="flex items-center justify-between h-16 px-4 sm:px-6 border-b border-gray-100 flex-shrink-0 bg-white">
+          <a routerLink="/" (click)="closeMobileMenu()" class="flex items-center space-x-3" aria-label="DevFest Kivu, retour à l'accueil">
+            <img
+              src="/assets/logo-1.png"
+              alt="DevFest Kivu Logo"
+              class="h-8 w-auto sm:h-10"
+              width="139"
+              height="40"
+            />
+          </a>
+          <button
+            type="button"
+            (click)="closeMobileMenu()"
+            class="inline-flex items-center justify-center p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors cursor-pointer"
+            aria-label="Fermer le menu"
+          >
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Links with animated arrow on hover and active -->
+        <nav class="flex-1 overflow-y-auto overscroll-contain px-4 py-5 space-y-2">
           @for (item of navItems(); track item.path; let i = $index) {
             <a
               [routerLink]="item.path"
@@ -123,25 +141,35 @@ import { CommonModule } from '@angular/common';
               ariaCurrentWhenActive="page"
               [routerLinkActiveOptions]="item.path === '/' ? { exact: true } : { exact: false }"
               (click)="closeMobileMenu()"
-              class="block px-sm py-md text-base font-medium text-text hover:text-primary-dark transition-all duration-300 border-l-4 border-transparent hover:translate-x-1 hover:border-primary"
-              [style.transitionDelay]="i * 50 + 'ms'"
+              class="nav-mobile-link"
+              [style.animationDelay]="i * 35 + 'ms'"
             >
-              {{ item.label }}
+              <span>{{ item.label }}</span>
+              <svg
+                class="nav-arrow w-5 h-5 transition-transform duration-200"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+              </svg>
             </a>
           }
+        </nav>
 
-          <!-- Mobile CTA Button -->
-          <div class="pt-lg border-t border-background/50 mt-md">
-            <a
-              routerLink="/dp-generator"
-              (click)="closeMobileMenu()"
-              class="btn btn-primary btn-md w-full text-center block"
-            >
-              Genérer votre DP
-            </a>
-          </div>
+        <!-- CTA -->
+        <div class="px-4 py-5 border-t border-gray-100 bg-gray-50/50 flex-shrink-0">
+          <a
+            routerLink="/dp-generator"
+            (click)="closeMobileMenu()"
+            class="btn btn-primary btn-md w-full text-center block shadow-sm py-3 rounded-xl font-semibold"
+          >
+            Générer votre DP
+          </a>
         </div>
       </div>
+      }
     </nav>
   `,
   styles: [
@@ -196,25 +224,63 @@ import { CommonModule } from '@angular/common';
         width: 0;
       }
 
-      /* Mobile active state */
-      .nav-active-mobile {
-        color: var(--color-primary) !important;
-        border-left-color: var(--color-primary) !important;
+      /* Mobile active state and link styles */
+      .nav-mobile-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 0.75rem;
+        font-size: 1.125rem;
+        font-weight: 500;
+        color: #374151;
+        text-decoration: none;
+        transition: color 0.2s ease;
+        animation: slideInRight 0.2s ease both;
+        border-bottom: 1px solid #f3f4f6;
       }
 
-      /* Backdrop blur support */
-      .backdrop-blur-sm {
-        backdrop-filter: blur(4px);
+      .nav-mobile-link .nav-arrow {
+        color: #9ca3af;
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
       }
 
-      /* Smooth height transitions */
-      .transition-max-height {
-        transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      .nav-mobile-link:hover {
+        color: var(--color-primary-dark, #d99500);
+      }
+
+      .nav-mobile-link:hover .nav-arrow {
+        transform: translate(5px, -3px);
+        color: var(--color-primary-dark, #d99500);
+      }
+
+      .nav-mobile-link.nav-active-mobile {
+        color: var(--color-primary-dark, #d99500) !important;
+        font-weight: 600 !important;
+      }
+
+      .nav-mobile-link.nav-active-mobile .nav-arrow {
+        color: var(--color-primary-dark, #d99500) !important;
+      }
+
+      .nav-mobile-link.nav-active-mobile:hover .nav-arrow {
+        transform: translate(5px, -3px);
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
       }
     `,
   ],
 })
-export class Navbar {
+export class Navbar implements OnDestroy {
+  private readonly document = inject(DOCUMENT);
   isMobileMenuOpen = signal(false);
   /** Stays false during SSR and the hydration flash window; set true after first browser render. */
   isReady = signal(false);
@@ -235,10 +301,32 @@ export class Navbar {
   }
 
   toggleMobileMenu() {
-    this.isMobileMenuOpen.update((value) => !value);
+    this.isMobileMenuOpen.update((value) => {
+      const next = !value;
+      this.setScrollLocked(next);
+      return next;
+    });
   }
 
   closeMobileMenu() {
     this.isMobileMenuOpen.set(false);
+    this.setScrollLocked(false);
+  }
+
+  private setScrollLocked(locked: boolean) {
+    if (!this.document) return;
+    const docEl = this.document.documentElement;
+    const body = this.document.body;
+    if (locked) {
+      docEl.style.overflow = 'hidden';
+      body.style.overflow = 'hidden';
+    } else {
+      docEl.style.overflow = '';
+      body.style.overflow = '';
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.setScrollLocked(false);
   }
 }
