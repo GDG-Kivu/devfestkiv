@@ -10,15 +10,18 @@
       </p>
     </div>
 
-    <!-- Filtres : Journées & Format sur la même ligne (sans retour à la ligne sur mobile) -->
-    <div class="flex flex-nowrap items-center justify-center gap-1.5 sm:gap-2.5 mb-8 w-full overflow-x-auto pb-1">
+    <!-- Filtres : Journées & Format sur la même ligne (scrollable horizontalement sans coupure à gauche) -->
+    <div
+      class="flex flex-nowrap items-center justify-start md:justify-center gap-2 mb-8 w-full overflow-x-auto pb-2 pt-0.5 px-0.5"
+      style="justify-content: safe center;"
+    >
       <!-- Multi-Day Tab Switcher -->
       @if (festivalDays().length > 1) {
-        <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <button
             type="button"
             (click)="selectedDayId.set('all')"
-            class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap shrink-0"
+            class="px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap shrink-0"
             [class.bg-blue-600]="selectedDayId() === 'all'"
             [class.text-white]="selectedDayId() === 'all'"
             [class.bg-white]="selectedDayId() !== 'all'"
@@ -34,7 +37,7 @@
             <button
               type="button"
               (click)="selectedDayId.set(day.id)"
-              class="px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap shrink-0"
+              class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap shrink-0"
               [class.bg-blue-600]="selectedDayId() === day.id"
               [class.text-white]="selectedDayId() === day.id"
               [class.bg-white]="selectedDayId() !== day.id"
@@ -50,12 +53,12 @@
 
       <!-- Liste déroulante des formats et favoris -->
       @if (!isLoading() && allAgendaItems().length > 0) {
-        <div class="relative shrink-0 min-w-[130px] sm:min-w-[180px] max-w-[160px] sm:max-w-xs">
+        <div class="relative shrink-0 min-w-[140px] sm:min-w-[180px] max-w-[170px] sm:max-w-xs">
           <select
             [value]="selectedFormat()"
             (change)="onFormatChange($event)"
             aria-label="Filtrer par format"
-            class="w-full appearance-none bg-white border border-gray-300 hover:border-gray-400 text-gray-700 font-medium text-xs sm:text-sm rounded-lg px-2.5 sm:px-3.5 py-1.5 sm:py-2 pr-7 sm:pr-9 shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition cursor-pointer"
+            class="w-full appearance-none bg-white border border-gray-300 hover:border-gray-400 text-gray-700 font-medium text-xs sm:text-sm rounded-lg px-3 sm:px-3.5 py-1.5 sm:py-2 pr-7 sm:pr-9 shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition cursor-pointer"
           >
             @for (chip of formatChips; track chip.value) {
               <option [value]="chip.value">
