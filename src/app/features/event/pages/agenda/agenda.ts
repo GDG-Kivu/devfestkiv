@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, afterNextRender, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { EventConfigService, FestivalDaySchedule } from '../../services/event-config.service';
 import { FirestoreService } from '../../../../core/firestore/firestore.service';
 import { AgendaItem } from '../../models/agenda-item.model';
+
+const FAVORITES_STORAGE_KEY = 'devfest_favorite_sessions';
 
 export interface FormattedAgendaItem {
   id: string;
@@ -53,16 +55,43 @@ export default class AgendaComponent implements OnInit {
   festivalDays = signal<FestivalDaySchedule[]>([]);
   isLoading = signal<boolean>(true);
 
+  // Filtre par format
+  readonly formatChips = [
+    { value: 'all', label: 'Tous' },
+    { value: 'keynote', label: 'Keynote' },
+    { value: 'talk', label: 'Talk' },
+    { value: 'workshop', label: 'Workshop' },
+    { value: 'codelab', label: 'Codelab' },
+    { value: 'break', label: 'Break' },
+    { value: 'conference', label: 'Conférence' },
+    { value: 'discussion', label: 'Discussion' },
+    { value: 'sponsor', label: 'Sponsor' },
+    { value: 'closing', label: 'Clôture' },
+  ];
+  selectedFormat = signal<string>('all');
+ 
+  // Favoris (persistés dans localStorage)
+  showFavoritesOnly = signal<boolean>(false);
+  favoriteIds = signal<Set<string>>(new Set());
+
   filteredAgendaEvents = computed(() => {
-    const filter = this.selectedDayId();
+    const day = this.selectedDayId();
+    const format = this.selectedFormat();
+    const favoritesOnly = this.showFavoritesOnly();
+    const favorites = this.favoriteIds();
     const list = this.allAgendaItems();
-    const filtered = filter === 'all'
-      ? list
-      : list.filter((item) => (item.dayId || 'day1') === filter);
+
+    const filtered = list.filter((item) => {
+      if (day !== 'all' && (item.dayId || 'day1') !== day) return false;
+      if (format !== 'all' && (item.rawCategory || '').toLowerCase() !== format) return false;
+      if (favoritesOnly && !favorites.has(item.id)) return false;
+      return true;
+    });
+
 
     return [...filtered].sort((a, b) => {
       // Tri par journée si on affiche toutes les journées
-      if (filter === 'all' && a.dayId !== b.dayId) {
+      if (day === 'all' && a.dayId !== b.dayId) {
         return (a.dayId || 'day1').localeCompare(b.dayId || 'day1');
       }
       // Tri chronologique strict selon l'heure de début
@@ -72,6 +101,15 @@ export default class AgendaComponent implements OnInit {
       return this.timeToMinutes(a.endsAt) - this.timeToMinutes(b.endsAt);
     });
   });
+
+ 
+  constructor() {
+    // Exécuté uniquement dans le navigateur (localStorage n'existe pas côté serveur),
+    // et après le premier rendu pour ne pas créer de décalage avec l'hydratation SSR.
+    afterNextRender(() => {
+      this.favoriteIds.set(this.readFavorites());
+    });
+  }
 
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
@@ -124,6 +162,57 @@ export default class AgendaComponent implements OnInit {
       });
     });
   }
+  // ---------- Favoris ----------
+ 
+  isFavorite(id: string): boolean {
+    return this.favoriteIds().has(id);
+  }
+ 
+  toggleFavorite(id: string): void {
+    const next = new Set(this.favoriteIds());
+    if (!next.delete(id)) {
+      next.add(id);
+    }
+    this.favoriteIds.set(next);
+    this.saveFavorites(next);
+  }
+ 
+  private readFavorites(): Set<string> {
+    try {
+      const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
+      const parsed: unknown = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(parsed)) return new Set();
+      return new Set(parsed.filter((v): v is string => typeof v === 'string'));
+    } catch {
+      return new Set();
+    }
+  }
+ 
+  private saveFavorites(ids: Set<string>): void {
+    try {
+      localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify([...ids]));
+    } catch {
+      // Stockage indisponible (mode privé, quota atteint) : on ignore, les favoris restent en mémoire.
+    }
+  }
+ 
+  // ---------- Filtres ----------
+ 
+  resetFilters(): void {
+    this.selectedDayId.set('all');
+    this.selectedFormat.set('all');
+    this.showFavoritesOnly.set(false);
+  }
+ 
+  formatChipClass(value: string): string {
+    if (this.selectedFormat() !== value) {
+      return 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-100';
+    }
+    const active = value === 'all' ? 'bg-gray-900 text-white' : this.getBadgeColor(value);
+    return `${active} border border-transparent`;
+  }
+ 
+  // ---------- Utilitaires ----------
 
   private timeToMinutes(timeStr?: string): number {
     if (!timeStr) return 0;
