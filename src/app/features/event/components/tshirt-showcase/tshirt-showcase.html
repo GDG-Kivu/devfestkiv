@@ -7,6 +7,13 @@
   </div>
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 relative z-10 w-full">
+    <!-- Mobile-only Title (placed above the 3D T-shirt on mobile) -->
+    <div class="block md:hidden mb-6 text-left">
+      <h2 class="text-3xl font-extrabold text-text tracking-tight leading-tight">
+        Le T-Shirt Officiel <span class="text-primary block sm:inline">DevFest Kivu</span>
+      </h2>
+    </div>
+
     <!-- 2-Column Responsive Grid: 50% / 50% on tablet & desktop -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-16 items-center w-full">
       
@@ -38,61 +45,62 @@
       </div>
 
       <!-- Right Column: Product Presentation & Call to Action (Left-aligned on all screen sizes) -->
-      <div class="w-full min-w-0 space-y-6 text-left">
-        <div class="space-y-4">
-          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text tracking-tight leading-tight">
-            Le T-Shirt Officiel <span class="text-primary block sm:inline">DevFest Kivu</span>
-          </h2>
-          <p class="text-base sm:text-lg text-text-muted leading-relaxed">
-            Procurez-vous le t-shirt officiel du DevFest Kivu et affichez les couleurs de la communauté tech.
-          </p>
+      <div class="w-full min-w-0 flex flex-col gap-6 text-left">
+        <!-- Desktop-only Title -->
+        <h2 class="hidden md:block md:order-1 text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text tracking-tight leading-tight">
+          Le T-Shirt Officiel <span class="text-primary block sm:inline">DevFest Kivu</span>
+        </h2>
 
-          <!-- Front and Back Figures -->
-          <div class="flex items-center justify-start gap-4 pt-1">
-            <!-- Front view thumbnail -->
-            <button
-              type="button"
-              (click)="setView('0deg 75deg 105%')"
-              class="thumbnail-btn group flex flex-col items-center gap-1.5 cursor-pointer focus:outline-none"
-              title="Voir la face avant"
-            >
-              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gray-50 border border-gray-200/80 p-1.5 flex items-center justify-center overflow-hidden transition-all duration-200 cursor-pointer group-hover:border-primary group-hover:scale-105">
-                <img
-                  src="assets/models/t-shirt_front.png"
-                  alt="Face avant du t-shirt"
-                  class="w-full h-full object-contain pointer-events-none"
-                  loading="lazy"
-                />
-              </div>
-              <span class="text-[11px] sm:text-xs font-medium text-text-muted cursor-pointer group-hover:text-primary transition-colors">
-                Face avant
-              </span>
-            </button>
+        <!-- Front and Back Figures: order-1 on mobile (above text), order-3 on desktop (under text) -->
+        <div class="order-1 md:order-3 flex items-center justify-start gap-4">
+          <!-- Front view thumbnail -->
+          <button
+            type="button"
+            (click)="setView('0deg 75deg 105%')"
+            class="thumbnail-btn group flex flex-col items-center gap-1.5 cursor-pointer focus:outline-none"
+            title="Voir la face avant"
+          >
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gray-50 border border-gray-200/80 p-1.5 flex items-center justify-center overflow-hidden transition-all duration-200 cursor-pointer group-hover:border-primary group-hover:scale-105">
+              <img
+                src="assets/models/t-shirt_front.png"
+                alt="Face avant du t-shirt"
+                class="w-full h-full object-contain pointer-events-none"
+                loading="lazy"
+              />
+            </div>
+            <span class="text-[11px] sm:text-xs font-medium text-text-muted cursor-pointer group-hover:text-primary transition-colors">
+              Face avant
+            </span>
+          </button>
 
-            <!-- Back view thumbnail -->
-            <button
-              type="button"
-              (click)="setView('180deg 75deg 105%')"
-              class="thumbnail-btn group flex flex-col items-center gap-1.5 cursor-pointer focus:outline-none"
-              title="Voir la face arrière"
-            >
-              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gray-50 border border-gray-200/80 p-1.5 flex items-center justify-center overflow-hidden transition-all duration-200 cursor-pointer group-hover:border-primary group-hover:scale-105">
-                <img
-                  src="assets/models/t-shirt_back.png"
-                  alt="Face arrière du t-shirt"
-                  class="w-full h-full object-contain pointer-events-none"
-                  loading="lazy"
-                />
-              </div>
-              <span class="text-[11px] sm:text-xs font-medium text-text-muted cursor-pointer group-hover:text-primary transition-colors">
-                Face arrière
-              </span>
-            </button>
-          </div>
+          <!-- Back view thumbnail -->
+          <button
+            type="button"
+            (click)="setView('180deg 75deg 105%')"
+            class="thumbnail-btn group flex flex-col items-center gap-1.5 cursor-pointer focus:outline-none"
+            title="Voir la face arrière"
+          >
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gray-50 border border-gray-200/80 p-1.5 flex items-center justify-center overflow-hidden transition-all duration-200 cursor-pointer group-hover:border-primary group-hover:scale-105">
+              <img
+                src="assets/models/t-shirt_back.png"
+                alt="Face arrière du t-shirt"
+                class="w-full h-full object-contain pointer-events-none"
+                loading="lazy"
+              />
+            </div>
+            <span class="text-[11px] sm:text-xs font-medium text-text-muted cursor-pointer group-hover:text-primary transition-colors">
+              Face arrière
+            </span>
+          </button>
         </div>
 
-        <!-- Call to Action Button placed underneath the figures -->
-        <div class="pt-1 flex items-center justify-start">
+        <!-- Description text: order-2 on mobile (under thumbnails) and order-2 on desktop (under title) -->
+        <p class="order-2 md:order-2 text-base sm:text-lg text-text-muted leading-relaxed">
+          Procurez-vous le t-shirt officiel du DevFest Kivu et affichez les couleurs de la communauté tech.
+        </p>
+
+        <!-- Call to Action Button: order-3 on mobile, order-4 on desktop -->
+        <div class="order-3 md:order-4 pt-1 flex items-center justify-start">
           <button
             type="button"
             (click)="navigateToOrder()"
