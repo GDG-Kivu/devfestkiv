@@ -1,4 +1,4 @@
-﻿<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen bg-gray-50">
   <div class="max-w-4xl mx-auto px-4 py-16">
     <!-- Header -->
     <div class="text-center mb-12">
@@ -10,77 +10,70 @@
       </p>
     </div>
 
-    <!-- Multi-Day Tab Switcher -->
-    @if (festivalDays().length > 1) {
-      <div class="flex items-center justify-center gap-2 mb-8 pb-2 overflow-x-auto ">
-        <button
-          type="button"
-          (click)="selectedDayId.set('all')"
-          class="px-4 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer"
-          [class.bg-blue-600]="selectedDayId() === 'all'"
-          [class.text-white]="selectedDayId() === 'all'"
-          [class.bg-white]="selectedDayId() !== 'all'"
-          [class.text-gray-700]="selectedDayId() !== 'all'"
-          [class.border]="selectedDayId() !== 'all'"
-          [class.border-gray-300]="selectedDayId() !== 'all'"
-        >
-          <span class="sm:hidden">Tout</span>
-          <span class="hidden sm:inline">Toutes les journées</span>
-        </button>
-
-        @for (day of festivalDays(); track day.id) {
+    <!-- Filtres : Journées & Format sur la même ligne (sans retour à la ligne sur mobile) -->
+    <div class="flex flex-nowrap items-center justify-start sm:justify-center gap-1.5 sm:gap-2.5 mb-8 w-full overflow-x-auto pb-1">
+      <!-- Multi-Day Tab Switcher -->
+      @if (festivalDays().length > 1) {
+        <div class="flex items-center gap-1 sm:gap-2 shrink-0">
           <button
             type="button"
-            (click)="selectedDayId.set(day.id)"
-            class="px-4 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-sm font-semibold transition cursor-pointer"
-            [class.bg-blue-600]="selectedDayId() === day.id"
-            [class.text-white]="selectedDayId() === day.id"
-            [class.bg-white]="selectedDayId() !== day.id"
-            [class.text-gray-700]="selectedDayId() !== day.id"
-            [class.border]="selectedDayId() !== day.id"
-            [class.border-gray-300]="selectedDayId() !== day.id"
+            (click)="selectedDayId.set('all')"
+            class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap shrink-0"
+            [class.bg-blue-600]="selectedDayId() === 'all'"
+            [class.text-white]="selectedDayId() === 'all'"
+            [class.bg-white]="selectedDayId() !== 'all'"
+            [class.text-gray-700]="selectedDayId() !== 'all'"
+            [class.border]="selectedDayId() !== 'all'"
+            [class.border-gray-300]="selectedDayId() !== 'all'"
           >
-            {{ day.name }} ({{ day.date }})
+            <span class="sm:hidden">Tout</span>
+            <span class="hidden sm:inline">Toutes les journées</span>
           </button>
-        }
-      </div>
-    }
-    <!-- Filtres : format + favoris -->
+
+          @for (day of festivalDays(); track day.id) {
+            <button
+              type="button"
+              (click)="selectedDayId.set(day.id)"
+              class="px-2 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap shrink-0"
+              [class.bg-blue-600]="selectedDayId() === day.id"
+              [class.text-white]="selectedDayId() === day.id"
+              [class.bg-white]="selectedDayId() !== day.id"
+              [class.text-gray-700]="selectedDayId() !== day.id"
+              [class.border]="selectedDayId() !== day.id"
+              [class.border-gray-300]="selectedDayId() !== day.id"
+            >
+              {{ day.name }} ({{ day.date }})
+            </button>
+          }
+        </div>
+      }
+
+      <!-- Liste déroulante des formats et favoris -->
+      @if (!isLoading() && allAgendaItems().length > 0) {
+        <div class="relative shrink-0 min-w-[130px] sm:min-w-[180px] max-w-[160px] sm:max-w-xs">
+          <select
+            [value]="selectedFormat()"
+            (change)="onFormatChange($event)"
+            aria-label="Filtrer par format"
+            class="w-full appearance-none bg-white border border-gray-300 hover:border-gray-400 text-gray-700 font-medium text-xs sm:text-sm rounded-lg px-2.5 sm:px-3.5 py-1.5 sm:py-2 pr-7 sm:pr-9 shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition cursor-pointer"
+          >
+            @for (chip of formatChips; track chip.value) {
+              <option [value]="chip.value">
+                {{ chip.value === 'favorites' && favoriteIds().size > 0 ? chip.label + ' (' + favoriteIds().size + ')' : chip.label }}
+              </option>
+            }
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 sm:px-3 text-gray-400">
+            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Annonce du nombre de résultats aux lecteurs d'écran -->
     @if (!isLoading() && allAgendaItems().length > 0) {
-      <div
-        class="flex flex-wrap items-center justify-center gap-2 mb-8"
-        role="group"
-        aria-label="Filtrer les sessions par format"
-      >
-        @for (chip of formatChips; track chip.value) {
-          <button
-            type="button"
-            (click)="selectedFormat.set(chip.value)"
-            class="px-4 py-2 rounded-lg text-sm font-semibold transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-            [class]="formatChipClass(chip.value)"
-            [attr.aria-pressed]="selectedFormat() === chip.value"
-          >
-            {{ chip.label }}
-          </button>
-        }
-
-        <button
-          type="button"
-          (click)="showFavoritesOnly.set(!showFavoritesOnly())"
-          class="px-4 py-2 rounded-lg text-sm font-semibold transition cursor-pointer border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-          [class.bg-amber-400]="showFavoritesOnly()"
-          [class.text-gray-900]="showFavoritesOnly()"
-          [class.border-amber-400]="showFavoritesOnly()"
-          [class.bg-white]="!showFavoritesOnly()"
-          [class.text-gray-700]="!showFavoritesOnly()"
-          [class.border-gray-300]="!showFavoritesOnly()"
-          [attr.aria-pressed]="showFavoritesOnly()"
-        >
-          <span aria-hidden="true">⭐</span> Mes favoris
-        </button>
-      </div>
-
-      <!-- Annonce du nombre de résultats aux lecteurs d'écran -->
       <p class="sr-only" role="status" aria-live="polite">
         {{ filteredAgendaEvents().length }} session(s) affichée(s)
       </p>
@@ -166,7 +159,7 @@
       } @else if (allAgendaItems().length === 0) {
         <!-- Aucune session publiée --> 
         <div class="text-gray-500 text-center py-12">Le programme sera annoncé prochainement.</div>
-      } @else if (showFavoritesOnly() && favoriteIds().size === 0) {
+      } @else if ((showFavoritesOnly() || selectedFormat() === 'favorites') && favoriteIds().size === 0) {
         <!-- Favoris vides -->
         <div class="text-gray-600 text-center py-12">
           Aucun favori sélectionné. Cliquez sur <span aria-hidden="true">⭐</span> pour ajouter des sessions.
