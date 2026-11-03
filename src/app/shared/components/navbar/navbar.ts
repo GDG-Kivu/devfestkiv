@@ -164,7 +164,7 @@ import { EventConfigService } from '../../../features/event/services/event-confi
           @if (eventConfig.status() !== 'loading' && eventConfig.getFormattedDateBadge()) {
             <span class="block h-10 text-xs">{{ eventConfig.getFormattedDateBadge() }}</span>
           } @else if (eventConfig.status() === 'loading') {
-          <div class="h-7 w-full bg-gray-100 animate-pulse"></div>
+          <div class="block h-10 bg-gray-100 mb-2 animate-pulse"></div>
           }
           <a
             routerLink="/dp-generator"
