@@ -69,7 +69,7 @@ export class EventConfigModalComponent implements OnInit {
       city: 'Bukavu',
       country: 'RD Congo',
       fullLocation: 'Bukavu, RD Congo',
-      conferenceCenter: 'Hotel Panorama Bukavu',
+      conferenceCenter: 'Universitié Catholique de Bukavu - wima Campus',
     },
     date: {
       start: new Date(),

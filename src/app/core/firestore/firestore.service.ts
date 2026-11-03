@@ -86,7 +86,7 @@ export class FirestoreService {
         city: 'Bukavu',
         country: 'RD Congo',
         fullLocation: 'Bukavu, RD Congo',
-        conferenceCenter: 'Hotel Panorama Bukavu',
+        conferenceCenter: 'Universitié Catholique de Bukavu - wima Campus',
       },
       date: {
         start: new Date(`${year}-11-29T09:00:00`),

@@ -21,13 +21,13 @@ export const EVENT_CONFIG: EventConfig = {
     city: 'Bukavu',
     country: 'RD Congo',
     fullLocation: 'Bukavu, RD Congo',
-    conferenceCenter: 'Hotel Panorama Bukavu',
+    conferenceCenter: 'Universitié Catholique de Bukavu - wima Campus',
   },
   theme: 'Innovation & Tech',
   description:
     'Le plus grand rassemblement tech de la région des Grands Lacs, réunissant développeurs, étudiants, élèves, entrepreneurs, etc.',
   registrationUrl:
-    'https://gdg.community.dev/events/details/google-gdg-kivu-presents-devfest-kivu-2025/cohost-gdg-kivu',
+    'https://gdg.community.dev/events/details/google-gdg-kivu-presents-build-secure-scale-developers-and-builders-in-the-agentic-era-devfest-kivu-2026/cohost-gdg-kivu',
   cfpUrl: 'https://bit.ly/3Vx4FyU',
   contact: {
     email: 'gdgkivu@gmail.com',
@@ -274,7 +274,7 @@ export const EVENT_CONFIG: EventConfig = {
         name: 'DevFest Kivu - Jour 1',
         date: '28 Nov',
         fullDate: 'Samedi 28 Novembre 2026',
-        location: 'Hotel Panorama Bukavu',
+        location: 'Universitié Catholique de Bukavu - wima Campus',
         isActive: true,
         startsAt: '09:00',
         endsAt: '18:00',
@@ -284,7 +284,7 @@ export const EVENT_CONFIG: EventConfig = {
         name: 'DevFest Kivu - Jour 2',
         date: '29 Nov',
         fullDate: 'Dimanche 29 Novembre 2026',
-        location: 'Hotel Panorama Bukavu',
+        location: 'Universitié Catholique de Bukavu - wima Campus',
         isActive: true,
         startsAt: '09:00',
         endsAt: '18:00',
