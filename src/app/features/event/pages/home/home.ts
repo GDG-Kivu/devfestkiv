@@ -10,6 +10,7 @@ import {
   NgZone,
 } from '@angular/core';
 import PastEventsGallery from '../../components/past-events-gallery/past-events-gallery';
+import TshirtShowcase from '../../components/tshirt-showcase/tshirt-showcase';
 import { RouterLink } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
 import { EventConfigService, FestivalDaySchedule } from '../../services/event-config.service';
@@ -19,7 +20,7 @@ import { isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'app-home',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PastEventsGallery, RouterLink, NgOptimizedImage],
+  imports: [PastEventsGallery, TshirtShowcase, RouterLink, NgOptimizedImage],
   templateUrl: 'home.html',
   styles: `
     .video-wrapper {

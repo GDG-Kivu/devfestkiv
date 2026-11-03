@@ -1,4 +1,4 @@
-﻿import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { LiveQuestion } from '../../models/live-question.model';
@@ -78,7 +78,7 @@ import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
                   <div class="flex items-center justify-between text-xs text-gray-500 mb-1.5">
                     <span class="font-bold text-gray-800 flex items-center gap-1.5">
                       <span class="w-2 h-2 rounded-full bg-[#34A853]"></span>
-                      {{ q.displayName || 'Participant Anonyme' }}
+                      {{ getAuthorName(q) }}
                     </span>
                     @if (q.time) {
                       <span class="text-[11px] text-gray-400 font-mono">{{ q.time | date:'shortTime' }}</span>
@@ -255,7 +255,14 @@ export default class QuestionsDialog implements OnInit, OnDestroy {
         if (p?.displayName) return p.displayName;
       }
     }
-    return 'Participant';
+    return user.email ? user.email.split('@')[0] : 'Participant';
+  }
+
+  getAuthorName(q: LiveQuestion): string {
+    const name = q.displayName?.trim();
+    if (!name || name === 'Participant Anonyme') return 'Participant Anonyme';
+    if (name.includes('@')) return name.split('@')[0];
+    return name;
   }
 
   async addQuestion(form: NgForm) {

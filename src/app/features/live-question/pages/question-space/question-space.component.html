@@ -1,4 +1,4 @@
-﻿<div class="flex h-screen bg-gray-50">
+<div class="flex h-screen bg-gray-50">
 
   <!-- SIDEBAR -->
   <aside class="w-64 lg:w-72 bg-white border-r border-gray-200 shadow-sm overflow-y-auto hidden md:block">
@@ -145,7 +145,10 @@
             <div class="flex justify-between items-start">
               <div class="flex-1">
                 <p class="text-gray-700">{{ q.contenu }}</p>
-                <p class="text-xs text-gray-500 mt-1">{{ q.displayName || 'Invité' }}</p>
+                <p class="text-xs text-gray-500 mt-1 flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#34A853]"></span>
+                  {{ getAuthorName(q) }}
+                </p>
               </div>
               <div class="flex space-x-1 ml-3">
                 @for (reaction of q.reactions || []; track reaction.emoji) {
@@ -189,6 +192,26 @@
     <!-- Question submission form -->
     <div class="bg-white border-t border-gray-200 p-3 sm:p-6 shadow-lg">
       <div class="max-w-4xl mx-auto">
+        <!-- Anonymous / Google identity toggle -->
+        <div class="flex items-center gap-3 flex-wrap mb-3">
+          @if (isGoogleUser()) {
+            <span class="text-xs text-gray-500 font-medium">Poser en tant que :</span>
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="radio" [checked]="useAnonymous()" (change)="useAnonymous.set(true)" name="postAsSpace" class="accent-green-600">
+              <span class="text-xs text-green-700 font-medium">Anonyme</span>
+            </label>
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="radio" [checked]="!useAnonymous()" (change)="useAnonymous.set(false)" name="postAsSpace" class="accent-blue-600">
+              <span class="text-xs text-blue-700 font-medium">{{ currentUserName() }}</span>
+            </label>
+          } @else {
+            <span class="flex items-center gap-1.5 text-green-700 font-medium bg-green-50 px-2.5 py-0.5 rounded-full border border-green-200/60 text-xs w-fit">
+              <span class="w-2 h-2 rounded-full bg-[#34A853]"></span>
+              Mode Anonyme
+            </span>
+          }
+        </div>
+
         <div class="relative">
           <textarea [ngModel]="questionText()" (ngModelChange)="questionText.set($event)" rows="3"
             placeholder="Écrivez votre question..."
@@ -210,9 +233,17 @@
               Réagir
             </button>
 
-            <button (click)="submitQuestion()" [disabled]="!questionText().trim()"
-              class="px-6 py-2 bg-[#4285F4] text-white rounded-lg shadow-sm hover:bg-[#3367D6] hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium">
-              Envoyer
+            <button (click)="submitQuestion()" [disabled]="!questionText().trim() || isSubmitting()"
+              class="flex items-center gap-2 px-5 py-2 bg-[#4285F4] text-white rounded-lg shadow-sm hover:bg-[#3367D6] hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium">
+              @if (isSubmitting()) {
+                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Envoi…</span>
+              } @else {
+                <span>Envoyer</span>
+              }
             </button>
           </div>
         </div>
