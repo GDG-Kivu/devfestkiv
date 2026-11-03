@@ -160,7 +160,7 @@ import { EventConfigService } from '../../../features/event/services/event-confi
         </nav>
 
         <!-- Event Date Info & CTA -->
-        <div class="px-4 py-5 border-t border-gray-100 bg-gray-50/50 flex-shrink-0">
+        <div class="px-4 py-5 flex-shrink-0">
           @if (eventConfig.status() !== 'loading' && eventConfig.getFormattedDateBadge()) {
             <span class="block h-10 text-xs">{{ eventConfig.getFormattedDateBadge() }}</span>
           } @else if (eventConfig.status() === 'loading') {
