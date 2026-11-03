@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { EventConfigService, FestivalDaySchedule } from '../../services/event-config.service';
 import { FirestoreService } from '../../../../core/firestore/firestore.service';
 import { AgendaItem } from '../../models/agenda-item.model';
+import { EVENT_CONFIG } from '../../../../config/event.config';
 
 const FAVORITES_STORAGE_KEY = 'devfest_favorite_sessions';
 
@@ -52,7 +53,49 @@ export default class AgendaComponent implements OnInit {
 
   selectedDayId = signal<string>('all');
   allAgendaItems = signal<FormattedAgendaItem[]>([]);
-  festivalDays = signal<FestivalDaySchedule[]>([]);
+  festivalDays = computed<FestivalDaySchedule[]>(() => {
+    // 1. Lire depuis eventConfig (réactif au signal interne de configuration)
+    let days = this.eventConfig.getFestivalDays();
+    if (days && days.length > 1) {
+      return days;
+    }
+
+    // 2. Détecter dynamiquement les journées distinctes présentes dans les sessions chargées
+    const items = this.allAgendaItems();
+    const itemDayIds = Array.from(new Set(items.map((it) => it.dayId).filter(Boolean)));
+    if (itemDayIds.length > 1) {
+      itemDayIds.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+      return itemDayIds.map((id, index) => {
+        const found = days.find((d) => d.id === id);
+        if (found) return found;
+        const num = index + 1;
+        const now = new Date();
+        return {
+          id,
+          dayNumber: num,
+          name: `Jour ${num}`,
+          date: `J${num}`,
+          fullDate: `Jour ${num}`,
+          location: '',
+          isActive: true,
+          startTime: now,
+          endTime: now,
+          startMs: now.getTime(),
+          endMs: now.getTime(),
+          startsAt: '09:00',
+          endsAt: '18:00',
+        };
+      });
+    }
+
+    // 3. Fallback sur EVENT_CONFIG pour garantir la présence des jours du festival
+    const fallbackDays = this.eventConfig.getFestivalDays(EVENT_CONFIG);
+    if (fallbackDays && fallbackDays.length > 1) {
+      return fallbackDays;
+    }
+
+    return days;
+  });
   isLoading = signal<boolean>(true);
 
   // Filtre par format
@@ -126,8 +169,6 @@ export default class AgendaComponent implements OnInit {
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    this.festivalDays.set(this.eventConfig.getFestivalDays());
 
     this.fs.getCurrentEditionId().subscribe((editionId) => {
       this.fs.getPublishedEventCollection<AgendaItem>(editionId, 'agenda').subscribe({

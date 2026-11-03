@@ -40,7 +40,7 @@ import { Speaker } from '../../models/speaker.model';
             @for (c of chips; track c.value) {
               <button
                 type="button"
-                class="px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA4335] focus-visible:ring-offset-2"
+                class="px-4 py-2 rounded-full text-sm font-medium cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA4335] focus-visible:ring-offset-2"
                 [class]="
                   selectedTopic() === c.value
                     ? 'bg-[#EA4335] text-white'
