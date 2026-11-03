@@ -9,6 +9,7 @@ import { isPlatformBrowser } from '@angular/common';
 import {
   PreloadAllModules,
   provideRouter,
+  TitleStrategy,
   withComponentInputBinding,
   withInMemoryScrolling,
   withPreloading,
@@ -27,6 +28,7 @@ import {
   provideFirestore,
 } from '@angular/fire/firestore';
 import { firebaseConfig } from './config/firebase.config';
+import { AppTitleStrategy } from './core/seo/app-title.strategy';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -42,6 +44,7 @@ export const appConfig: ApplicationConfig = {
         scrollPositionRestoration: 'enabled',
       }),
     ),
+    { provide: TitleStrategy, useClass: AppTitleStrategy },
     provideClientHydration(withEventReplay()),
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideFirestore(() => {
