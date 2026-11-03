@@ -57,7 +57,8 @@ export default class AgendaComponent implements OnInit {
 
   // Filtre par format
   readonly formatChips = [
-    { value: 'all', label: 'Tous' },
+    { value: 'all', label: 'Tous les formats' },
+    { value: 'favorites', label: '⭐ Mes favoris' },
     { value: 'keynote', label: 'Keynote' },
     { value: 'talk', label: 'Talk' },
     { value: 'workshop', label: 'Workshop' },
@@ -69,6 +70,13 @@ export default class AgendaComponent implements OnInit {
     { value: 'closing', label: 'Clôture' },
   ];
   selectedFormat = signal<string>('all');
+
+  onFormatChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    if (target) {
+      this.selectedFormat.set(target.value);
+    }
+  }
  
   // Favoris (persistés dans localStorage)
   showFavoritesOnly = signal<boolean>(false);
@@ -77,12 +85,15 @@ export default class AgendaComponent implements OnInit {
   filteredAgendaEvents = computed(() => {
     const day = this.selectedDayId();
     const format = this.selectedFormat();
-    const favoritesOnly = this.showFavoritesOnly();
+    const favoritesOnly = this.showFavoritesOnly() || format === 'favorites';
     const favorites = this.favoriteIds();
     const list = this.allAgendaItems();
 
     const filtered = list.filter((item) => {
       if (day !== 'all' && (item.dayId || 'day1') !== day) return false;
+      if (format === 'favorites') {
+        return favorites.has(item.id);
+      }
       if (format !== 'all' && (item.rawCategory || '').toLowerCase() !== format) return false;
       if (favoritesOnly && !favorites.has(item.id)) return false;
       return true;
