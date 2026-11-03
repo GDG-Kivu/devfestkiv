@@ -173,12 +173,12 @@ import { Subscription } from 'rxjs';
     <!-- ========================== -->
     <!-- DIALOG COMPONENT -->
     <!-- ========================== -->
-    @if (dialogOuvert && SelectedSession) {
+    @if (dialogOuvert() && selectedSession(); as activeSession) {
       <app-questions
-        [sessionId]="SelectedSession.id"
-        [sessionTitle]="SelectedSession.title"
-        [initialQuestions]="SelectedSession.questions"
-        (close)="dialogOuvert = false"
+        [sessionId]="activeSession.id"
+        [sessionTitle]="activeSession.title || activeSession.theme"
+        [initialQuestions]="activeSession.questions"
+        (close)="closeDialog()"
       ></app-questions>
     }
   `,
@@ -253,8 +253,8 @@ export default class Home implements OnInit {
   readonly activeSessions = signal<LiveSession<Timestamp>[]>([]);
   readonly isLoading = signal<boolean>(true);
 
-  dialogOuvert = false;
-  SelectedSession!: LiveSession<Timestamp>;
+  readonly dialogOuvert = signal(false);
+  readonly selectedSession = signal<LiveSession<Timestamp> | null>(null);
 
   ngOnInit(): void {
     this.sessionsSub = this.FireStore.getActiveSessions().subscribe({
@@ -295,8 +295,13 @@ export default class Home implements OnInit {
   }
 
   openDialog(session: LiveSession<Timestamp>) {
-    this.SelectedSession = session;
-    this.dialogOuvert = true;
+    this.selectedSession.set(session);
+    this.dialogOuvert.set(true);
+  }
+
+  closeDialog() {
+    this.dialogOuvert.set(false);
+    this.selectedSession.set(null);
   }
 
   ngOnDestroy(): void {

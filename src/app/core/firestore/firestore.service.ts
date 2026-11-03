@@ -321,9 +321,9 @@ export class FirestoreService {
         runInInjectionContext(
           this._injector,
           () =>
-            collectionData(collection(this.fs, firestorePaths.eventSessions(id))) as Observable<
-              LiveSession<Timestamp>[]
-            >,
+            collectionData(collection(this.fs, firestorePaths.eventSessions(id)), {
+              idField: 'id',
+            }) as Observable<LiveSession<Timestamp>[]>,
         ),
       ),
     );
@@ -335,7 +335,7 @@ export class FirestoreService {
         runInInjectionContext(this._injector, () => {
           const sessions = collection(this.fs, firestorePaths.eventSessions(id));
           const activeSessions = query(sessions, where('isActive', '==', true));
-          return collectionData(activeSessions) as Observable<LiveSession<Timestamp>[]>;
+          return collectionData(activeSessions, { idField: 'id' }) as Observable<LiveSession<Timestamp>[]>;
         }),
       ),
     );
@@ -358,6 +358,9 @@ export class FirestoreService {
               idField: 'id',
             }) as Observable<LiveQuestion[]>,
         ),
+      ),
+      map((questions) =>
+        (questions || []).sort((a, b) => (Number(a.time) || 0) - (Number(b.time) || 0)),
       ),
     );
   }

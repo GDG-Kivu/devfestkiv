@@ -111,7 +111,10 @@ export default class QuestionSpace implements OnInit, AfterViewChecked, OnDestro
     this.questions.set([]);
     this.questionsLoading.set(true);
     this.questionsSub = this.fs.getQuestions(session.id).subscribe((questions: LiveQuestion[]) => {
-      this.questions.set([...questions, ...(session.questions ?? [])]);
+      const sorted = [...(questions || [])].sort(
+        (a, b) => (Number(a.time) || 0) - (Number(b.time) || 0),
+      );
+      this.questions.set(sorted);
       this.questionsLoading.set(false);
       this.shouldScrollToBottom.set(true);
     });
@@ -201,9 +204,10 @@ export default class QuestionSpace implements OnInit, AfterViewChecked, OnDestro
       this.questionText.set('');
       this.showEmojiPanel.set(false);
       this.shouldScrollToBottom.set(true);
-    } catch (error) {
+    } catch (error: any) {
+      const errStr = (error?.message || String(error) || '').toLowerCase();
       this.questionError.set(
-        error instanceof Error && error.message.includes('limit')
+        errStr.includes('limit')
           ? 'Vous avez atteint la limite de questions pour cet événement.'
           : "La question n'a pas pu être envoyée. Veuillez réessayer.",
       );
