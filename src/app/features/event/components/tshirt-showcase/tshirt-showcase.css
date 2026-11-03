@@ -1,10 +1,13 @@
 /* Model Viewer Custom Styling */
 model-viewer {
   --poster-color: transparent;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  display: block;
   outline: none;
 }
 
 model-viewer::part(default-progress-bar) {
   background-color: var(--color-primary, #f9ab00);
 }
-

@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
+  ElementRef,
   inject,
   OnInit,
   PLATFORM_ID,
+  ViewChild,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
@@ -24,6 +26,7 @@ if (typeof window !== 'undefined') {
 })
 export default class TshirtShowcase implements OnInit {
   private platformId = inject(PLATFORM_ID);
+  @ViewChild('modelViewer') modelViewerRef?: ElementRef<any>;
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -31,6 +34,15 @@ export default class TshirtShowcase implements OnInit {
       import('@google/model-viewer').catch((err) => {
         console.error('Failed to load @google/model-viewer script:', err);
       });
+    }
+  }
+
+  /**
+   * Focus the 3D model camera on front or back view when thumbnail is clicked
+   */
+  setView(orbit: string): void {
+    if (this.modelViewerRef?.nativeElement) {
+      this.modelViewerRef.nativeElement.cameraOrbit = orbit;
     }
   }
 
@@ -52,4 +64,3 @@ export default class TshirtShowcase implements OnInit {
     console.log('Navigate to DevFest Kivu official T-shirt order page');
   }
 }
-
