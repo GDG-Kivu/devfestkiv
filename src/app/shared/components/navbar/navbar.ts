@@ -2,6 +2,7 @@ import { afterNextRender, ChangeDetectionStrategy, Component, inject, OnDestroy,
 import { DOCUMENT } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { EventConfigService } from '../../../features/event/services/event-config.service';
 
 @Component({
   selector: 'app-navbar',
@@ -158,8 +159,13 @@ import { CommonModule } from '@angular/common';
           }
         </nav>
 
-        <!-- CTA -->
+        <!-- Event Date Info & CTA -->
         <div class="px-4 py-5 border-t border-gray-100 bg-gray-50/50 flex-shrink-0">
+          @if (eventConfig.status() !== 'loading' && eventConfig.getFormattedDateBadge()) {
+            <span class="block h-10 text-xs">{{ eventConfig.getFormattedDateBadge() }}</span>
+          } @else if (eventConfig.status() === 'loading') {
+          <div class="h-7 w-full bg-gray-100 animate-pulse"></div>
+          }
           <a
             routerLink="/dp-generator"
             (click)="closeMobileMenu()"
@@ -281,6 +287,7 @@ import { CommonModule } from '@angular/common';
 })
 export class Navbar implements OnDestroy {
   private readonly document = inject(DOCUMENT);
+  readonly eventConfig = inject(EventConfigService);
   isMobileMenuOpen = signal(false);
   /** Stays false during SSR and the hydration flash window; set true after first browser render. */
   isReady = signal(false);
