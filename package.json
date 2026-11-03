@@ -31,7 +31,7 @@
     "@angular/platform-browser": "^20.3.2",
     "@angular/platform-server": "^20.3.2",
     "@angular/router": "^20.3.2",
-    "@angular/ssr": "^20.3.2",
+    "@angular/ssr": "20.3.2",
     "@emailjs/browser": "^4.4.1",
     "@google/model-viewer": "^4.4.0",
     "@pqina/angular-pintura": "^9.0.4",
