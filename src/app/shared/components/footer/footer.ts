@@ -46,7 +46,7 @@ import { ShareService } from '../../../features/event/services/share.service';
           <!-- Liens rapides -->
           <div class="space-y-4">
             <h3 class="text-sm font-bold text-gray-100 uppercase tracking-wide">Liens rapides</h3>
-            <nav class="space-y-2.5">
+            <nav class="space-y-2.5" aria-label="Liens rapides">
               <a
                 routerLink="/"
                 class="block text-sm text-gray-300 hover:text-white font-medium transition-colors duration-200"
@@ -73,7 +73,7 @@ import { ShareService } from '../../../features/event/services/share.service';
           <!-- Ressources -->
           <div class="space-y-4">
             <h3 class="text-sm font-bold text-gray-100 uppercase tracking-wide">Ressources</h3>
-            <nav class="space-y-2.5">
+            <nav class="space-y-2.5" aria-label="Ressources">
               <a
                 routerLink="/qa"
                 class="block text-sm text-gray-300 hover:text-white font-medium transition-colors duration-200"
@@ -89,7 +89,7 @@ import { ShareService } from '../../../features/event/services/share.service';
                 target="_blank"
                 rel="noopener noreferrer"
                 class="block text-sm text-gray-300 hover:text-white font-medium transition-colors duration-200"
-                >Code de conduite</a
+                >Code de conduite <span class="sr-only">(s'ouvre dans un nouvel onglet)</span></a
               >
               <a
                 routerLink="/contact"
@@ -103,15 +103,21 @@ import { ShareService } from '../../../features/event/services/share.service';
           <div class="space-y-4">
             <h3 class="text-sm font-bold text-gray-100 uppercase tracking-wide">Suivez-nous</h3>
 
-            <div class="flex gap-2.5">
+            <div class="flex gap-2.5" role="group" aria-label="Réseaux sociaux">
               <a
                 href="https://twitter.com/devfestkivu"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="w-9 h-9 bg-amber-400 text-gray-950 hover:bg-amber-300 rounded-full flex items-center justify-center transition-colors shadow-sm"
-                aria-label="X (Twitter)"
+                class="w-9 h-9 bg-amber-400 text-gray-950 hover:bg-amber-300 rounded-full flex items-center justify-center transition-colors shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                aria-label="DevFest Kivu sur X (Twitter), s'ouvre dans un nouvel onglet"
               >
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <svg
+                  class="w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  focusable="false"
+                >
                   <path
                     d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
                   />
@@ -121,8 +127,8 @@ import { ShareService } from '../../../features/event/services/share.service';
                 href="https://facebook.com/devfestkivu"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="w-9 h-9 bg-amber-400 text-gray-950 hover:bg-amber-300 rounded-full flex items-center justify-center transition-colors shadow-sm"
-                aria-label="Facebook"
+                class="w-9 h-9 bg-amber-400 text-gray-950 hover:bg-amber-300 rounded-full flex items-center justify-center transition-colors shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                aria-label="DevFest Kivu sur Facebook, s'ouvre dans un nouvel onglet"
               >
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path
@@ -134,8 +140,8 @@ import { ShareService } from '../../../features/event/services/share.service';
                 href="https://linkedin.com/company/devfestkivu"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="w-9 h-9 bg-amber-400 text-gray-950 hover:bg-amber-300 rounded-full flex items-center justify-center transition-colors shadow-sm"
-                aria-label="LinkedIn"
+                class="w-9 h-9 bg-amber-400 text-gray-950 hover:bg-amber-300 rounded-full flex items-center justify-center transition-colors shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                aria-label="DevFest Kivu sur LinkedIn, s'ouvre dans un nouvel onglet"
               >
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path
@@ -147,8 +153,8 @@ import { ShareService } from '../../../features/event/services/share.service';
                 href="https://youtube.com/@devfestkivu"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="w-9 h-9 bg-amber-400 text-gray-950 hover:bg-amber-300 rounded-full flex items-center justify-center transition-colors shadow-sm"
-                aria-label="YouTube"
+                class="w-9 h-9 bg-amber-400 text-gray-950 hover:bg-amber-300 rounded-full flex items-center justify-center transition-colors shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                aria-label="DevFest Kivu sur YouTube, s'ouvre dans un nouvel onglet"
               >
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path
@@ -181,22 +187,36 @@ import { ShareService } from '../../../features/event/services/share.service';
             <!-- Newsletter -->
             <div class="space-y-2 pt-1">
               <p class="text-xs font-bold text-gray-200">Restez informé des actualités :</p>
-              <form (ngSubmit)="subscribeNewsletter()" class="flex">
+              <form
+                (ngSubmit)="subscribeNewsletter()"
+                class="flex"
+                aria-label="Inscription à la newsletter"
+              >
                 <input
                   type="email"
                   required
+                  autocomplete="email"
+                  aria-label="Votre adresse email pour la newsletter"
                   [(ngModel)]="newsletterEmail"
                   name="newsletterEmail"
                   placeholder="Votre adresse email"
-                  class="flex-1 px-3 py-2 text-xs text-gray-900 bg-white rounded-l-lg focus:outline-none focus:ring-2 focus:ring-gray-900 border border-gray-300 border-r-0 min-w-0"
+                  class="flex-1 px-3 py-2 text-xs text-gray-900 placeholder:text-gray-500 bg-white rounded-l-lg focus:outline-none focus:ring-2 focus:ring-amber-200 border border-gray-300 border-r-0 min-w-0"
                 />
                 <button
                   type="submit"
                   [disabled]="isSubscribing() || !newsletterEmail.trim()"
-                  class="px-3 py-2 bg-gray-900 text-white text-xs font-bold rounded-r-lg cursor-pointer hover:bg-gray-700 disabled:opacity-50 whitespace-nowrap transition-colors flex-shrink-0"
+                  [attr.aria-busy]="isSubscribing()"
+                  [attr.aria-label]="isSubscribing() ? 'Inscription en cours' : null"
+                  class="px-3 py-2 bg-gray-900 text-white text-xs font-bold rounded-r-lg cursor-pointer hover:bg-gray-700 disabled:opacity-50 whitespace-nowrap transition-colors flex-shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
                 >
                   @if (isSubscribing()) {
-                    <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <svg
+                      class="w-4 h-4 animate-spin"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
                       <circle
                         class="opacity-25"
                         cx="12"
@@ -218,7 +238,9 @@ import { ShareService } from '../../../features/event/services/share.service';
               </form>
               @if (newsletterFeedback()) {
                 <p
-                  class="text-xs pt-0.5"
+                  class="text-xs pt-0.5 min-h-4"
+                  role="status"
+                  aria-live="polite"
                   [class.text-emerald-700]="feedbackType() === 'success'"
                   [class.text-rose-700]="feedbackType() === 'error'"
                 >
