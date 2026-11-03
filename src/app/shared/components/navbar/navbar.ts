@@ -2,6 +2,7 @@ import { afterNextRender, ChangeDetectionStrategy, Component, inject, OnDestroy,
 import { DOCUMENT } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { EventConfigService } from '../../../features/event/services/event-config.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,7 +13,7 @@ import { CommonModule } from '@angular/common';
   },
   template: `
     <nav
-      class="bg-white/95 border-b border-gray-100 transition-colors duration-200" aria-label="Navigation principale">
+      class="bg-white/95 transition-colors duration-200" aria-label="Navigation principale">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <!-- Logo Section -->
@@ -110,7 +111,7 @@ import { CommonModule } from '@angular/common';
         aria-label="Menu de navigation"
       >
         <!-- Overlay Header with logo and close button -->
-        <div class="flex items-center justify-between h-16 px-4 sm:px-6 border-b border-gray-100 flex-shrink-0 bg-white">
+        <div class="flex items-center justify-between h-16 px-4 sm:px-6 flex-shrink-0 bg-white">
           <a routerLink="/" (click)="closeMobileMenu()" class="flex items-center space-x-3" aria-label="DevFest Kivu, retour à l'accueil">
             <img
               src="/assets/logo-1.png"
@@ -158,8 +159,13 @@ import { CommonModule } from '@angular/common';
           }
         </nav>
 
-        <!-- CTA -->
+        <!-- Event Date Info & CTA -->
         <div class="px-4 py-5 border-t border-gray-100 bg-gray-50/50 flex-shrink-0">
+          @if (eventConfig.status() !== 'loading' && eventConfig.getFormattedDateBadge()) {
+            <span class="block h-10 text-xs">{{ eventConfig.getFormattedDateBadge() }}</span>
+          } @else if (eventConfig.status() === 'loading') {
+          <div class="block h-10 bg-gray-100 mb-2 animate-pulse"></div>
+          }
           <a
             routerLink="/dp-generator"
             (click)="closeMobileMenu()"
@@ -281,6 +287,7 @@ import { CommonModule } from '@angular/common';
 })
 export class Navbar implements OnDestroy {
   private readonly document = inject(DOCUMENT);
+  readonly eventConfig = inject(EventConfigService);
   isMobileMenuOpen = signal(false);
   /** Stays false during SSR and the hydration flash window; set true after first browser render. */
   isReady = signal(false);

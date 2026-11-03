@@ -31,7 +31,7 @@
                     <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-text tracking-tight leading-[1.1] mb-2.5 sm:mb-4">
                         DevFest Kivu
                         @if (eventStatus() !== 'loading' && eventConfig.year) {
-                        <span class="block text-primary mt-0.5 sm:mt-1 md:mt-2">{{ eventConfig.year }}</span>
+                        <span class="inline sm:block text-primary ml-2 sm:ml-0 sm:mt-1 md:mt-2">{{ eventConfig.year }}</span>
                         }
                     </h1>
                     <p class="w-full max-w-2xl mx-auto lg:mx-0 text-sm sm:text-base md:text-xl text-text/80 font-normal leading-relaxed">
@@ -442,7 +442,7 @@
                     } pour structurer et dynamiser l'écosystème numérique du Sud-Kivu et de toute la région des Grands Lacs.
                 </p>
 
-                <div>
+                <div class="hidden lg:block">
                     <a href="https://gdg.community.dev/gdg-kivu/" target="_blank" rel="noopener noreferrer"
                         class="btn btn-primary group">
                         <span>Rejoindre notre communauté</span>
@@ -491,6 +491,18 @@
                     </div>
                     }
                     }
+                </div>
+
+                <!-- Mobile-only CTA Button: below cards on mobile -->
+                <div class="block lg:hidden mt-6 text-left">
+                    <a href="https://gdg.community.dev/gdg-kivu/" target="_blank" rel="noopener noreferrer"
+                        class="btn btn-primary group inline-flex items-center">
+                        <span>Rejoindre notre communauté</span>
+                        <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
                 </div>
             </div>
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject, signal } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { LiveQuestion } from '../../models/live-question.model';
@@ -55,7 +55,7 @@ import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
         </div>
 
         <!-- Scrollable Questions List Area -->
-        <div class="my-4 overflow-y-auto flex-1 pr-1 space-y-4 max-h-[45vh]">
+        <div #questionsContainer class="my-4 overflow-y-auto flex-1 pr-1 space-y-4 max-h-[45vh]">
           <div class="flex items-center justify-between">
             <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-2">
               <svg class="w-4 h-4 text-[#4285F4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -64,16 +64,16 @@ import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
               <span>Questions posées</span>
             </h3>
             <span class="text-xs font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full font-mono">
-              {{ questions.length }} question(s)
+              {{ questions().length }} question(s)
             </span>
           </div>
 
           <!-- Skeleton while loading questions from Firestore -->
           @if (questionsLoading()) {
             <app-skeleton variant="questions" [count]="2" />
-          } @else if (questions.length > 0) {
+          } @else if (questions().length > 0) {
             <div class="space-y-3">
-              @for (q of questions; track $index) {
+              @for (q of questions(); track q.id || q.time || $index) {
                 <div class="question-card p-3.5 sm:p-4 rounded-xl text-gray-800 shadow-2xs bg-white border border-gray-100 transition hover:shadow-xs">
                   <div class="flex items-center justify-between text-xs text-gray-500 mb-1.5">
                     <span class="font-bold text-gray-800 flex items-center gap-1.5">
@@ -95,11 +95,12 @@ import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
               </p>
             </div>
           }
+          <div #questionsBottomAnchor></div>
         </div>
 
         <!-- Question Form Section (Always available, frictionless anonymous/authenticated submission) -->
         <div class="pt-3 border-t border-gray-100 flex-shrink-0">
-          <form #QuestionForm="ngForm" (ngSubmit)="addQuestion(QuestionForm)" class="space-y-3">
+          <form (ngSubmit)="addQuestion()" class="space-y-3">
             <div class="flex flex-col gap-2 mb-1">
               <!-- Si Google user: choix anonyme/identifié -->
               @if (isGoogleUser()) {
@@ -150,9 +151,9 @@ import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
               class="w-full border border-gray-300 rounded-2xl p-3.5 text-sm sm:text-base focus:ring-2 focus:ring-[#4285F4]/40 focus:border-[#4285F4] focus:outline-none resize-none transition bg-gray-50/30 focus:bg-white placeholder:text-gray-400 placeholder:font-normal"
             ></textarea>
 
-            @if (errorMsg) {
+            @if (errorMsg()) {
               <div class="text-xs font-semibold text-red-600 bg-red-50 p-2.5 rounded-xl border border-red-200">
-                {{ errorMsg }}
+                {{ errorMsg() }}
               </div>
             }
 
@@ -167,10 +168,10 @@ import { Skeleton } from '../../../../shared/components/skeleton/skeleton';
 
               <button
                 type="submit"
-                [disabled]="!QuestionFormValue.trim() || isSubmitting"
+                [disabled]="!QuestionFormValue.trim() || isSubmitting()"
                 class="flex items-center gap-2 px-6 py-2.5 bg-[#4285F4] hover:bg-[#3367D6] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl font-semibold text-sm shadow-xs hover:shadow-md transition cursor-pointer"
               >
-                @if (isSubmitting) {
+                @if (isSubmitting()) {
                   <svg class="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -213,31 +214,48 @@ export default class QuestionsDialog implements OnInit, OnDestroy {
 
   @Output() close = new EventEmitter<void>();
 
+  @ViewChild('questionsBottomAnchor') questionsBottomAnchor!: ElementRef<HTMLDivElement>;
+
   readonly auth = inject(AuthService);
   private readonly firestore = inject(FirestoreService);
   private questionsSub?: Subscription;
 
-  errorMsg: string = '';
+  readonly errorMsg = signal('');
   QuestionFormValue: string = '';
   customAuthorName: string = '';
-  questions: LiveQuestion[] = [];
-  isSubmitting = false;
+  readonly questions = signal<LiveQuestion[]>([]);
+  readonly isSubmitting = signal(false);
   readonly useAnonymous = signal(true); // par défaut anonyme
   readonly questionsLoading = signal(true);
 
   ngOnInit() {
-    this.questions = [...this.initialQuestions];
+    this.questions.set([...this.initialQuestions]);
     if (this.sessionId) {
       this.questionsLoading.set(true);
       this.questionsSub = this.firestore
         .getQuestions(this.sessionId)
         .subscribe((questions: LiveQuestion[]) => {
-          this.questions = questions || [];
+          const sorted = [...(questions || [])].sort(
+            (a, b) => (Number(a.time) || 0) - (Number(b.time) || 0),
+          );
+          this.questions.set(sorted);
           this.questionsLoading.set(false);
+          this.scrollQuestionsToBottom();
         });
     } else {
       this.questionsLoading.set(false);
     }
+  }
+
+  scrollQuestionsToBottom(): void {
+    setTimeout(() => {
+      if (this.questionsBottomAnchor?.nativeElement) {
+        this.questionsBottomAnchor.nativeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+        });
+      }
+    }, 100);
   }
 
   isGoogleUser(): boolean {
@@ -265,32 +283,36 @@ export default class QuestionsDialog implements OnInit, OnDestroy {
     return name;
   }
 
-  async addQuestion(form: NgForm) {
+  async addQuestion() {
     const contenu = this.QuestionFormValue.trim();
-    if (!form.valid || !contenu) {
-      this.errorMsg = 'Veuillez rédiger votre question avant de l\'envoyer.';
+    if (!contenu) {
+      this.errorMsg.set('Veuillez rédiger votre question avant de l\'envoyer.');
       return;
     }
     if (!this.sessionId) {
-      this.errorMsg = 'Impossible d\'identifier la session sélectionnée.';
+      this.errorMsg.set('Impossible d\'identifier la session sélectionnée.');
       return;
     }
 
-    this.errorMsg = '';
-    this.isSubmitting = true;
+    this.errorMsg.set('');
+    this.isSubmitting.set(true);
 
     try {
       // Ensure auth session is ready (Google session preserved, or anonymous created)
       const user = await this.auth.ensureAnonymousOrAuthenticated();
       
-      const authorName = this.isGoogleUser() && !this.useAnonymous()
+      const isGoogle = this.isGoogleUser();
+      const authorName = isGoogle && !this.useAnonymous()
         ? this.currentUserName()
         : (this.customAuthorName.trim() || 'Participant Anonyme');
+
+      const authorEmail = (isGoogle && !this.useAnonymous()) ? (user?.email || null) : null;
 
       const newQuestion: any = {
         uid: user?.uid || '',
         contenu,
         displayName: authorName,
+        email: authorEmail,
         time: Date.now().toString(),
         status: 'pending',
         reactions: [],
@@ -299,13 +321,17 @@ export default class QuestionsDialog implements OnInit, OnDestroy {
       await this.firestore.addQuestion(this.sessionId, newQuestion);
       this.QuestionFormValue = '';
       this.customAuthorName = '';
+      this.errorMsg.set('');
+      this.scrollQuestionsToBottom();
     } catch (error: any) {
-      this.errorMsg =
-        error instanceof Error && error.message.includes('limit')
+      const errStr = (error?.message || String(error) || '').toLowerCase();
+      this.errorMsg.set(
+        errStr.includes('limit')
           ? 'Vous avez atteint la limite maximale de questions pour cet événement.'
-          : error?.message || 'La question n\'a pas pu être envoyée. Veuillez réessayer.';
+          : (error?.message || 'La question n\'a pas pu être envoyée. Veuillez réessayer.')
+      );
     } finally {
-      this.isSubmitting = false;
+      this.isSubmitting.set(false);
     }
   }
 
