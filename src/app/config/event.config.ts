@@ -271,7 +271,7 @@ export const EVENT_CONFIG: EventConfig = {
     days: [
       {
         id: 'day1',
-        name: 'DevFest Kivu - Jour 1',
+        name: 'Jour 1',
         date: '28 Nov',
         fullDate: 'Samedi 28 Novembre 2026',
         location: 'Universitié Catholique de Bukavu - wima Campus',
@@ -281,7 +281,7 @@ export const EVENT_CONFIG: EventConfig = {
       },
       {
         id: 'day2',
-        name: 'DevFest Kivu - Jour 2',
+        name: 'Jour 2',
         date: '29 Nov',
         fullDate: 'Dimanche 29 Novembre 2026',
         location: 'Universitié Catholique de Bukavu - wima Campus',

@@ -18,15 +18,8 @@
             <!-- Left Editorial Column (7 cols on desktop) -->
             <div class="w-full lg:col-span-7 text-center lg:text-left space-y-4 sm:space-y-6 md:space-y-7">
                 <!-- Event Status & Location Badge -->
-                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3">
-                    @if (eventStatus() === 'loading') {
-                    <div class="inline-flex items-center gap-1.5" aria-hidden="true">
-                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#4285F4] animate-bounce" style="animation-delay:0ms"></span>
-                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#EA4335] animate-bounce" style="animation-delay:120ms"></span>
-                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#FBBC04] animate-bounce" style="animation-delay:240ms"></span>
-                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#34A853] animate-bounce" style="animation-delay:360ms"></span>
-                    </div>
-                    } @else {
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 min-h-[32px]">
+                    @if (eventStatus() !== 'loading' && eventConfig.getFormattedDateBadge()) {
                     <div class="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 bg-amber-50 text-amber-900 border border-amber-200/80 rounded-full text-xs sm:text-sm font-medium shadow-xs animate-slide-down">
                         <span>{{ eventConfig.getFormattedDateBadge() }}</span>
                     </div>
@@ -37,16 +30,7 @@
                 <div class="w-full animate-slide-up" style="animation-delay: 0.15s;">
                     <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-text tracking-tight leading-[1.1] mb-2.5 sm:mb-4">
                         DevFest Kivu
-                        @if (eventStatus() === 'loading') {
-                        <span class="block mt-2">
-                            <span class="inline-flex items-center gap-1.5 mt-1" aria-hidden="true">
-                                <span class="inline-block w-3 h-3 rounded-full bg-[#4285F4] animate-bounce" style="animation-delay:0ms"></span>
-                                <span class="inline-block w-3 h-3 rounded-full bg-[#EA4335] animate-bounce" style="animation-delay:120ms"></span>
-                                <span class="inline-block w-3 h-3 rounded-full bg-[#FBBC04] animate-bounce" style="animation-delay:240ms"></span>
-                                <span class="inline-block w-3 h-3 rounded-full bg-[#34A853] animate-bounce" style="animation-delay:360ms"></span>
-                            </span>
-                        </span>
-                        } @else {
+                        @if (eventStatus() !== 'loading' && eventConfig.year) {
                         <span class="block text-primary mt-0.5 sm:mt-1 md:mt-2">{{ eventConfig.year }}</span>
                         }
                     </h1>
@@ -57,15 +41,7 @@
 
                 <!-- CTA Button -->
                 <div class="flex justify-center lg:justify-start pt-0.5 sm:pt-1 animate-slide-up" style="animation-delay: 0.3s;">
-                    @if (eventStatus() === 'loading') {
-                    <div class="inline-flex items-center gap-1.5" aria-hidden="true">
-                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#4285F4] animate-bounce" style="animation-delay:0ms"></span>
-                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#EA4335] animate-bounce" style="animation-delay:120ms"></span>
-                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#FBBC04] animate-bounce" style="animation-delay:240ms"></span>
-                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#34A853] animate-bounce" style="animation-delay:360ms"></span>
-                    </div>
-                    } @else {
-                    <a href="https://gdg.community.dev/events/details/google-gdg-kivu-presents-build-secure-scale-developers-and-builders-in-the-agentic-era-devfest-kivu-2026/cohost-gdg-kivu"
+                    <a [href]="eventConfig.registrationUrl || 'https://gdg.community.dev/events/details/google-gdg-kivu-presents-build-secure-scale-developers-and-builders-in-the-agentic-era-devfest-kivu-2026/cohost-gdg-kivu'"
                         target="_blank" rel="noopener noreferrer"
                         class="btn btn-primary group px-5 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-semibold shadow-md inline-flex items-center justify-center">
                         <span>Voir les détails</span>
@@ -74,7 +50,6 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
                     </a>
-                    }
                 </div>
 
                 <!-- Tech Theme Tags -->
@@ -122,14 +97,9 @@
                 <!-- Stats Badge below cards -->
                 <div class="mt-4 sm:mt-6 flex justify-center">
                     <div class="bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl px-3.5 sm:px-5 py-2.5 sm:py-3 shadow-xl border border-gray-100 flex items-center gap-3.5 sm:gap-5">
-                        <div class="text-center">
+                        <div class="text-center min-w-[50px]">
                             @if (eventStatus() === 'loading') {
-                            <div class="flex justify-center gap-1 mb-1" aria-hidden="true">
-                                <span class="w-1.5 h-1.5 rounded-full bg-[#4285F4] animate-bounce" style="animation-delay:0ms"></span>
-                                <span class="w-1.5 h-1.5 rounded-full bg-[#EA4335] animate-bounce" style="animation-delay:120ms"></span>
-                                <span class="w-1.5 h-1.5 rounded-full bg-[#FBBC04] animate-bounce" style="animation-delay:240ms"></span>
-                                <span class="w-1.5 h-1.5 rounded-full bg-[#34A853] animate-bounce" style="animation-delay:360ms"></span>
-                            </div>
+                            <div class="h-6 w-12 bg-gray-200/80 rounded animate-pulse mx-auto mb-1"></div>
                             } @else {
                             <div class="text-base sm:text-lg md:text-xl font-bold text-primary-dark whitespace-nowrap">
                                 {{ eventConfig.impactStats[1]?.number }}++
@@ -171,22 +141,45 @@
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 text-center relative z-10">
 
-        <!-- CAS 0: Chargement des données Firestore -->
+        <!-- CAS 0: Skeleton réaliste du compte à rebours pendant le chargement Firestore -->
         @if (eventStatus() === 'loading') {
-        <div class="max-w-xl mx-auto text-center py-6">
-            <div class="flex items-center justify-center gap-2 mb-6">
-                <span class="inline-block w-3 h-3 rounded-full bg-[#4285F4] animate-bounce" style="animation-delay: 0ms;"></span>
-                <span class="inline-block w-3 h-3 rounded-full bg-[#EA4335] animate-bounce" style="animation-delay: 120ms;"></span>
-                <span class="inline-block w-3 h-3 rounded-full bg-[#FBBC04] animate-bounce" style="animation-delay: 240ms;"></span>
-                <span class="inline-block w-3 h-3 rounded-full bg-[#34A853] animate-bounce" style="animation-delay: 360ms;"></span>
+        <div class="max-w-4xl mx-auto text-center py-2 animate-pulse" aria-hidden="true">
+            <!-- Title Skeleton -->
+            <div class="h-8 sm:h-9 md:h-10 w-64 sm:w-80 md:w-96 bg-white/10 rounded-xl mx-auto mb-8 md:mb-10"></div>
+
+            <!-- 4-Column Countdown Numbers Skeleton mirroring the exact layout -->
+            <div class="flex justify-center items-end gap-3 sm:gap-6 md:gap-10 mb-8 md:mb-10">
+                <!-- Days Skeleton -->
+                <div class="flex flex-col items-center">
+                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl"></div>
+                    <div class="h-3 w-10 sm:w-12 bg-primary/20 rounded mt-2"></div>
+                </div>
+                <div class="text-3xl sm:text-5xl text-primary/30 font-black pb-5 select-none">:</div>
+
+                <!-- Hours Skeleton -->
+                <div class="flex flex-col items-center">
+                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl"></div>
+                    <div class="h-3 w-10 sm:w-12 bg-primary/20 rounded mt-2"></div>
+                </div>
+                <div class="text-3xl sm:text-5xl text-primary/30 font-black pb-5 select-none">:</div>
+
+                <!-- Minutes Skeleton -->
+                <div class="flex flex-col items-center">
+                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl"></div>
+                    <div class="h-3 w-10 sm:w-12 bg-primary/20 rounded mt-2"></div>
+                </div>
+                <div class="text-3xl sm:text-5xl text-primary/30 font-black pb-5 select-none">:</div>
+
+                <!-- Seconds Skeleton -->
+                <div class="flex flex-col items-center">
+                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl"></div>
+                    <div class="h-3 w-10 sm:w-12 bg-primary/20 rounded mt-2"></div>
+                </div>
             </div>
-            <div class="h-5 w-40 bg-white/10 rounded-full mx-auto mb-3 animate-pulse"></div>
-            <div class="h-8 w-56 bg-white/15 rounded-xl mx-auto mb-8 animate-pulse"></div>
-            <div class="flex justify-center gap-3 sm:gap-4 md:gap-6">
-                <div class="h-24 w-20 sm:w-24 md:w-28 bg-white/10 rounded-2xl animate-pulse"></div>
-                <div class="h-24 w-20 sm:w-24 md:w-28 bg-white/10 rounded-2xl animate-pulse" style="animation-delay: 150ms;"></div>
-                <div class="h-24 w-20 sm:w-24 md:w-28 bg-white/10 rounded-2xl animate-pulse" style="animation-delay: 300ms;"></div>
-                <div class="h-24 w-20 sm:w-24 md:w-28 bg-white/10 rounded-2xl animate-pulse" style="animation-delay: 450ms;"></div>
+
+            <!-- Button Skeleton -->
+            <div class="flex justify-center">
+                <div class="h-10 sm:h-11 w-48 sm:w-56 bg-white/10 rounded-xl"></div>
             </div>
         </div>
         }
@@ -443,12 +436,7 @@
 
                 <p class="text-base sm:text-lg text-text/80 leading-relaxed">
                     @if (eventStatus() === 'loading') {
-                    <span class="inline-flex items-center gap-1.5" aria-hidden="true">
-                        <span class="w-2 h-2 rounded-full bg-[#4285F4] animate-bounce" style="animation-delay:0ms"></span>
-                        <span class="w-2 h-2 rounded-full bg-[#EA4335] animate-bounce" style="animation-delay:120ms"></span>
-                        <span class="w-2 h-2 rounded-full bg-[#FBBC04] animate-bounce" style="animation-delay:240ms"></span>
-                        <span class="w-2 h-2 rounded-full bg-[#34A853] animate-bounce" style="animation-delay:360ms"></span>
-                    </span>
+                    <span class="inline-block h-5 w-16 bg-gray-200/80 rounded animate-pulse align-middle"></span>
                     } @else {
                     <span class="text-primary-dark font-bold">{{ eventConfig.engagementYear }} années d'engagement continu</span>
                     } pour structurer et dynamiser l'écosystème numérique du Sud-Kivu et de toute la région des Grands Lacs.
@@ -470,12 +458,16 @@
             <div class="lg:col-span-7">
                 <div class="grid grid-cols-2 gap-4 sm:gap-6">
                     @if (eventStatus() === 'loading') {
-                    <div class="col-span-2 flex items-center justify-center py-12" aria-hidden="true">
-                        <span class="w-3 h-3 rounded-full bg-[#4285F4] animate-bounce" style="animation-delay:0ms"></span>
-                        <span class="w-3 h-3 rounded-full bg-[#EA4335] animate-bounce mx-1.5" style="animation-delay:120ms"></span>
-                        <span class="w-3 h-3 rounded-full bg-[#FBBC04] animate-bounce" style="animation-delay:240ms"></span>
-                        <span class="w-3 h-3 rounded-full bg-[#34A853] animate-bounce ml-1.5" style="animation-delay:360ms"></span>
+                    @for (item of [1, 2, 3, 4]; track item) {
+                    <div class="rounded-2xl border border-gray-200/70 bg-gray-50/60 p-4 sm:p-5 flex items-center justify-between animate-pulse" style="min-height: 110px;" aria-hidden="true">
+                        <div class="space-y-2 flex-1">
+                            <div class="h-8 w-16 bg-gray-200/80 rounded"></div>
+                            <div class="h-4 w-28 bg-gray-200/60 rounded"></div>
+                            <div class="h-3 w-36 bg-gray-200/40 rounded"></div>
+                        </div>
+                        <div class="w-14 sm:w-16 h-14 sm:h-16 bg-gray-200/40 rounded-xl"></div>
                     </div>
+                    }
                     } @else {
                     @for (stat of eventConfig.impactStats; track $index) {
                     <div class="rounded-2xl border border-gray-200/70 transition-all duration-300 shadow-xs flex items-stretch overflow-hidden group" style="min-height: 110px;">
@@ -609,11 +601,20 @@
 
             <div class="overflow-hidden mb-10 md:mb-12">
                 @if (eventStatus() === 'loading') {
-                <div class="flex items-center justify-center py-14">
-                    <span class="w-3 h-3 rounded-full bg-[#4285F4] animate-bounce" style="animation-delay:0ms"></span>
-                    <span class="w-3 h-3 rounded-full bg-[#EA4335] animate-bounce mx-1.5" style="animation-delay:120ms"></span>
-                    <span class="w-3 h-3 rounded-full bg-[#FBBC04] animate-bounce" style="animation-delay:240ms"></span>
-                    <span class="w-3 h-3 rounded-full bg-[#34A853] animate-bounce ml-1.5" style="animation-delay:360ms"></span>
+                <div class="flex gap-4 sm:gap-6 overflow-hidden py-2 animate-pulse" aria-hidden="true">
+                    @for (item of [1, 2, 3, 4]; track item) {
+                    <div class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] bg-white rounded-2xl p-6 border border-gray-200/70">
+                        <div class="flex items-start gap-4 mb-3">
+                            <div class="w-14 sm:w-16 h-14 sm:h-16 bg-gray-100 rounded-xl"></div>
+                            <div class="flex-1 space-y-2 pt-1">
+                                <div class="h-5 w-32 bg-gray-200/80 rounded"></div>
+                                <div class="h-3 w-20 bg-gray-200/50 rounded"></div>
+                            </div>
+                        </div>
+                        <div class="h-3 w-full bg-gray-100 rounded mb-2"></div>
+                        <div class="h-3 w-3/4 bg-gray-100 rounded"></div>
+                    </div>
+                    }
                 </div>
                 } @else {
                 <div class="flex gap-4 sm:gap-6 animate-scroll-partners hover:pause-animation">
