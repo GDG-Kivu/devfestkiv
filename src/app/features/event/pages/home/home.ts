@@ -1,14 +1,19 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
+  effect,
+  inject,
   OnDestroy,
   OnInit,
-  signal,
-  inject,
   PLATFORM_ID,
-  effect,
+  signal,
+  untracked,
   NgZone,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { of, timer } from 'rxjs';
+import { map } from 'rxjs/operators';
 import PastEventsGallery from '../../components/past-events-gallery/past-events-gallery';
 import TshirtShowcase from '../../components/tshirt-showcase/tshirt-showcase';
 import { RouterLink } from '@angular/router';
@@ -127,14 +132,37 @@ export default class HomeComponent implements OnInit, OnDestroy {
   private fs = inject(FirestoreService, { optional: true });
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
+  private visibilityHandler?: () => void;
 
-  seconde = signal(0);
-  minutes = signal(0);
-  hours = signal(0);
-  daysLeft = signal(0);
+  // Single reactive clock: emits current timestamp every second in browser, once on SSR
+  private readonly now = toSignal(
+    isPlatformBrowser(this.platformId)
+      ? timer(0, 1000).pipe(map(() => Date.now()))
+      : of(Date.now()),
+    { initialValue: Date.now() },
+  );
+
+  // Target end timestamp in ms for the active countdown
+  targetEndMs = signal(0);
+  countdownRunning = signal(false);
+
+  // Remaining ms automatically derived from target and current clock
+  readonly remainingMs = computed(() => {
+    if (!this.countdownRunning()) {
+      return 0;
+    }
+    const end = this.targetEndMs();
+    const current = this.now() ?? Date.now();
+    return Math.max(0, end - current);
+  });
+
+  // Pure computed countdown units: update automatically with zero manual intervals
+  readonly daysLeft = computed(() => Math.floor(this.remainingMs() / (1000 * 3600 * 24)));
+  readonly hours = computed(() => Math.floor((this.remainingMs() % (1000 * 3600 * 24)) / (1000 * 3600)));
+  readonly minutes = computed(() => Math.floor((this.remainingMs() % (1000 * 3600)) / (1000 * 60)));
+  readonly seconde = computed(() => Math.floor((this.remainingMs() % (1000 * 60)) / 1000));
 
   targetDateTimeString = signal(this.eventConfig.getTargetDateTimeString());
-  countdownRunning = signal(false);
   isEventPast = signal(false);
   isEventOngoing = signal(false);
   eventStatus = signal<'loading' | 'upcoming' | 'ongoing' | 'past' | 'error'>('loading');
@@ -146,11 +174,8 @@ export default class HomeComponent implements OnInit, OnDestroy {
   activeDayBadge = signal('En direct');
   activeDayLocation = signal('');
 
-  private countdownInterval: any;
   private slideshowInterval: any;
   private confettiTimeouts: any[] = [];
-  private endTime = 0;
-  private readonly STORAGE_KEY = 'countdown_end_time';
 
   // Hero Slideshow
   heroSlides = [
@@ -173,6 +198,15 @@ export default class HomeComponent implements OnInit, OnDestroy {
       this.eventConfig.eventDocument();
       this.evaluateEventStatus();
     });
+
+    effect(() => {
+      // When countdown reaches 0 while running, transition event status automatically
+      if (this.countdownRunning() && this.remainingMs() <= 0 && this.targetEndMs() > 0) {
+        untracked(() => {
+          this.evaluateEventStatus();
+        });
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -180,6 +214,13 @@ export default class HomeComponent implements OnInit, OnDestroy {
       this.evaluateEventStatus();
       this.triggerConfetti();
       this.startSlideshow();
+
+      this.visibilityHandler = () => {
+        if (document.visibilityState === 'visible') {
+          this.evaluateEventStatus();
+        }
+      };
+      document.addEventListener('visibilitychange', this.visibilityHandler);
     }
   }
 
@@ -208,6 +249,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
       this.isEventPast.set(false);
       this.isEventOngoing.set(false);
       this.countdownRunning.set(false);
+      this.targetEndMs.set(0);
       return;
     }
 
@@ -216,6 +258,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
       this.isEventPast.set(false);
       this.isEventOngoing.set(false);
       this.countdownRunning.set(false);
+      this.targetEndMs.set(0);
       return;
     }
 
@@ -224,28 +267,26 @@ export default class HomeComponent implements OnInit, OnDestroy {
     const now = Date.now();
 
     if (!festivalDays || festivalDays.length === 0) {
-      this.stopInterval();
       this.eventStatus.set('past');
       this.isEventPast.set(true);
       this.isEventOngoing.set(false);
       this.countdownRunning.set(false);
-      this.resetTimeSignals();
+      this.targetEndMs.set(0);
       return;
     }
 
     // 1. Check if ANY day of the current edition is currently active (ongoing: start <= now < end)
     const activeDay = festivalDays.find((d) => now >= d.startMs && now < d.endMs);
     if (activeDay) {
-      this.stopInterval();
       this.eventStatus.set('ongoing');
       this.isEventPast.set(false);
       this.isEventOngoing.set(true);
       this.countdownRunning.set(false);
+      this.targetEndMs.set(0);
       this.activeDayBadge.set(
         festivalDays.length > 1 ? `${activeDay.name} en direct` : 'Événement en direct',
       );
       this.activeDayLocation.set(activeDay.location);
-      this.resetTimeSignals();
       return;
     }
 
@@ -256,7 +297,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
       this.isEventPast.set(false);
       this.isEventOngoing.set(false);
       this.countdownRunning.set(true);
-      this.endTime = nextUpcomingDay.startMs;
+      this.targetEndMs.set(nextUpcomingDay.startMs);
 
       if (nextUpcomingDay.dayNumber === 1) {
         this.targetTitle.set(
@@ -274,68 +315,15 @@ export default class HomeComponent implements OnInit, OnDestroy {
       }
 
       this.targetDateTimeString.set(nextUpcomingDay.startTime.toISOString().slice(0, 19));
-      this.updateTimeDisplay();
-      this.startInterval();
       return;
     }
 
     // 3. All days of current edition have finished -> Event is past / completed for this edition
-    this.stopInterval();
     this.eventStatus.set('past');
     this.isEventPast.set(true);
     this.isEventOngoing.set(false);
     this.countdownRunning.set(false);
-    this.resetTimeSignals();
-  }
-
-  private startInterval(): void {
-    this.stopInterval();
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-    this.ngZone.runOutsideAngular(() => {
-      this.countdownInterval = setInterval(() => {
-        this.updateTimeDisplay();
-      }, 1000);
-    });
-  }
-
-  private stopInterval(): void {
-    if (this.countdownInterval) {
-      clearInterval(this.countdownInterval);
-      this.countdownInterval = null;
-    }
-  }
-
-  private updateTimeDisplay(): void {
-    const now = Date.now();
-    const remainingMs = this.endTime - now;
-
-    if (remainingMs <= 0) {
-      this.evaluateEventStatus();
-      return;
-    }
-
-    const totalSeconds = Math.floor(remainingMs / 1000);
-    const days = Math.floor(totalSeconds / (3600 * 24));
-    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    this.daysLeft.set(days);
-    this.hours.set(hours);
-    this.minutes.set(minutes);
-    this.seconde.set(seconds);
-  }
-
-  private resetTimeSignals(): void {
-    this.daysLeft.set(0);
-    this.hours.set(0);
-    this.minutes.set(0);
-    this.seconde.set(0);
-    try {
-      localStorage.removeItem(this.STORAGE_KEY);
-    } catch {}
+    this.targetEndMs.set(0);
   }
 
   private triggerConfetti(): void {
@@ -415,8 +403,11 @@ export default class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.stopInterval();
     this.stopSlideshow();
+    if (this.visibilityHandler && isPlatformBrowser(this.platformId)) {
+      document.removeEventListener('visibilitychange', this.visibilityHandler);
+      this.visibilityHandler = undefined;
+    }
     for (const t of this.confettiTimeouts) {
       clearTimeout(t);
     }
