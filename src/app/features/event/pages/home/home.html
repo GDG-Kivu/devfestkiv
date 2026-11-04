@@ -68,7 +68,7 @@
                             <img [ngSrc]="slide.src" [alt]="slide.alt"
                                 class="w-full h-full object-cover select-none pointer-events-none"
                                 fill
-                                priority
+                                [priority]="i === 0"
                                 sizes="(max-width: 640px) 44vw, (max-width: 768px) 40vw, (max-width: 1024px) 34vw, 28vw" />
                             <!-- gradient overlay -->
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none"></div>
@@ -115,38 +115,41 @@
     </div>
 
     <!-- Spilled Key Themes Cluster on Top of African Geometric Border (Image 4 Style) -->
-    <div class="relative w-full mt-10 sm:mt-12 md:mt-16 z-20">
-        <!-- Spilled colorful theme capsules with playful organic angles -->
+    <div class="relative w-full mt-6 sm:mt-8 md:mt-12 z-0 pointer-events-none select-none">
+        <!-- Spilled theme capsules with subtle, ambient background styling (6 on mobile to avoid clutter) -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 md:gap-2.5 -mb-2.5 sm:-mb-3.5 relative z-10 select-none">
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#FBBC04] text-gray-900 shadow-sm transform -rotate-6 hover:rotate-0 transition-transform">AI AGENTS</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-purple-600 text-white shadow-sm transform rotate-12 hover:rotate-0 transition-transform">KOTLIN</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-white text-gray-900 border border-gray-200 shadow-sm transform -rotate-3 hover:rotate-0 transition-transform">OPEN SOURCE</span>
-                <span class="inline-block px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#FBBC04] text-gray-900 shadow-sm transform rotate-6 hover:rotate-0 transition-transform">DART</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#4285F4] text-white shadow-sm transform -rotate-12 hover:rotate-0 transition-transform">FLUTTER</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#34A853] text-white shadow-sm transform rotate-2 hover:rotate-0 transition-transform">ANDROID</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#EA4335] text-white shadow-sm transform -rotate-6 hover:rotate-0 transition-transform">SECURITY</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#34A853] text-white shadow-sm transform -rotate-12 hover:rotate-0 transition-transform">JETPACK COMPOSE</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#4285F4] text-white shadow-sm transform rotate-6 hover:rotate-0 transition-transform">VERTEX AI</span>
-                <span class="inline-block px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#FBBC04] text-gray-900 shadow-sm transform -rotate-3 hover:rotate-0 transition-transform">GO</span>
-                <span class="inline-block px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#EA4335] text-white shadow-sm transform -rotate-12 hover:rotate-0 transition-transform">KERAS</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#34A853] text-white shadow-sm transform rotate-3 hover:rotate-0 transition-transform">PRODUCT</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#4285F4] text-white shadow-sm transform -rotate-3 hover:rotate-0 transition-transform">DESIGNERS</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#FBBC04] text-gray-900 shadow-sm transform rotate-6 hover:rotate-0 transition-transform">FIREBASE</span>
-                <span class="inline-block px-4 sm:px-5 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-white text-gray-900 border border-gray-200 shadow-sm transform -rotate-1 hover:rotate-0 transition-transform">DEVELOPERS</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#FBBC04] text-gray-900 shadow-sm transform -rotate-6 hover:rotate-0 transition-transform">STUDENTS</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#34A853] text-white shadow-sm transform rotate-3 hover:rotate-0 transition-transform">FOUNDERS</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#34A853] text-white shadow-sm transform -rotate-6 hover:rotate-0 transition-transform">WEB</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#4285F4] text-white shadow-sm transform -rotate-12 hover:rotate-0 transition-transform">ANGULAR</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#4285F4] text-white shadow-sm transform rotate-6 hover:rotate-0 transition-transform">GEMINI</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-pink-600 text-white shadow-sm transform -rotate-12 hover:rotate-0 transition-transform">CHROME</span>
-                <span class="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-extrabold rounded-full bg-[#EA4335] text-white shadow-sm transform rotate-2 hover:rotate-0 transition-transform">GOOGLE CLOUD</span>
+            <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 md:gap-2.5 -mb-2.5 sm:-mb-3.5 opacity-55 sm:opacity-65 transition-opacity">
+                <!-- 6 Themes visible on mobile, subtle background pastel badges -->
+                <span class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform -rotate-6">AI AGENTS</span>
+                <span class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform -rotate-12">FLUTTER</span>
+                <span class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform rotate-2">ANDROID</span>
+                <span class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform -rotate-6">ANGULAR</span>
+                <span class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform rotate-6">FIREBASE</span>
+                <span class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-red-500/15 text-red-900/80 border border-red-300/40 transform rotate-2">GOOGLE CLOUD</span>
+
+                <!-- Desktop / Tablet only themes (hidden on mobile to prevent clutter) -->
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-purple-500/15 text-purple-900/80 border border-purple-300/40 transform rotate-12">KOTLIN</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-gray-500/10 text-gray-700/80 border border-gray-300/50 transform -rotate-3">OPEN SOURCE</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform rotate-6">DART</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-red-500/15 text-red-900/80 border border-red-300/40 transform -rotate-6">SECURITY</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform -rotate-12">JETPACK COMPOSE</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform rotate-6">VERTEX AI</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform -rotate-3">GO</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-red-500/15 text-red-900/80 border border-red-300/40 transform -rotate-12">KERAS</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform rotate-3">PRODUCT</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform -rotate-3">DESIGNERS</span>
+                <span class="hidden sm:inline-block px-3 sm:px-4 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-gray-500/10 text-gray-700/80 border border-gray-300/50 transform -rotate-1">DEVELOPERS</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform -rotate-6">STUDENTS</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform rotate-3">FOUNDERS</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform -rotate-6">WEB</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform rotate-6">GEMINI</span>
+                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-pink-500/15 text-pink-900/80 border border-pink-300/40 transform -rotate-12">CHROME</span>
             </div>
         </div>
 
         <!-- African Geometric Bottom Border Pattern -->
         <div class="w-full h-7 sm:h-9 md:h-11 overflow-hidden pointer-events-none mt-1">
-            <img src="/assets/top.png" alt="" aria-hidden="true" class="w-full h-full object-cover" />
+            <img src="/assets/top.png" alt="" aria-hidden="true" class="w-full h-full object-cover" loading="lazy" decoding="async" />
         </div>
     </div>
 </section>
@@ -443,8 +446,14 @@
 </section>
 
 
-<!-- Official DevFest Kivu 3D T-Shirt Interactive Showcase -->
+<!-- Official DevFest Kivu 3D T-Shirt Interactive Showcase (Deferred until viewport is reached) -->
+@defer (on viewport) {
 <app-tshirt-showcase />
+} @placeholder {
+<div class="py-16 md:py-24 bg-white flex items-center justify-center min-h-[380px]" aria-hidden="true">
+    <div class="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin"></div>
+</div>
+}
 
 <!-- Impact Section: Editorial 2-Column Asymmetrical Grid -->
 <section class="bg-white py-16 md:py-24 border-b border-gray-100 relative" id="impact">
@@ -534,8 +543,14 @@
     </div>
 </section>
 
-<!-- Past Events Gallery Component -->
+<!-- Past Events Gallery Component (Deferred until viewport is reached) -->
+@defer (on viewport) {
 <app-past-events-gallery></app-past-events-gallery>
+} @placeholder {
+<div class="py-12 bg-white flex items-center justify-center min-h-[300px]" aria-hidden="true">
+    <div class="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin"></div>
+</div>
+}
 
 <!-- Practical Information & FAQ Section (Smooth Height Expandable Accordions) -->
 <section class="py-16 md:py-24 bg-white relative overflow-hidden" id="faq-guide">

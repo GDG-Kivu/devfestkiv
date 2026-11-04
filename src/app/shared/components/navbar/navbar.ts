@@ -25,6 +25,7 @@ import { EventConfigService } from '../../../features/event/services/event-confi
                 class="h-8 w-auto sm:h-10 lg:h-10"
                 width="139"
                 height="40"
+                decoding="async"
               />
             </a>
           </div>
