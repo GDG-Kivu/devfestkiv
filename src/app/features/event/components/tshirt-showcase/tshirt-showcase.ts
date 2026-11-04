@@ -10,12 +10,6 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-// Safely import @google/model-viewer in browser environments to prevent SSR prerender errors
-// (ReferenceError: customElements is not defined during Node.js server execution).
-if (typeof window !== 'undefined') {
-  import('@google/model-viewer');
-}
-
 @Component({
   selector: 'app-tshirt-showcase',
   standalone: true,
