@@ -24,10 +24,18 @@ export default class TshirtShowcase implements OnInit {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Ensure the @google/model-viewer custom element is registered on the client
-      import('@google/model-viewer').catch((err) => {
-        console.error('Failed to load @google/model-viewer script:', err);
-      });
+      // Defer loading of heavy @google/model-viewer script until main thread is idle
+      const loadModelViewer = () => {
+        import('@google/model-viewer').catch((err) => {
+          console.error('Failed to load @google/model-viewer script:', err);
+        });
+      };
+
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(loadModelViewer, { timeout: 3000 });
+      } else {
+        setTimeout(loadModelViewer, 1000);
+      }
     }
   }
 

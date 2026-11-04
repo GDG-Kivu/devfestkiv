@@ -1,4 +1,5 @@
 import {
+  ApplicationRef,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -11,9 +12,8 @@ import {
   untracked,
   NgZone,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { of, timer } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { first, map } from 'rxjs/operators';
 import PastEventsGallery from '../../components/past-events-gallery/past-events-gallery';
 import TshirtShowcase from '../../components/tshirt-showcase/tshirt-showcase';
 import { RouterLink } from '@angular/router';
@@ -58,7 +58,8 @@ import { isPlatformBrowser } from '@angular/common';
     }
 
     .animate-fade-in-up {
-      animation: fadeInUp 0.8s ease-out;
+      animation: fadeInUp 0.9s ease-out forwards;
+      opacity: 0;
     }
 
     @keyframes fadeIn {
@@ -66,7 +67,7 @@ import { isPlatformBrowser } from '@angular/common';
         opacity: 0;
       }
       to {
-        opacity: 0.4;
+        opacity: 1;
       }
     }
 
@@ -132,15 +133,12 @@ export default class HomeComponent implements OnInit, OnDestroy {
   private fs = inject(FirestoreService, { optional: true });
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
+  private appRef = inject(ApplicationRef);
   private visibilityHandler?: () => void;
 
-  // Single reactive clock: emits current timestamp every second in browser, once on SSR
-  private readonly now = toSignal(
-    isPlatformBrowser(this.platformId)
-      ? timer(0, 1000).pipe(map(() => Date.now()))
-      : of(Date.now()),
-    { initialValue: Date.now() },
-  );
+  // Reactive clock: runs outside Angular zone so hydration isStable() is never blocked
+  private readonly now = signal(Date.now());
+  private clockInterval: any;
 
   // Target end timestamp in ms for the active countdown
   targetEndMs = signal(0);
@@ -152,7 +150,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
       return 0;
     }
     const end = this.targetEndMs();
-    const current = this.now() ?? Date.now();
+    const current = this.now();
     return Math.max(0, end - current);
   });
 
@@ -165,7 +163,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
   targetDateTimeString = signal(this.eventConfig.getTargetDateTimeString());
   isEventPast = signal(false);
   isEventOngoing = signal(false);
-  eventStatus = signal<'loading' | 'upcoming' | 'ongoing' | 'past' | 'error'>('loading');
+  eventStatus = signal<'loading' | 'upcoming' | 'ongoing' | 'past' | 'error'>('upcoming');
 
   // Successive & Multi-day Context Signals
   targetTitle = signal("L'événement commence dans");
@@ -177,10 +175,10 @@ export default class HomeComponent implements OnInit, OnDestroy {
   private slideshowInterval: any;
   private confettiTimeouts: any[] = [];
 
-  // Hero Slideshow
+  // Hero Slideshow (first-1.jpg first for immediate LCP priority matching)
   heroSlides = [
-    { src: '/assets/past_events/first-2.jpg', alt: 'Communauté DevFest Kivu' },
     { src: '/assets/past_events/first-1.jpg', alt: 'Moments DevFest Kivu' },
+    { src: '/assets/past_events/first-2.jpg', alt: 'Communauté DevFest Kivu' },
     { src: '/assets/past_events/second-1.jpg', alt: 'DevFest Kivu en action' },
   ];
   heroSlideIndex = signal(0);
@@ -212,8 +210,15 @@ export default class HomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.evaluateEventStatus();
-      this.triggerConfetti();
-      this.startSlideshow();
+
+      // Wait for hydration to complete before starting intervals (eliminates NG0506)
+      this.appRef.isStable
+        .pipe(first((isStable) => isStable))
+        .subscribe(() => {
+          this.startClock();
+          this.startSlideshow();
+          this.triggerConfetti();
+        });
 
       this.visibilityHandler = () => {
         if (document.visibilityState === 'visible') {
@@ -221,6 +226,24 @@ export default class HomeComponent implements OnInit, OnDestroy {
         }
       };
       document.addEventListener('visibilitychange', this.visibilityHandler);
+    }
+  }
+
+  private startClock(): void {
+    this.stopClock();
+    this.ngZone.runOutsideAngular(() => {
+      this.clockInterval = setInterval(() => {
+        if (this.countdownRunning()) {
+          this.now.set(Date.now());
+        }
+      }, 1000);
+    });
+  }
+
+  private stopClock(): void {
+    if (this.clockInterval) {
+      clearInterval(this.clockInterval);
+      this.clockInterval = null;
     }
   }
 
@@ -242,26 +265,6 @@ export default class HomeComponent implements OnInit, OnDestroy {
   }
 
   evaluateEventStatus(): void {
-    // 0. Handle data loading state to prevent premature "Édition terminée"
-    const serviceStatus = this.eventConfig.status();
-    if (serviceStatus === 'loading') {
-      this.eventStatus.set('loading');
-      this.isEventPast.set(false);
-      this.isEventOngoing.set(false);
-      this.countdownRunning.set(false);
-      this.targetEndMs.set(0);
-      return;
-    }
-
-    if (serviceStatus === 'error' && !this.eventConfig.eventDocument()) {
-      this.eventStatus.set('error');
-      this.isEventPast.set(false);
-      this.isEventOngoing.set(false);
-      this.countdownRunning.set(false);
-      this.targetEndMs.set(0);
-      return;
-    }
-
     const config = this.eventConfig.getConfig();
     const festivalDays: FestivalDaySchedule[] = this.eventConfig.getFestivalDays(config);
     const now = Date.now();
@@ -403,6 +406,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.stopClock();
     this.stopSlideshow();
     if (this.visibilityHandler && isPlatformBrowser(this.platformId)) {
       document.removeEventListener('visibilitychange', this.visibilityHandler);
