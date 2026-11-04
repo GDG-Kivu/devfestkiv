@@ -1,10 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { EventConfigService } from '../../services/event-config.service';
 
 @Component({
   selector: 'app-past-events-gallery',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [],
   templateUrl: 'past-events-gallery.html',
   styleUrl: 'past-events-gallery.css',
 })
