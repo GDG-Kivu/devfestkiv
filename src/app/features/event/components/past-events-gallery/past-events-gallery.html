@@ -1,4 +1,4 @@
-<section class="py-12 md:py-16 lg:py-20 overflow-hidden bg-gradient-to-b from-primary-pastel/20 to-white">
+﻿<section class="py-12 md:py-16 lg:py-20 overflow-hidden bg-gradient-to-b from-primary-pastel/20 to-white">
     <div class="max-w-7xl mx-auto px-md sm:px-lg lg:px-xl mb-8 md:mb-12">
         <!--Section Header -->
         <div class="text-center">
@@ -23,12 +23,12 @@
     <!-- First Row - Left to Right -->
     <div class="gallery-row mb-3 md:mb-4">
         <div class="scroll-left-to-right">
-            @for (item of firstRowEvents; track $index) {
+            @for (item of firstRowEvents; track 'r1-' + $index) {
             <div class="gallery-item group relative w-[220px] sm:w-[260px] md:w-[320px] h-[280px] sm:h-[340px] md:h-[420px] shrink-0 overflow-hidden rounded-[20px]">
                 <!-- Dynamic image based on event type -->
-                <img [ngSrc]="'/assets/past_events/first-' + ($index + 1) + '.jpg'" [alt]="item.title"
-                    class="gallery-image" fill sizes="(max-width: 640px) 70vw, (max-width: 1024px) 35vw, 25vw"
-                    [priority]="$index === 0"
+                <img [src]="'/assets/past_events/first-' + ($index + 1) + '.jpg'" [alt]="item.title"
+                    class="gallery-image" width="320" height="420"
+                    loading="lazy"
                     decoding="async" />
 
                 <!-- Category Badge -->
@@ -107,11 +107,12 @@
             }
 
             <!-- Duplicate set for seamless loop -->
-            @for (item of firstRowEvents; track $index) {
+            @for (item of firstRowEvents; track 'r1-dup-' + $index) {
             <div class="gallery-item group relative w-[220px] sm:w-[260px] md:w-[320px] h-[280px] sm:h-[340px] md:h-[420px] shrink-0 overflow-hidden rounded-[20px]">
-                <img [ngSrc]="'/assets/past_events/first-' + ($index + 1) + '.jpg'" [alt]="item.title"
-                    class="gallery-image" fill sizes="(max-width: 640px) 70vw, (max-width: 1024px) 35vw, 25vw"
-                    decoding="async" loading="lazy" />
+                <img [src]="'/assets/past_events/first-' + ($index + 1) + '.jpg'" [alt]="item.title"
+                    class="gallery-image" width="320" height="420"
+                    loading="lazy"
+                    decoding="async" />
                 <div class="absolute top-4 left-4 z-10">
                     <span
                         class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/90 backdrop-blur-sm"
@@ -173,11 +174,12 @@
     <!-- Second Row - Right to Left -->
     <div class="gallery-row">
         <div class="scroll-right-to-left">
-            @for (item of secondRowEvents; track $index) {
+            @for (item of secondRowEvents; track 'r2-' + $index) {
             <div class="gallery-item group relative w-[220px] sm:w-[260px] md:w-[320px] h-[280px] sm:h-[340px] md:h-[420px] shrink-0 overflow-hidden rounded-[20px]">
-                <img [ngSrc]="'/assets/past_events/second-' + ($index + 1) + '.jpg'" [alt]="item.title"
-                    class="gallery-image" fill sizes="(max-width: 640px) 70vw, (max-width: 1024px) 35vw, 25vw"
-                    decoding="async" loading="lazy" />
+                <img [src]="'/assets/past_events/second-' + ($index + 1) + '.jpg'" [alt]="item.title"
+                    class="gallery-image" width="320" height="420"
+                    loading="lazy"
+                    decoding="async" />
                 <div class="absolute top-4 left-4 z-10">
                     <span
                         class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/90 backdrop-blur-sm"
@@ -235,11 +237,12 @@
             }
 
             <!-- Duplicate set -->
-            @for (item of secondRowEvents; track $index) {
+            @for (item of secondRowEvents; track 'r2-dup-' + $index) {
             <div class="gallery-item group relative w-[220px] sm:w-[260px] md:w-[320px] h-[280px] sm:h-[340px] md:h-[420px] shrink-0 overflow-hidden rounded-[20px]">
-                <img [ngSrc]="'/assets/past_events/second-' + ($index + 1) + '.jpg'" [alt]="item.title"
-                    class="gallery-image" fill sizes="(max-width: 640px) 70vw, (max-width: 1024px) 35vw, 25vw"
-                    decoding="async" loading="lazy" />
+                <img [src]="'/assets/past_events/second-' + ($index + 1) + '.jpg'" [alt]="item.title"
+                    class="gallery-image" width="320" height="420"
+                    loading="lazy"
+                    decoding="async" />
                 <div class="absolute top-4 left-4 z-10">
                     <span
                         class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white/90 backdrop-blur-sm"

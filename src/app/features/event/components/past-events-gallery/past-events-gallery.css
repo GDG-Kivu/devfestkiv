@@ -32,6 +32,7 @@
         box-shadow:
             0 10px 40px rgba(0, 0, 0, 0.1),
             0 4px 12px rgba(0, 0, 0, 0.05);
+        background: #1e293b;
     }
 
     .gallery-item:hover {

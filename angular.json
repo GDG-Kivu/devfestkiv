@@ -59,6 +59,13 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "prebundle": {
+              "exclude": [
+                "@google/model-viewer"
+              ]
+            }
+          },
           "configurations": {
             "production": {
               "buildTarget": "devfestkivu:build:production"
