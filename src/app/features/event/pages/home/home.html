@@ -332,10 +332,10 @@
         </div>
 
         <!-- 4 Pillar Cards: Horizontal snap carousel on mobile, 2-column staggered grid on tablet/desktop -->
-        <div class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 pt-1 -mx-4 px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:gap-8">
+        <div class="flex overflow-x-auto snap-x snap-mandatory scroll-pl-4 scroll-pr-4 gap-4 pb-4 pt-1 -mx-4 sm:mx-0 sm:scroll-pl-0 sm:scroll-pr-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:pb-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:gap-8">
             @for (pillar of festivalPillars; track pillar.id; let i = $index) {
             <!-- Card gets a vertical offset on desktop to create the staggered look -->
-            <div class="pillar-card w-[82vw] max-w-[320px] shrink-0 snap-start sm:w-full sm:max-w-none sm:shrink rounded-3xl overflow-hidden cursor-pointer border {{ pillar.cardBg }}"
+            <div class="pillar-card w-[82vw] max-w-[320px] shrink-0 snap-start first:ml-4 last:mr-4 sm:first:ml-0 sm:last:mr-0 sm:w-full sm:max-w-none sm:shrink rounded-3xl overflow-hidden cursor-pointer border {{ pillar.cardBg }}"
                 [class.sm:mt-7]="i === 1 || i === 3"
                 (click)="toggleFlip(pillar.id)"
                 role="button"
