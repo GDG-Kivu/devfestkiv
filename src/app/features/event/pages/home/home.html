@@ -331,18 +331,18 @@
             </p>
         </div>
 
-        <!-- 4 Pillar Cards: staggered 2x2 grid, Chrome-style -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
+        <!-- 4 Pillar Cards: Horizontal snap carousel on mobile, 2-column staggered grid on tablet/desktop -->
+        <div class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 pt-1 -mx-4 px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0 sm:pb-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:gap-8">
             @for (pillar of festivalPillars; track pillar.id; let i = $index) {
-            <!-- Card gets a vertical offset to create the staggered look -->
-            <div class="pillar-card rounded-3xl overflow-hidden cursor-pointer border {{ pillar.cardBg }}"
-                [style.marginTop]="(i === 1 || i === 3) ? '28px' : '0'"
+            <!-- Card gets a vertical offset on desktop to create the staggered look -->
+            <div class="pillar-card w-[82vw] max-w-[320px] shrink-0 snap-start sm:w-full sm:max-w-none sm:shrink rounded-3xl overflow-hidden cursor-pointer border {{ pillar.cardBg }}"
+                [class.sm:mt-7]="i === 1 || i === 3"
                 (click)="toggleFlip(pillar.id)"
                 role="button"
                 [attr.aria-expanded]="isFlipped(pillar.id)"
                 [attr.aria-label]="pillar.title">
 
-                <div class="relative flex flex-col" style="min-height: 360px;">
+                <div class="relative flex flex-col min-h-[350px] sm:min-h-[360px]">
 
                     <!-- Front content -->
                     <div class="absolute inset-0 flex flex-col transition-all duration-400"
@@ -351,7 +351,7 @@
 
                         <!-- Top section: toggle button + title + description -->
                         <div class="p-6 sm:p-8 pb-2">
-                            <!-- Toggle button aligned to right (tag removed) -->
+                            <!-- Toggle button aligned to right -->
                             <div class="flex justify-end mb-3">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors {{ pillar.iconBtnClass }}">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -359,12 +359,12 @@
                                     </svg>
                                 </div>
                             </div>
-                            <!-- Title + description with enlarged typography -->
+                            <!-- Title + description with comfortable typography -->
                             <h3 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3 leading-snug tracking-tight">{{ pillar.title }}</h3>
                             <p class="text-base sm:text-lg text-gray-700 leading-relaxed">{{ pillar.frontDescription }}</p>
                         </div>
 
-                        <!-- Image flush at bottom right border (Chrome feature style) -->
+                        <!-- Image flush at bottom right border -->
                         <div class="mt-auto w-full flex justify-end items-end overflow-hidden h-28 sm:h-36">
                             <img [ngSrc]="pillar.iconPath" [alt]="pillar.title"
                                 [width]="pillar.width" [height]="pillar.height"
@@ -387,10 +387,10 @@
                             </div>
                         </div>
 
-                        <!-- Details with comfortable typography (title removed on back to prevent duplication) -->
+                        <!-- Details with comfortable typography -->
                         <p class="text-base sm:text-lg text-gray-700 leading-relaxed flex-1">{{ pillar.backDetails }}</p>
 
-                        <!-- CTA: text link with arrow ↗, left-aligned (Chrome action link style) -->
+                        <!-- CTA: text link with arrow ↗, left-aligned -->
                         <div class="mt-6 text-left">
                             @if (pillar.actionExternal) {
                             <a [href]="pillar.actionLink" target="_blank" rel="noopener noreferrer"
