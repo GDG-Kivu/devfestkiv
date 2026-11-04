@@ -420,7 +420,11 @@
 
 
 <!-- Official DevFest Kivu 3D T-Shirt Interactive Showcase -->
+@defer (on viewport) {
 <app-tshirt-showcase />
+} @placeholder {
+<div class="h-96 min-h-[380px] bg-white"></div>
+}
 
 <!-- Impact Section: Editorial 2-Column Asymmetrical Grid -->
 <section class="bg-white py-16 md:py-24 border-b border-gray-100 relative" id="impact">
@@ -511,7 +515,11 @@
 </section>
 
 <!-- Past Events Gallery Component -->
+@defer (on viewport) {
 <app-past-events-gallery></app-past-events-gallery>
+} @placeholder {
+<div class="h-96 min-h-[400px] bg-gray-50"></div>
+}
 
 <!-- Practical Information & FAQ Section (Smooth Height Expandable Accordions) -->
 <section class="py-16 md:py-24 bg-white relative overflow-hidden" id="faq-guide">
