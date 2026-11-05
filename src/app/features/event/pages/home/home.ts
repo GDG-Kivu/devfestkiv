@@ -1,4 +1,5 @@
 import {
+  afterNextRender,
   ApplicationRef,
   ChangeDetectionStrategy,
   Component,
@@ -163,7 +164,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
   targetDateTimeString = signal(this.eventConfig.getTargetDateTimeString());
   isEventPast = signal(false);
   isEventOngoing = signal(false);
-  eventStatus = signal<'loading' | 'upcoming' | 'ongoing' | 'past' | 'error'>('upcoming');
+  eventStatus = signal<'loading' | 'upcoming' | 'ongoing' | 'past' | 'error'>('loading');
 
   // Successive & Multi-day Context Signals
   targetTitle = signal("L'événement commence dans");
@@ -205,20 +206,18 @@ export default class HomeComponent implements OnInit, OnDestroy {
         });
       }
     });
+
+    // Start interval timers promptly after initial browser render without hanging on slow connections
+    afterNextRender(() => {
+      this.startClock();
+      this.startSlideshow();
+      this.triggerConfetti();
+    });
   }
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.evaluateEventStatus();
-
-      // Wait for hydration to complete before starting intervals (eliminates NG0506)
-      this.appRef.isStable
-        .pipe(first((isStable) => isStable))
-        .subscribe(() => {
-          this.startClock();
-          this.startSlideshow();
-          this.triggerConfetti();
-        });
 
       this.visibilityHandler = () => {
         if (document.visibilityState === 'visible') {
@@ -265,6 +264,15 @@ export default class HomeComponent implements OnInit, OnDestroy {
   }
 
   evaluateEventStatus(): void {
+    if (this.eventConfig.status() === 'loading') {
+      this.eventStatus.set('loading');
+      return;
+    }
+    if (this.eventConfig.status() === 'error') {
+      this.eventStatus.set('error');
+      return;
+    }
+
     const config = this.eventConfig.getConfig();
     const festivalDays: FestivalDaySchedule[] = this.eventConfig.getFestivalDays(config);
     const now = Date.now();

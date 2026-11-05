@@ -218,6 +218,8 @@
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 text-center relative z-10">
 
+        <!-- Compte a rebours differe au viewport -->
+        @defer (on viewport) {
         <!-- CAS 0: Skeleton réaliste du compte à rebours pendant le chargement Firestore -->
         @if (eventStatus() === 'loading') {
         <div class="max-w-4xl mx-auto text-center py-2 animate-pulse" aria-hidden="true">
@@ -408,6 +410,36 @@
                     </path>
                 </svg>
             </a>
+        </div>
+        }
+        } @placeholder {
+        <!-- Squelette statique affiche avant l'entree dans le viewport -->
+        <div class="max-w-4xl mx-auto text-center py-2 animate-pulse" aria-hidden="true">
+            <div class="h-8 sm:h-9 md:h-10 w-64 sm:w-80 md:w-96 bg-white/10 rounded-xl mx-auto mb-8 md:mb-10"></div>
+            <div class="flex justify-center items-end gap-3 sm:gap-6 md:gap-10 mb-8 md:mb-10">
+                <div class="flex flex-col items-center">
+                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl"></div>
+                    <div class="h-3 w-10 sm:w-12 bg-primary/20 rounded mt-2"></div>
+                </div>
+                <div class="text-3xl sm:text-5xl text-primary/30 font-black pb-5 select-none">:</div>
+                <div class="flex flex-col items-center">
+                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl"></div>
+                    <div class="h-3 w-10 sm:w-12 bg-primary/20 rounded mt-2"></div>
+                </div>
+                <div class="text-3xl sm:text-5xl text-primary/30 font-black pb-5 select-none">:</div>
+                <div class="flex flex-col items-center">
+                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl"></div>
+                    <div class="h-3 w-10 sm:w-12 bg-primary/20 rounded mt-2"></div>
+                </div>
+                <div class="text-3xl sm:text-5xl text-primary/30 font-black pb-5 select-none">:</div>
+                <div class="flex flex-col items-center">
+                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl"></div>
+                    <div class="h-3 w-10 sm:w-12 bg-primary/20 rounded mt-2"></div>
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <div class="h-10 sm:h-11 w-48 sm:w-56 bg-white/10 rounded-xl"></div>
+            </div>
         </div>
         }
 
