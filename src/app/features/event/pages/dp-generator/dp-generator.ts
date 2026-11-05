@@ -17,7 +17,6 @@ import { Generator } from './generator/generator';
 import html2canvas from 'html2canvas-pro';
 import { ImageCropperComponent, ImageCroppedEvent } from 'ngx-image-cropper';
 import { EventConfigService } from '../../services/event-config.service';
-import { AuthService } from '../../../../core/auth/services/auth.service';
 import { RoleService } from '../../../../core/auth/services/role.service';
 import {
   ROLE_LIST,
@@ -40,13 +39,17 @@ export default class DpGenerator implements OnInit, OnDestroy {
   private shareService = inject(ShareService);
 
   readonly roles = ROLE_LIST;
-  readonly roleTheme = ROLE_THEME; // mêmes couleurs que le DP exporté
+  readonly roleTheme = ROLE_THEME;
   readonly roleMeta = ROLE_META;
   readonly maxNameLength = 50;
-
+  private uiTimer?: ReturnType<typeof setTimeout>;
   isSharing = signal(false);
   toast = signal<{ text: string; kind: 'success' | 'error' } | null>(null);
   private toastTimer?: ReturnType<typeof setTimeout>;
+  isPreparingImage = false;
+
+  private bodyScrollY = 0;
+  private bodyScrollLocked = false;
 
   // Panneau de secours : partage natif bloqué (iOS) ou desktop sans partage de fichiers
   sharePanel = signal<{ file: File; canNative: boolean } | null>(null);
@@ -65,8 +68,8 @@ export default class DpGenerator implements OnInit, OnDestroy {
   shareMessage = computed(() => {
     const hashtag = this.dpConfig()?.hashtag || `#DevFestKivu${this.eventConfig.year}`;
     return (
-      `${this.roleIntro[this.effectiveRole()]} ${this.eventConfig.fullName} ! 🎉\n` +
-      `📅 ${this.eventConfig.getFormattedDateBadge()}\n` +
+      `${this.roleIntro[this.effectiveRole()]} ${this.eventConfig.fullName} !\n` +
+      `${this.eventConfig.getFormattedDateBadge()}\n` +
       `Crée ton badge : ${this.shareLink}\n${hashtag}`
     );
   });
@@ -167,6 +170,7 @@ export default class DpGenerator implements OnInit, OnDestroy {
       this.resizeObserver.disconnect();
     }
     clearTimeout(this.toastTimer);
+    clearTimeout(this.uiTimer);
   }
 
   private setupDesktopObserver() {
@@ -181,46 +185,56 @@ export default class DpGenerator implements OnInit, OnDestroy {
     this.resizeObserver.observe(this.desktopPreviewWrapper.nativeElement);
   }
 
-  private checkIsMobile() {
-    this.isMobile = typeof window !== 'undefined' ? window.innerWidth <= 768 : false;
+  private isMobileViewport(): boolean {
+    return typeof window !== 'undefined' && window.matchMedia('(max-width: 47.99rem)').matches;
+  }
 
-    if (this.isMobile && typeof window !== 'undefined') {
-      const availableWidth = Math.min(window.innerWidth - 32, 420);
-      // Sur mobile, l'overlay a un header (~45px) et les contrôles/inputs (~210px), plus les marges (~40px)
-      // La hauteur maximale allouée pour le canvas d'aperçu est d'environ 38vh à 42vh
+  private checkIsMobile() {
+    this.isMobile = this.isMobileViewport();
+
+    if (this.isMobile) {
+      const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+      const availableWidth = Math.min(viewportWidth - 32, 420);
       const maxCanvasHeight = Math.max(180, window.innerHeight * 0.38);
-      const scaleByWidth = availableWidth / 837;
-      const scaleByHeight = maxCanvasHeight / 837;
-      // On prend le min pour que le canvas ET les contrôles tiennent sur l'écran sans masquer les boutons
-      this.mobileScale = Math.min(scaleByWidth, scaleByHeight);
+      this.mobileScale = Math.min(availableWidth / 837, maxCanvasHeight / 837);
     } else {
       this.mobileScale = 1;
+      // Passage en mode large (rotation, redimensionnement) : on ferme l'overlay et on débloque le scroll
+      if (this.showOverlay || this.showPreviewOverlay) this.closeMobileOverlay();
     }
   }
 
-  // Body scroll helpers
   private preventBodyScroll() {
-    try {
-      document.body.style.overflow = 'hidden';
-      document.documentElement.style.touchAction = 'none';
-    } catch (e) {
-      // silent
-    }
+    if (this.bodyScrollLocked) return;
+
+    this.bodyScrollY = window.scrollY;
+
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${this.bodyScrollY}px`;
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+
+    this.bodyScrollLocked = true;
   }
 
   private restoreBodyScroll() {
-    try {
-      document.body.style.overflow = '';
-      document.documentElement.style.touchAction = '';
-    } catch (e) {
-      // silent
-    }
+    if (!this.bodyScrollLocked) return;
+
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+
+    window.scrollTo(0, this.bodyScrollY);
+
+    this.bodyScrollLocked = false;
   }
 
   openMobileOverlay() {
     this.showOverlay = true;
     this.showPreviewOverlay = true;
     this.preventBodyScroll();
+    this.cdr.detectChanges();
   }
 
   closeMobileOverlay() {
@@ -245,9 +259,9 @@ export default class DpGenerator implements OnInit, OnDestroy {
     this.activeTab = tab;
     this.sharePanel.set(null);
     if (this.previewImage) {
-      this.uiState = 'imageVisible';
-      setTimeout(() => (this.uiState = 'templateVisible'), 10);
+      this.playEntrance();
     } else {
+      clearTimeout(this.uiTimer);
       this.uiState = 'initial';
     }
   }
@@ -277,7 +291,6 @@ export default class DpGenerator implements OnInit, OnDestroy {
   }
 
   setTemplate(t: DpTemplate) {
-    // nom, photo, citation et rôle vivent dans ce composant : rien n'est perdu
     this.selectedTemplate.set(t);
   }
 
@@ -295,80 +308,66 @@ export default class DpGenerator implements OnInit, OnDestroy {
 
   onDrop(event: DragEvent) {
     if (!this.isFormReadyForUpload) return;
+
     event.preventDefault();
     this.isDraggingOver = false;
+
     const file = event.dataTransfer?.files?.[0];
-    if (file && file.type.startsWith('image/')) {
-      this.openCropper(file);
+
+    if (file) {
+      void this.openCropper(file);
     }
   }
 
-  openFileInput() {
-    if (!this.isFormReadyForUpload) return;
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = (e: any) => {
-      const file = e.target.files?.[0];
-      if (file) this.openCropper(file);
-    };
-    input.click();
-  }
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
 
-  // Cropper
-  openCropper(file: File) {
-    const MAX_MB = 5;
-    if (file.size > MAX_MB * 1024 * 1024) {
-      alert(
-        `Image trop grosse (${(file.size / (1024 * 1024)).toFixed(1)}MB). Limite: ${MAX_MB}MB.`,
-      );
-      return;
-    }
-    if (!file.type.startsWith('image/')) {
-      alert('Fichier non supporté. Choisissez une image.');
-      return;
-    }
+    input.value = '';
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imageBase64 = reader.result as string;
-      this.showCropper = true;
-      this.tempCroppedImage = null;
-      this.cdr.detectChanges();
-    };
-    reader.readAsDataURL(file);
+    if (file) {
+      void this.openCropper(file);
+    }
   }
 
   onImageCropped(event: ImageCroppedEvent) {
-    this.tempCroppedImage = event.base64 ?? null;
-    this.cdr.detectChanges();
-  }
-
-  confirmCrop() {
-    if (this.tempCroppedImage) {
-      this.previewImage = this.tempCroppedImage;
-
-      this.uiState = 'imageVisible';
-      this.cdr.detectChanges();
-
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          this.uiState = 'templateVisible';
-          this.cdr.detectChanges();
-        }, 50);
-      });
-
-      if (this.isMobile) {
-        this.openMobileOverlay();
-      }
+    if (event.base64) {
+      this.tempCroppedImage = event.base64;
     }
-    this.showCropper = false;
-    this.tempCroppedImage = null;
   }
 
   imageCropperCancelled() {
     this.showCropper = false;
+    this.imageBase64 = undefined;
     this.tempCroppedImage = null;
+  }
+
+  onCropperLoadFailed() {
+    this.imageCropperCancelled();
+
+    this.showToast(
+      'Impossible de lire cette image. Essayez un fichier JPG, PNG ou WEBP.',
+      'error',
+      5000,
+    );
+  }
+
+  confirmCrop() {
+    if (!this.tempCroppedImage || this.isPreparingImage) return;
+
+    this.previewImage = this.tempCroppedImage;
+
+    this.showCropper = false;
+    this.imageBase64 = undefined;
+    this.tempCroppedImage = null;
+
+    this.playEntrance();
+
+    this.checkIsMobile();
+
+    if (this.isMobile) {
+      this.openMobileOverlay();
+    }
   }
 
   suggestQuote() {
@@ -381,16 +380,15 @@ export default class DpGenerator implements OnInit, OnDestroy {
   // Capture & Download
   /** Rend la zone en PNG (clone hors écran + html2canvas-pro). null si échec. */
   private async renderToBlob(elementId: string): Promise<Blob | null> {
-    const elById = document.getElementById(elementId);
-    const elByData = document.querySelector(
-      `[data-capture-zone="${elementId}"]`,
-    ) as HTMLElement | null;
+    this.ensureTemplateVisible();
+
     const el =
-      elById || elByData || (document.querySelector(`#${elementId}`) as HTMLElement | null);
+      document.getElementById(elementId) ||
+      (document.querySelector(`[data-capture-zone="${elementId}"]`) as HTMLElement | null);
 
     if (!el) {
       console.error(`Élément ${elementId} introuvable`);
-      alert('Impossible de trouver la zone à capturer.');
+      this.showToast('Impossible de trouver la zone à capturer.', 'error', 5000);
       return null;
     }
 
@@ -401,32 +399,41 @@ export default class DpGenerator implements OnInit, OnDestroy {
     clone.style.zIndex = '-10';
     clone.classList.add('dp-capture-clone');
 
+    // Les box-shadow Tailwind sont mal rendues par html2canvas sur mobile (peintes par-dessus
+    // l'élément) : on les retire de la COPIE exportée, l'aperçu à l'écran n'est pas touché.
+    [clone, ...Array.from(clone.querySelectorAll<HTMLElement>('*'))].forEach((node) =>
+      node.style?.setProperty('box-shadow', 'none', 'important'),
+    );
+
     clone.querySelectorAll('img').forEach((img) => {
-      try {
-        (img as HTMLImageElement).crossOrigin = 'anonymous';
-      } catch (e) {
-        // ignore
-      }
+      img.crossOrigin = 'anonymous';
     });
 
     document.body.appendChild(clone);
     this.isExporting = true;
-    try {
+
+    const render = async (scale: number): Promise<Blob | null> => {
       const canvas = await html2canvas(clone, {
         backgroundColor: null,
         useCORS: true,
         width: clone.offsetWidth || undefined,
         height: clone.offsetHeight || undefined,
-        scale: 2,
+        scale,
       });
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
-      if (!blob) console.error('Échec de la conversion du canvas en blob');
-      return blob;
+      return new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+    };
+
+    try {
+      let blob: Blob | null = null;
+      try {
+        blob = await render(2); // qualité nominale (1674 px)
+      } catch (e) {
+        console.warn('Export x2 impossible, nouvel essai en x1', e);
+      }
+      return blob ?? (await render(1)); // téléphone limité en mémoire
     } catch (e) {
       console.error('Erreur lors de html2canvas/capture:', e);
-      alert(
-        'Une erreur est survenue lors de l’exportation. Vérifiez la console pour plus d’infos.',
-      );
+      this.showToast('Export impossible sur cet appareil. Réessayez.', 'error', 5000);
       return null;
     } finally {
       this.isExporting = false;
@@ -440,27 +447,38 @@ export default class DpGenerator implements OnInit, OnDestroy {
 
   private downloadBlob(blob: Blob, safeName: string) {
     const url = URL.createObjectURL(blob);
+
     const a = document.createElement('a');
+
     a.href = url;
     a.download = safeName;
-    a.rel = 'noopener noreferrer';
+    a.style.display = 'none';
+
     document.body.appendChild(a);
+
     try {
-      a.click();
-    } catch (err) {
-      const opened = window.open(url, '_blank', 'noopener,noreferrer');
-      if (!opened) {
-        alert(
-          'Impossible de lancer le téléchargement automatiquement. Désactivez le bloqueur de pop-ups et essayez à nouveau.',
-        );
+      if ('download' in HTMLAnchorElement.prototype) {
+        a.click();
+      } else {
+        const opened = window.open(url, '_blank');
+
+        if (!opened) {
+          this.showToast(
+            'Téléchargement non pris en charge. Ouvrez l’image et enregistrez-la manuellement.',
+            'error',
+            6000,
+          );
+        }
       }
+    } catch (error) {
+      console.error('Erreur de téléchargement :', error);
+
+      this.showToast('Impossible de télécharger cette image sur ce navigateur.', 'error', 5000);
     } finally {
       setTimeout(() => {
-        try {
-          document.body.removeChild(a);
-        } catch (e) {}
+        a.remove();
         URL.revokeObjectURL(url);
-      }, 1500);
+      }, 60000);
     }
   }
 
@@ -546,10 +564,10 @@ export default class DpGenerator implements OnInit, OnDestroy {
     this.sharePanel.set(null);
   }
 
-  private showToast(text: string, kind: 'success' | 'error' = 'success') {
+  private showToast(text: string, kind: 'success' | 'error' = 'success', duration = 3000) {
     clearTimeout(this.toastTimer);
     this.toast.set({ text, kind });
-    this.toastTimer = setTimeout(() => this.toast.set(null), 3000);
+    this.toastTimer = setTimeout(() => this.toast.set(null), duration);
   }
 
   // Preload assets (best-effort)
@@ -563,5 +581,200 @@ export default class DpGenerator implements OnInit, OnDestroy {
         // ignore
       }
     });
+  }
+
+  private async prepareImageForCropper(file: File): Promise<string> {
+    const MAX_DIM = 1600;
+
+    const canvas = document.createElement('canvas');
+
+    let bitmap: ImageBitmap | null = null;
+    let objectUrl: string | null = null;
+    let source: CanvasImageSource | null = null;
+
+    let sourceWidth = 0;
+    let sourceHeight = 0;
+
+    try {
+      // Décodage prioritaire
+      if (typeof createImageBitmap === 'function') {
+        try {
+          bitmap = await createImageBitmap(file);
+
+          source = bitmap;
+          sourceWidth = bitmap.width;
+          sourceHeight = bitmap.height;
+        } catch {
+          bitmap = null;
+        }
+      }
+
+      // Compatibilité avec les anciens navigateurs
+      if (!source) {
+        objectUrl = URL.createObjectURL(file);
+
+        const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+          const img = new Image();
+
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error('Image illisible'));
+
+          img.src = objectUrl!;
+        });
+
+        source = image;
+        sourceWidth = image.naturalWidth;
+        sourceHeight = image.naturalHeight;
+      }
+
+      if (!sourceWidth || !sourceHeight) {
+        throw new Error('Dimensions de l’image invalides');
+      }
+
+      const ratio = Math.min(1, MAX_DIM / Math.max(sourceWidth, sourceHeight));
+
+      const width = Math.max(1, Math.round(sourceWidth * ratio));
+      const height = Math.max(1, Math.round(sourceHeight * ratio));
+
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d', { alpha: false });
+
+      if (!ctx) {
+        throw new Error('Canvas 2D indisponible');
+      }
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.drawImage(source, 0, 0, width, height);
+
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob(
+          (result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(new Error('Conversion JPEG impossible'));
+            }
+          },
+          'image/jpeg',
+          0.82,
+        );
+      });
+
+      return await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          if (typeof reader.result === 'string') {
+            resolve(reader.result);
+          } else {
+            reject(new Error('Lecture de l’image impossible'));
+          }
+        };
+
+        reader.onerror = () => reject(new Error('Erreur FileReader'));
+
+        reader.readAsDataURL(blob);
+      });
+    } finally {
+      bitmap?.close();
+
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+
+      canvas.width = 0;
+      canvas.height = 0;
+    }
+  }
+  /** Rejoue l'animation d'entrée du visuel (imageVisible → templateVisible). */
+  private playEntrance(delay = 50) {
+    clearTimeout(this.uiTimer);
+    this.uiState = 'imageVisible';
+    this.cdr.detectChanges();
+
+    requestAnimationFrame(() => {
+      this.uiTimer = setTimeout(() => {
+        this.uiState = 'templateVisible';
+        this.cdr.detectChanges();
+      }, delay);
+    });
+  }
+
+  /** Garantit que le visuel est complet avant la capture. */
+  private ensureTemplateVisible() {
+    if (this.previewImage && this.uiState !== 'templateVisible') {
+      this.uiState = 'templateVisible';
+      this.cdr.detectChanges();
+    }
+  }
+
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
+  openFileInput() {
+    if (!this.isFormReadyForUpload) return;
+    this.fileInput.nativeElement.click();
+  }
+
+  async openCropper(file: File) {
+    if (this.isPreparingImage) return;
+
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
+    const allowedExtensions = /\.(jpe?g|png|webp)$/i;
+
+    const type = file.type.toLowerCase();
+
+    const validType =
+      allowedTypes.includes(type) ||
+      ((!type || type === 'application/octet-stream') && allowedExtensions.test(file.name));
+
+    if (!validType) {
+      this.showToast('Format non supporté. Utilisez JPG, JPEG, PNG ou WEBP.', 'error', 5000);
+      return;
+    }
+
+    const MAX_MB = 25;
+
+    if (!file.size) {
+      this.showToast('Ce fichier est vide ou illisible.', 'error');
+      return;
+    }
+
+    if (file.size > MAX_MB * 1024 * 1024) {
+      this.showToast(
+        `Image trop lourde (${(file.size / (1024 * 1024)).toFixed(1)} Mo). Limite : ${MAX_MB} Mo.`,
+        'error',
+        5000,
+      );
+      return;
+    }
+
+    this.isPreparingImage = true;
+    this.showCropper = false;
+    this.tempCroppedImage = null;
+
+    try {
+      this.imageBase64 = await this.prepareImageForCropper(file);
+
+      this.showCropper = true;
+    } catch (error) {
+      console.error('Erreur de préparation de l’image :', error);
+
+      this.imageBase64 = undefined;
+      this.showCropper = false;
+
+      this.showToast(
+        'Cette image ne peut pas être ouverte sur cet appareil. Essayez une autre photo au format JPG, PNG ou WEBP.',
+        'error',
+        6000,
+      );
+    } finally {
+      this.isPreparingImage = false;
+      this.cdr.detectChanges();
+    }
   }
 }
