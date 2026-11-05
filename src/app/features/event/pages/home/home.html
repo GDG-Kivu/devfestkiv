@@ -1,14 +1,20 @@
 <!-- Hero Section: Editorial & Asymmetrical -->
-<section class="hero-section relative overflow-hidden bg-white min-h-0 lg:min-h-[85vh] flex flex-col justify-between pt-8 sm:pt-12 md:pt-16 pb-0">
+<section
+    class="hero-section relative overflow-hidden bg-white min-h-0 lg:min-h-[85vh] flex flex-col justify-between pt-8 sm:pt-12 md:pt-16 pb-0">
     <!-- Subtle Background Elements & Watermark Motif -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-40">
         <!-- Ambient Glowing Halos -->
-        <div class="hidden md:block absolute -top-32 -right-32 w-96 h-96 bg-primary/15 rounded-full blur-3xl animate-pulse-slow"></div>
-        <div class="hidden md:block absolute top-1/2 -left-32 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div
+            class="hidden md:block absolute -top-32 -right-32 w-96 h-96 bg-primary/15 rounded-full blur-3xl animate-pulse-slow">
+        </div>
+        <div
+            class="hidden md:block absolute top-1/2 -left-32 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse-slow">
+        </div>
         <!-- Discrete Cultural / DevFest Bracket Watermark (CSS background avoids image size checks on decorative assets) -->
         <div aria-hidden="true"
             class="absolute -left-10 top-1/4 h-80 w-28 opacity-[0.04] select-none pointer-events-none transform -rotate-12 hidden lg:block"
-            style="background-image: url('/assets/accolade_gauche.png'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
+            style="background-image: url('/assets/accolade_gauche.png'); background-size: contain; background-repeat: no-repeat; background-position: center;">
+        </div>
         <div class="absolute inset-0 bg-tech-mesh opacity-30"></div>
     </div>
 
@@ -20,7 +26,8 @@
                 <!-- Event Status & Location Badge -->
                 <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3">
                     @if (eventConfig.getFormattedDateBadge()) {
-                    <div class="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 bg-amber-50 text-amber-900 border border-amber-200/80 rounded-full text-xs sm:text-sm font-medium shadow-xs">
+                    <div
+                        class="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 bg-amber-50 text-amber-900 border border-amber-200/80 rounded-full text-xs sm:text-sm font-medium shadow-xs">
                         <span>{{ eventConfig.getFormattedDateBadge() }}</span>
                     </div>
                     }
@@ -28,14 +35,18 @@
 
                 <!-- Main Heading -->
                 <div class="w-full">
-                    <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-text tracking-tight leading-[1.1] mb-2.5 sm:mb-4">
+                    <h1
+                        class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-text tracking-tight leading-[1.1] mb-2.5 sm:mb-4">
                         DevFest Kivu
                         @if (eventConfig.year) {
-                        <span class="inline sm:block text-primary ml-2 sm:ml-0 sm:mt-1 md:mt-2">{{ eventConfig.year }}</span>
+                        <span class="inline sm:block text-primary ml-2 sm:ml-0 sm:mt-1 md:mt-2">{{ eventConfig.year
+                            }}</span>
                         }
                     </h1>
-                    <p class="w-full max-w-2xl mx-auto lg:mx-0 text-sm sm:text-base md:text-xl text-text/80 font-normal leading-relaxed">
-                        Le plus grand rassemblement tech de la région des Grands Lacs, réunissant développeurs, étudiants, élèves, entrepreneurs, etc.
+                    <p
+                        class="w-full max-w-2xl mx-auto lg:mx-0 text-sm sm:text-base md:text-xl text-text/80 font-normal leading-relaxed">
+                        Le plus grand rassemblement tech de la région des Grands Lacs, réunissant développeurs,
+                        étudiants, élèves, entrepreneurs, etc.
                     </p>
                 </div>
 
@@ -47,7 +58,8 @@
                         <span>Voir les détails</span>
                         <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
                     </a>
                 </div>
@@ -57,7 +69,8 @@
 
                 <!-- Fan Stack centered with flex justify-center for reliable mobile centering -->
                 <div class="flex justify-center">
-                    <div class="hero-fan-stack relative w-[250px] sm:w-[300px] md:w-[350px] lg:w-[360px] h-[270px] sm:h-[330px] md:h-[400px] lg:h-[410px] flex-shrink-0">
+                    <div
+                        class="hero-fan-stack relative w-[250px] sm:w-[300px] md:w-[350px] lg:w-[360px] h-[270px] sm:h-[330px] md:h-[400px] lg:h-[410px] flex-shrink-0">
 
                         @for (slide of heroSlides; track slide.src; let i = $index) {
                         <div class="hero-fan-card absolute inset-0 w-full h-full rounded-2xl overflow-hidden shadow-2xl bg-gray-100"
@@ -66,12 +79,13 @@
                             [style.opacity]="getFanOpacity(i, heroSlideIndex())"
                             style="transition: transform 0.7s cubic-bezier(0.34,1.56,0.64,1), opacity 0.5s ease, z-index 0s;">
                             <img [ngSrc]="slide.src" [alt]="slide.alt"
-                                class="w-full h-full object-cover select-none pointer-events-none"
-                                fill
+                                class="w-full h-full object-cover select-none pointer-events-none" fill
                                 [priority]="i === 0"
                                 sizes="(max-width: 640px) 44vw, (max-width: 768px) 40vw, (max-width: 1024px) 34vw, 28vw" />
                             <!-- gradient overlay -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none"></div>
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none">
+                            </div>
                             <!-- Caption on active card -->
                             @if (getFanZIndex(i, heroSlideIndex()) === 10) {
                             <div class="absolute bottom-3 left-4 right-4 pointer-events-none">
@@ -85,7 +99,8 @@
 
                 <!-- Stats Badge below cards -->
                 <div class="mt-4 sm:mt-6 flex justify-center">
-                    <div class="bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl px-3.5 sm:px-5 py-2.5 sm:py-3 shadow-xl border border-gray-100 flex items-center gap-3.5 sm:gap-5">
+                    <div
+                        class="bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl px-3.5 sm:px-5 py-2.5 sm:py-3 shadow-xl border border-gray-100 flex items-center gap-3.5 sm:gap-5">
                         <div class="text-center min-w-[50px]">
                             @if (eventStatus() === 'loading') {
                             <div class="h-6 w-12 bg-gray-200/80 rounded animate-pulse mx-auto mb-1"></div>
@@ -98,12 +113,14 @@
                         </div>
                         <div class="w-px h-8 bg-gray-200"></div>
                         <div class="text-center">
-                            <div class="text-base sm:text-lg md:text-xl font-bold text-secondary whitespace-nowrap">20+</div>
+                            <div class="text-base sm:text-lg md:text-xl font-bold text-secondary whitespace-nowrap">20+
+                            </div>
                             <div class="text-[10px] sm:text-xs text-text/60 font-medium">Speakers</div>
                         </div>
                         <div class="w-px h-8 bg-gray-200"></div>
                         <div class="text-center">
-                            <div class="text-base sm:text-lg md:text-xl font-bold text-blue-600 whitespace-nowrap">100%</div>
+                            <div class="text-base sm:text-lg md:text-xl font-bold text-blue-600 whitespace-nowrap">100%
+                            </div>
                             <div class="text-[10px] sm:text-xs text-text/60 font-medium">Gratuit</div>
                         </div>
                     </div>
@@ -118,38 +135,67 @@
     <div class="relative w-full mt-6 sm:mt-8 md:mt-12 z-0 pointer-events-none select-none">
         <!-- Spilled theme capsules with subtle, ambient background styling (6 on mobile to avoid clutter) -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 md:gap-2.5 -mb-2.5 sm:-mb-3.5 opacity-55 sm:opacity-65 transition-opacity">
+            <div
+                class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 md:gap-2.5 -mb-2.5 sm:-mb-3.5 opacity-55 sm:opacity-65 transition-opacity">
                 <!-- 6 Themes visible on mobile, subtle background pastel badges -->
-                <span class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform -rotate-6">AI AGENTS</span>
-                <span class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform -rotate-12">FLUTTER</span>
-                <span class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform rotate-2">ANDROID</span>
-                <span class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform -rotate-6">ANGULAR</span>
-                <span class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform rotate-6">FIREBASE</span>
-                <span class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-red-500/15 text-red-900/80 border border-red-300/40 transform rotate-2">GOOGLE CLOUD</span>
+                <span
+                    class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform -rotate-6">AI
+                    AGENTS</span>
+                <span
+                    class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform -rotate-12">FLUTTER</span>
+                <span
+                    class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform rotate-2">ANDROID</span>
+                <span
+                    class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform -rotate-6">ANGULAR</span>
+                <span
+                    class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform rotate-6">FIREBASE</span>
+                <span
+                    class="inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-red-500/15 text-red-900/80 border border-red-300/40 transform rotate-2">GOOGLE
+                    CLOUD</span>
 
                 <!-- Desktop / Tablet only themes (hidden on mobile to prevent clutter) -->
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-purple-500/15 text-purple-900/80 border border-purple-300/40 transform rotate-12">KOTLIN</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-gray-500/10 text-gray-700/80 border border-gray-300/50 transform -rotate-3">OPEN SOURCE</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform rotate-6">DART</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-red-500/15 text-red-900/80 border border-red-300/40 transform -rotate-6">SECURITY</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform -rotate-12">JETPACK COMPOSE</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform rotate-6">VERTEX AI</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform -rotate-3">GO</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-red-500/15 text-red-900/80 border border-red-300/40 transform -rotate-12">KERAS</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform rotate-3">PRODUCT</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform -rotate-3">DESIGNERS</span>
-                <span class="hidden sm:inline-block px-3 sm:px-4 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-gray-500/10 text-gray-700/80 border border-gray-300/50 transform -rotate-1">DEVELOPERS</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform -rotate-6">STUDENTS</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform rotate-3">FOUNDERS</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform -rotate-6">WEB</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform rotate-6">GEMINI</span>
-                <span class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-pink-500/15 text-pink-900/80 border border-pink-300/40 transform -rotate-12">CHROME</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-purple-500/15 text-purple-900/80 border border-purple-300/40 transform rotate-12">KOTLIN</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-gray-500/10 text-gray-700/80 border border-gray-300/50 transform -rotate-3">OPEN
+                    SOURCE</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform rotate-6">DART</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-red-500/15 text-red-900/80 border border-red-300/40 transform -rotate-6">SECURITY</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform -rotate-12">JETPACK
+                    COMPOSE</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform rotate-6">VERTEX
+                    AI</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform -rotate-3">GO</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-red-500/15 text-red-900/80 border border-red-300/40 transform -rotate-12">KERAS</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform rotate-3">PRODUCT</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform -rotate-3">DESIGNERS</span>
+                <span
+                    class="hidden sm:inline-block px-3 sm:px-4 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-gray-500/10 text-gray-700/80 border border-gray-300/50 transform -rotate-1">DEVELOPERS</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-amber-500/15 text-amber-900/80 border border-amber-300/40 transform -rotate-6">STUDENTS</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform rotate-3">FOUNDERS</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-900/80 border border-emerald-300/40 transform -rotate-6">WEB</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-blue-500/15 text-blue-900/80 border border-blue-300/40 transform rotate-6">GEMINI</span>
+                <span
+                    class="hidden sm:inline-block px-2.5 sm:px-3.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-semibold rounded-full bg-pink-500/15 text-pink-900/80 border border-pink-300/40 transform -rotate-12">CHROME</span>
             </div>
         </div>
 
         <!-- African Geometric Bottom Border Pattern -->
         <div class="w-full h-7 sm:h-9 md:h-11 overflow-hidden pointer-events-none mt-1">
-            <img src="/assets/top.png" alt="" aria-hidden="true" class="w-full h-full object-cover" loading="lazy" decoding="async" />
+            <img src="/assets/top.png" alt="" aria-hidden="true" class="w-full h-full object-cover" loading="lazy"
+                decoding="async" />
         </div>
     </div>
 </section>
@@ -158,8 +204,12 @@
 <section class="relative overflow-hidden bg-[#0c1017] py-14 md:py-20 text-white border-y border-white/5">
     <!-- Atmospheric Background Gradients & Mesh Grid -->
     <div class="absolute inset-0 bg-tech-mesh-dark opacity-35 pointer-events-none"></div>
-    <div class="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-primary/10 blur-[120px] rounded-full pointer-events-none"></div>
-    <div class="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-blue-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+    <div
+        class="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-primary/10 blur-[120px] rounded-full pointer-events-none">
+    </div>
+    <div
+        class="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-blue-500/10 blur-[120px] rounded-full pointer-events-none">
+    </div>
 
     <!-- Cultural Pattern Silhouette at bottom of dark section -->
     <div class="absolute bottom-0 left-0 right-0 h-10 opacity-15 overflow-hidden pointer-events-none">
@@ -178,28 +228,32 @@
             <div class="flex justify-center items-end gap-3 sm:gap-6 md:gap-10 mb-8 md:mb-10">
                 <!-- Days Skeleton -->
                 <div class="flex flex-col items-center">
-                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl"></div>
+                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl">
+                    </div>
                     <div class="h-3 w-10 sm:w-12 bg-primary/20 rounded mt-2"></div>
                 </div>
                 <div class="text-3xl sm:text-5xl text-primary/30 font-black pb-5 select-none">:</div>
 
                 <!-- Hours Skeleton -->
                 <div class="flex flex-col items-center">
-                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl"></div>
+                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl">
+                    </div>
                     <div class="h-3 w-10 sm:w-12 bg-primary/20 rounded mt-2"></div>
                 </div>
                 <div class="text-3xl sm:text-5xl text-primary/30 font-black pb-5 select-none">:</div>
 
                 <!-- Minutes Skeleton -->
                 <div class="flex flex-col items-center">
-                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl"></div>
+                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl">
+                    </div>
                     <div class="h-3 w-10 sm:w-12 bg-primary/20 rounded mt-2"></div>
                 </div>
                 <div class="text-3xl sm:text-5xl text-primary/30 font-black pb-5 select-none">:</div>
 
                 <!-- Seconds Skeleton -->
                 <div class="flex flex-col items-center">
-                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl"></div>
+                    <div class="h-12 sm:h-16 md:h-20 lg:h-24 w-14 sm:w-20 md:w-24 lg:w-28 bg-white/10 rounded-2xl">
+                    </div>
                     <div class="h-3 w-10 sm:w-12 bg-primary/20 rounded mt-2"></div>
                 </div>
             </div>
@@ -213,13 +267,18 @@
 
         <!-- CAS 0 bis: Erreur de chargement Firestore -->
         @else if (eventStatus() === 'error') {
-        <div class="max-w-md mx-auto text-center py-6 animate-fade-in">
+        <div class="mx-auto text-center py-6 animate-fade-in">
             <div class="relative inline-flex items-center justify-center w-20 h-20 mb-6">
-                <svg class="w-20 h-20 animate-spin" style="animation-duration: 2s;" viewBox="0 0 80 80" fill="none" aria-hidden="true">
-                    <circle cx="40" cy="40" r="34" stroke="#4285F4" stroke-width="6" stroke-dasharray="53 160" stroke-linecap="round"/>
-                    <circle cx="40" cy="40" r="34" stroke="#EA4335" stroke-width="6" stroke-dasharray="53 160" stroke-linecap="round"/>
-                    <circle cx="40" cy="40" r="34" stroke="#FBBC04" stroke-width="6" stroke-dasharray="53 160" stroke-linecap="round"/>
-                    <circle cx="40" cy="40" r="34" stroke="#34A853" stroke-width="6" stroke-dasharray="53 160" stroke-linecap="round"/>
+                <svg class="w-20 h-20 animate-spin" style="animation-duration: 2s;" viewBox="0 0 80 80" fill="none"
+                    aria-hidden="true">
+                    <circle cx="40" cy="40" r="34" stroke="#4285F4" stroke-width="6" stroke-dasharray="53 160"
+                        stroke-linecap="round" />
+                    <circle cx="40" cy="40" r="34" stroke="#EA4335" stroke-width="6" stroke-dasharray="53 160"
+                        stroke-linecap="round" />
+                    <circle cx="40" cy="40" r="34" stroke="#FBBC04" stroke-width="6" stroke-dasharray="53 160"
+                        stroke-linecap="round" />
+                    <circle cx="40" cy="40" r="34" stroke="#34A853" stroke-width="6" stroke-dasharray="53 160"
+                        stroke-linecap="round" />
                 </svg>
                 <span class="absolute text-white font-bold text-xl select-none" aria-hidden="true">G</span>
             </div>
@@ -234,17 +293,20 @@
                 Rendez-vous à la prochaine édition !
             </h2>
             <p class="text-gray-300 text-sm sm:text-base mx-auto mb-8 leading-relaxed">
-                Cette édition est désormais clôturée. Restez connectés pour découvrir les dates et temps forts de la prochaine édition.
+                Cette édition est désormais clôturée. Restez connectés pour découvrir les dates et temps forts de la
+                prochaine édition.
             </p>
             <div class="flex flex-wrap items-center justify-center gap-4">
                 <a [routerLink]="'/agenda'" class="btn btn-primary group inline-flex items-center">
                     <span>Revoir le programme</span>
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                     </svg>
                 </a>
-                <a href="#impact" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/10 backdrop-blur-xs transition">
+                <a href="#impact"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/10 backdrop-blur-xs transition">
                     <span>Découvrir l'impact</span>
                 </a>
             </div>
@@ -254,7 +316,8 @@
         <!-- CAS 2: Événement En Cours -->
         @else if (isEventOngoing()) {
         <div class="max-w-2xl mx-auto text-center animate-fade-in">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-semibold mb-4">
+            <div
+                class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-semibold mb-4">
                 <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-ping"></span>
                 <span>{{ activeDayBadge() }}</span>
             </div>
@@ -269,10 +332,12 @@
                     <span>Voir le programme</span>
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                     </svg>
                 </a>
-                <a [routerLink]="'/live_q'" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/10 backdrop-blur-xs transition">
+                <a [routerLink]="'/live_q'"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/10 backdrop-blur-xs transition">
                     <span>Questions en direct</span>
                 </a>
             </div>
@@ -283,7 +348,8 @@
         @else {
         <div class="mb-8 md:mb-10 animate-fade-in">
             @if (targetBadge()) {
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/20 text-primary border border-primary/30 text-xs font-bold uppercase tracking-wider mb-3">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/20 text-primary border border-primary/30 text-xs font-bold uppercase tracking-wider mb-3">
                 <span>{{ targetBadge() }}</span>
             </div>
             }
@@ -297,7 +363,8 @@
         <div class="flex justify-center items-end gap-3 sm:gap-6 md:gap-10 mb-8 md:mb-10">
             <!-- Days -->
             <div class="flex flex-col items-center">
-                <div class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white font-mono tabular-nums leading-none">
+                <div
+                    class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white font-mono tabular-nums leading-none">
                     {{ formatTime(daysLeft()) }}
                 </div>
                 <div class="text-[10px] sm:text-xs text-primary font-bold uppercase tracking-[0.2em] mt-1">Jours</div>
@@ -305,7 +372,8 @@
             <div class="text-3xl sm:text-5xl text-primary font-black pb-5">:</div>
             <!-- Hours -->
             <div class="flex flex-col items-center">
-                <div class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white font-mono tabular-nums leading-none">
+                <div
+                    class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white font-mono tabular-nums leading-none">
                     {{ formatTime(hours()) }}
                 </div>
                 <div class="text-[10px] sm:text-xs text-primary font-bold uppercase tracking-[0.2em] mt-1">Heures</div>
@@ -313,7 +381,8 @@
             <div class="text-3xl sm:text-5xl text-primary font-black pb-5">:</div>
             <!-- Minutes -->
             <div class="flex flex-col items-center">
-                <div class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white font-mono tabular-nums leading-none">
+                <div
+                    class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white font-mono tabular-nums leading-none">
                     {{ formatTime(minutes()) }}
                 </div>
                 <div class="text-[10px] sm:text-xs text-primary font-bold uppercase tracking-[0.2em] mt-1">Minutes</div>
@@ -321,10 +390,12 @@
             <div class="text-3xl sm:text-5xl text-primary font-black pb-5">:</div>
             <!-- Seconds -->
             <div class="flex flex-col items-center">
-                <div class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white font-mono tabular-nums leading-none">
+                <div
+                    class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white font-mono tabular-nums leading-none">
                     {{ formatTime(seconde()) }}
                 </div>
-                <div class="text-[10px] sm:text-xs text-primary font-bold uppercase tracking-[0.2em] mt-1">Secondes</div>
+                <div class="text-[10px] sm:text-xs text-primary font-bold uppercase tracking-[0.2em] mt-1">Secondes
+                </div>
             </div>
         </div>
 
@@ -333,7 +404,8 @@
                 <span>Voir le programme complet</span>
                 <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
+                    </path>
                 </svg>
             </a>
         </div>
@@ -359,63 +431,69 @@
         </div>
 
         <!-- 4 Pillar Cards: Horizontal snap carousel on mobile, 2-column staggered grid on tablet/desktop -->
-        <div class="flex overflow-x-auto snap-x snap-mandatory scroll-pl-4 scroll-pr-4 gap-4 pb-4 pt-1 -mx-4 sm:mx-0 sm:scroll-pl-0 sm:scroll-pr-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:pb-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:gap-8">
+        <div
+            class="flex overflow-x-auto snap-x snap-mandatory scroll-pl-4 scroll-pr-4 gap-4 pb-4 pt-1 -mx-4 sm:mx-0 sm:scroll-pl-0 sm:scroll-pr-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:pb-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:gap-8">
             @for (pillar of festivalPillars; track pillar.id; let i = $index) {
             <!-- Card gets a vertical offset on desktop to create the staggered look -->
             <div class="pillar-card w-[82vw] max-w-[320px] shrink-0 snap-start first:ml-4 last:mr-4 sm:first:ml-0 sm:last:mr-0 sm:w-full sm:max-w-none sm:shrink rounded-3xl overflow-hidden cursor-pointer border {{ pillar.cardBg }}"
-                [class.sm:mt-7]="i === 1 || i === 3"
-                (click)="toggleFlip(pillar.id)"
-                role="button"
-                [attr.aria-expanded]="isFlipped(pillar.id)"
-                [attr.aria-label]="pillar.title">
+                [class.sm:mt-7]="i === 1 || i === 3" (click)="toggleFlip(pillar.id)" role="button"
+                [attr.aria-expanded]="isFlipped(pillar.id)" [attr.aria-label]="pillar.title">
 
                 <div class="relative flex flex-col min-h-[350px] sm:min-h-[360px]">
 
                     <!-- Front content -->
                     <div class="absolute inset-0 flex flex-col transition-all duration-400"
-                         [style.opacity]="isFlipped(pillar.id) ? '0' : '1'"
-                         [style.pointerEvents]="isFlipped(pillar.id) ? 'none' : 'auto'">
+                        [style.opacity]="isFlipped(pillar.id) ? '0' : '1'"
+                        [style.pointerEvents]="isFlipped(pillar.id) ? 'none' : 'auto'">
 
                         <!-- Top section: toggle button + title + description -->
                         <div class="p-6 sm:p-8 pb-2">
                             <!-- Toggle button aligned to right -->
                             <div class="flex justify-end mb-3">
-                                <div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors {{ pillar.iconBtnClass }}">
+                                <div
+                                    class="w-8 h-8 rounded-full flex items-center justify-center transition-colors {{ pillar.iconBtnClass }}">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M12 4v16m8-8H4" />
                                     </svg>
                                 </div>
                             </div>
                             <!-- Title + description with comfortable typography -->
-                            <h3 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3 leading-snug tracking-tight">{{ pillar.title }}</h3>
-                            <p class="text-base sm:text-lg text-gray-700 leading-relaxed">{{ pillar.frontDescription }}</p>
+                            <h3
+                                class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3 leading-snug tracking-tight">
+                                {{ pillar.title }}</h3>
+                            <p class="text-base sm:text-lg text-gray-700 leading-relaxed">{{ pillar.frontDescription }}
+                            </p>
                         </div>
 
                         <!-- Image flush at bottom right border -->
                         <div class="mt-auto w-full flex justify-end items-end overflow-hidden h-28 sm:h-36">
-                            <img [ngSrc]="pillar.iconPath" [alt]="pillar.title"
-                                [width]="pillar.width" [height]="pillar.height"
+                            <img [ngSrc]="pillar.iconPath" [alt]="pillar.title" [width]="pillar.width"
+                                [height]="pillar.height"
                                 class="h-auto w-auto max-h-full max-w-[65%] sm:max-w-[55%] object-contain object-right-bottom" />
                         </div>
                     </div>
 
                     <!-- Back content -->
                     <div class="absolute inset-0 flex flex-col p-6 sm:p-8 transition-all duration-400"
-                         [style.opacity]="isFlipped(pillar.id) ? '1' : '0'"
-                         [style.transform]="isFlipped(pillar.id) ? 'translateY(0)' : 'translateY(10px)'"
-                         [style.pointerEvents]="isFlipped(pillar.id) ? 'auto' : 'none'">
+                        [style.opacity]="isFlipped(pillar.id) ? '1' : '0'"
+                        [style.transform]="isFlipped(pillar.id) ? 'translateY(0)' : 'translateY(10px)'"
+                        [style.pointerEvents]="isFlipped(pillar.id) ? 'auto' : 'none'">
 
                         <!-- Top row: Close button aligned to right -->
                         <div class="flex justify-end mb-4">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors {{ pillar.iconBtnClass }}">
+                            <div
+                                class="w-8 h-8 rounded-full flex items-center justify-center transition-colors {{ pillar.iconBtnClass }}">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </div>
                         </div>
 
                         <!-- Details with comfortable typography -->
-                        <p class="text-base sm:text-lg text-gray-700 leading-relaxed flex-1">{{ pillar.backDetails }}</p>
+                        <p class="text-base sm:text-lg text-gray-700 leading-relaxed flex-1">{{ pillar.backDetails }}
+                        </p>
 
                         <!-- CTA: text link with arrow ↗, left-aligned -->
                         <div class="mt-6 text-left">
@@ -427,8 +505,7 @@
                                 <span class="text-lg font-bold">↗</span>
                             </a>
                             } @else {
-                            <a [routerLink]="pillar.actionLink"
-                                (click)="$event.stopPropagation()"
+                            <a [routerLink]="pillar.actionLink" (click)="$event.stopPropagation()"
                                 class="inline-flex items-center gap-1.5 text-base sm:text-lg font-bold transition-colors duration-200 {{ pillar.linkClass }}">
                                 <span>{{ pillar.actionText }}</span>
                                 <span class="text-lg font-bold">↗</span>
@@ -471,8 +548,10 @@
                     @if (eventStatus() === 'loading') {
                     <span class="inline-block h-5 w-16 bg-gray-200/80 rounded animate-pulse align-middle"></span>
                     } @else {
-                    <span class="text-primary-dark font-bold">{{ eventConfig.engagementYear }} années d'engagement continu</span>
-                    } pour structurer et dynamiser l'écosystème numérique du Sud-Kivu et de toute la région des Grands Lacs.
+                    <span class="text-primary-dark font-bold">{{ eventConfig.engagementYear }} années d'engagement
+                        continu</span>
+                    } pour structurer et dynamiser l'écosystème numérique du Sud-Kivu et de toute la région des Grands
+                    Lacs.
                 </p>
 
                 <div class="hidden lg:block">
@@ -481,7 +560,8 @@
                         <span>Rejoindre notre communauté</span>
                         <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
                     </a>
                 </div>
@@ -492,7 +572,8 @@
                 <div class="grid grid-cols-2 gap-4 sm:gap-6">
                     @if (eventStatus() === 'loading') {
                     @for (item of [1, 2, 3, 4]; track item) {
-                    <div class="rounded-2xl border border-gray-200/70 bg-gray-50/60 p-4 sm:p-5 flex items-center justify-between animate-pulse" style="min-height: 110px;" aria-hidden="true">
+                    <div class="rounded-2xl border border-gray-200/70 bg-gray-50/60 p-4 sm:p-5 flex items-center justify-between animate-pulse"
+                        style="min-height: 110px;" aria-hidden="true">
                         <div class="space-y-2 flex-1">
                             <div class="h-8 w-16 bg-gray-200/80 rounded"></div>
                             <div class="h-4 w-28 bg-gray-200/60 rounded"></div>
@@ -503,10 +584,12 @@
                     }
                     } @else {
                     @for (stat of eventConfig.impactStats; track $index) {
-                    <div class="rounded-2xl border border-gray-200/70 transition-all duration-300 shadow-xs flex items-stretch overflow-hidden group" style="min-height: 110px;">
+                    <div class="rounded-2xl border border-gray-200/70 transition-all duration-300 shadow-xs flex items-stretch overflow-hidden group"
+                        style="min-height: 110px;">
                         <!-- Text Left -->
                         <div class="flex-1 min-w-0 p-4 sm:p-5 flex flex-col justify-center">
-                            <div class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary-dark tracking-tight mb-0.5 transition-transform duration-300 group-hover:scale-110 origin-left">
+                            <div
+                                class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary-dark tracking-tight mb-0.5 transition-transform duration-300 group-hover:scale-110 origin-left">
                                 {{ stat.number }}
                             </div>
                             <div class="text-xs sm:text-sm font-bold text-text">
@@ -518,8 +601,8 @@
                         </div>
                         <!-- Illustration flush right -->
                         <div class="flex-shrink-0 w-16 sm:w-20 self-stretch overflow-hidden opacity-25 rounded-r-2xl">
-                            <img [src]="impactIllustrations[$index % impactIllustrations.length]" alt="" aria-hidden="true"
-                                class="w-full h-full object-cover object-left" loading="lazy" />
+                            <img [src]="impactIllustrations[$index % impactIllustrations.length]" alt=""
+                                aria-hidden="true" class="w-full h-full object-cover object-left" loading="lazy" />
                         </div>
                     </div>
                     }
@@ -533,7 +616,8 @@
                         <span>Rejoindre notre communauté</span>
                         <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
                     </a>
                 </div>
@@ -569,17 +653,18 @@
         <!-- Accordions List -->
         <div class="space-y-4" role="region" aria-label="Foire aux questions DevFest Kivu">
             @for (item of practicalInfoItems; track item.id; let idx = $index) {
-            <div class="border border-gray-200/80 rounded-2xl overflow-hidden bg-white hover:border-gray-300 transition-colors shadow-xs">
+            <div
+                class="border border-gray-200/80 rounded-2xl overflow-hidden bg-white hover:border-gray-300 transition-colors shadow-xs">
                 <!-- Accordion Header Button -->
                 <button type="button"
                     class="w-full flex items-center justify-between gap-4 p-5 sm:p-6 text-left cursor-pointer transition-colors hover:bg-gray-50/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     [attr.aria-expanded]="isAccordionOpen(item.id)"
-                    [attr.aria-controls]="'accordion-content-' + item.id"
-                    (click)="toggleAccordion(item.id)"
+                    [attr.aria-controls]="'accordion-content-' + item.id" (click)="toggleAccordion(item.id)"
                     (keydown)="onAccordionKeydown($event, item.id)">
-                    
+
                     <div class="flex items-center gap-3 sm:gap-4 flex-1">
-                        <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 text-primary-dark font-bold text-xs sm:text-sm flex items-center justify-center flex-shrink-0">
+                        <span
+                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 text-primary-dark font-bold text-xs sm:text-sm flex items-center justify-center flex-shrink-0">
                             {{ idx + 1 }}
                         </span>
                         <span class="text-sm sm:text-base md:text-lg font-bold text-text">
@@ -589,22 +674,21 @@
 
                     <!-- Chevron Animated +/- Icon -->
                     <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-text/70 transition-transform duration-300"
-                        [class.rotate-180]="isAccordionOpen(item.id)"
-                        [class.bg-primary/20]="isAccordionOpen(item.id)"
+                        [class.rotate-180]="isAccordionOpen(item.id)" [class.bg-primary/20]="isAccordionOpen(item.id)"
                         [class.text-primary-dark]="isAccordionOpen(item.id)">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
                         </svg>
                     </div>
                 </button>
 
                 <!-- Accordion Animated Body (CSS Grid 0fr -> 1fr) -->
-                <div [id]="'accordion-content-' + item.id"
-                    class="accordion-wrapper"
-                    [class.is-open]="isAccordionOpen(item.id)"
-                    [attr.aria-hidden]="!isAccordionOpen(item.id)">
+                <div [id]="'accordion-content-' + item.id" class="accordion-wrapper"
+                    [class.is-open]="isAccordionOpen(item.id)" [attr.aria-hidden]="!isAccordionOpen(item.id)">
                     <div class="accordion-body">
-                        <div class="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm md:text-base text-text/75 leading-relaxed border-t border-gray-100/80">
+                        <div
+                            class="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm md:text-base text-text/75 leading-relaxed border-t border-gray-100/80">
                             {{ item.answer }}
                         </div>
                     </div>
@@ -647,14 +731,19 @@
         <!-- Auto-scrolling Partners Container -->
         <div class="relative">
             <!-- Fade edges -->
-            <div class="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none"></div>
-            <div class="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none"></div>
+            <div
+                class="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none">
+            </div>
+            <div
+                class="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none">
+            </div>
 
             <div class="overflow-hidden mb-10 md:mb-12">
                 @if (eventStatus() === 'loading') {
                 <div class="flex gap-4 sm:gap-6 overflow-hidden py-2 animate-pulse" aria-hidden="true">
                     @for (item of [1, 2, 3, 4]; track item) {
-                    <div class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] bg-white rounded-2xl p-6 border border-gray-200/70">
+                    <div
+                        class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] bg-white rounded-2xl p-6 border border-gray-200/70">
                         <div class="flex items-start gap-4 mb-3">
                             <div class="w-14 sm:w-16 h-14 sm:h-16 bg-gray-100 rounded-xl"></div>
                             <div class="flex-1 space-y-2 pt-1">
@@ -670,15 +759,19 @@
                 } @else {
                 <div class="flex gap-4 sm:gap-6 animate-scroll-partners hover:pause-animation">
                     @for (partner of eventConfig.supports; track $index) {
-                    <div class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] group bg-white rounded-2xl p-6 border border-gray-200/80 hover:border-primary/40 transition-all duration-300 hover:shadow-lg">
+                    <div
+                        class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] group bg-white rounded-2xl p-6 border border-gray-200/80 hover:border-primary/40 transition-all duration-300 hover:shadow-lg">
                         <div class="flex items-start gap-4 mb-3">
-                            <div class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 border border-gray-100 group-hover:border-primary/30 rounded-xl flex items-center justify-center bg-white p-2">
+                            <div
+                                class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 border border-gray-100 group-hover:border-primary/30 rounded-xl flex items-center justify-center bg-white p-2">
                                 @if (partner.link) {
                                 <a [href]="partner.link" target="_blank" rel="noopener noreferrer">
-                                    <img [src]="partner.logo" [alt]="partner.name" class="max-w-full max-h-full object-contain" loading="lazy" />
+                                    <img [src]="partner.logo" [alt]="partner.name"
+                                        class="max-w-full max-h-full object-contain" loading="lazy" />
                                 </a>
                                 } @else {
-                                <img [src]="partner.logo" [alt]="partner.name" class="max-w-full max-h-full object-contain" loading="lazy" />
+                                <img [src]="partner.logo" [alt]="partner.name"
+                                    class="max-w-full max-h-full object-contain" loading="lazy" />
                                 }
                             </div>
                             <div class="flex-1 min-w-0">
@@ -698,10 +791,13 @@
 
                     <!-- Duplicate for infinite marquee loop -->
                     @for (partner of eventConfig.supports; track $index) {
-                    <div class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] group bg-white rounded-2xl p-6 border border-gray-200/80 hover:border-primary/40 transition-all duration-300 hover:shadow-lg" aria-hidden="true">
+                    <div class="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] group bg-white rounded-2xl p-6 border border-gray-200/80 hover:border-primary/40 transition-all duration-300 hover:shadow-lg"
+                        aria-hidden="true">
                         <div class="flex items-start gap-4 mb-3">
-                            <div class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 border border-gray-100 group-hover:border-primary/30 rounded-xl flex items-center justify-center bg-white p-2">
-                                <img [src]="partner.logo" [alt]="partner.name" class="max-w-full max-h-full object-contain" loading="lazy" />
+                            <div
+                                class="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 border border-gray-100 group-hover:border-primary/30 rounded-xl flex items-center justify-center bg-white p-2">
+                                <img [src]="partner.logo" [alt]="partner.name"
+                                    class="max-w-full max-h-full object-contain" loading="lazy" />
                             </div>
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-base sm:text-lg font-bold text-text truncate">
@@ -729,7 +825,8 @@
             <a routerLink="/contact" class="btn btn-outline">
                 <span>Nous contacter</span>
                 <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3">
+                    </path>
                 </svg>
             </a>
         </div>
@@ -739,25 +836,31 @@
 <!-- Generator Section: Editorial 2-Column Showcase -->
 <section class="relative overflow-hidden bg-white py-16 md:py-24 border-t border-gray-100">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 relative z-10">
-        <div class="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 bg-gray-50/60 rounded-3xl p-6 sm:p-10 lg:p-12 border border-gray-200/80">
+        <div
+            class="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 bg-gray-50/60 rounded-3xl p-6 sm:p-10 lg:p-12 border border-gray-200/80">
 
             <!-- Left Text Content -->
             <div class="w-full lg:flex-1 space-y-6 text-left">
                 <div class="space-y-3">
-                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
+                    <h2
+                        class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
                         Générez votre Photo de Profil
                     </h2>
                 </div>
                 <p class="text-base sm:text-lg text-gray-600 leading-relaxed">
-                    Affichez fièrement votre participation au <span class="text-primary-dark font-bold">DevFest Kivu {{ eventConfig.year }}</span> sur vos réseaux sociaux (LinkedIn, WhatsApp, X) et partagez l’énergie de la communauté !
+                    Affichez fièrement votre participation au <span class="text-primary-dark font-bold">DevFest Kivu {{
+                        eventConfig.year }}</span> sur vos réseaux sociaux (LinkedIn, WhatsApp, X) et partagez l’énergie
+                    de la communauté !
                 </p>
 
                 <div class="pt-2">
-                    <a routerLink="/dp-generator" class="btn btn-primary group px-6 py-3.5 text-base font-semibold shadow-md inline-flex items-center">
+                    <a routerLink="/dp-generator"
+                        class="btn btn-primary group px-6 py-3.5 text-base font-semibold shadow-md inline-flex items-center">
                         <span>Créer mon DP maintenant</span>
                         <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
                     </a>
                 </div>
@@ -768,12 +871,8 @@
                 <div class="w-full max-w-[280px] sm:max-w-[320px] md:max-w-[340px]">
                     <!-- Clean, realistic card frame with authentic attendee poster -->
                     <div class="rounded-2xl overflow-hidden shadow-xl border border-gray-200/90 bg-white">
-                        <img [ngSrc]="'/assets/Fatu-devfest.png'"
-                            alt="Aperçu de la photo de profil officielle générée"
-                            class="w-full h-auto object-cover block"
-                            width="340"
-                            height="340"
-                            loading="lazy" />
+                        <img [ngSrc]="'/assets/Fatu-devfest.png'" alt="Aperçu de la photo de profil officielle générée"
+                            class="w-full h-auto object-cover block" width="340" height="340" loading="lazy" />
                     </div>
                 </div>
             </div>
