@@ -37,6 +37,7 @@ describe('HomeComponent', () => {
       getFormattedDateBadge: () => '28 - 29 Novembre 2026 • Bukavu',
       year: 2026,
       fullName: 'DevFest Kivu 2026',
+      venue: EVENT_CONFIG.venue,
       engagementYear: 6,
       impactStats: EVENT_CONFIG.impactStats,
       supports: EVENT_CONFIG.supports,
@@ -66,6 +67,40 @@ describe('HomeComponent', () => {
 
   it('should create HomeComponent successfully', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('shows the configured event details and registration link in the new hero', () => {
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('h1')?.textContent).toContain('DevFest');
+    expect(element.querySelector('.kivu-hero__topline')?.textContent).toContain('GDG KIVU PRÉSENTE');
+    expect(element.querySelector('.kivu-hero__eyebrow')).toBeNull();
+    expect(element.querySelector('.kivu-hero__bottom p')?.textContent?.trim()).toBe('Le plus grand événement tech de la région.');
+    expect(element.querySelector('.kivu-hero__footer')?.textContent).toContain('APPRENDRE / GRANDIR / CONNECTER');
+    expect(element.querySelector('.kivu-event-strip')?.textContent).toContain('28 - 29 Novembre 2026');
+    expect(element.querySelector<HTMLAnchorElement>('.kivu-hero__cta')?.href).toBe(EVENT_CONFIG.registrationUrl);
+  });
+
+  it('describes the community and its learning activities', () => {
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('app-tshirt-showcase')?.textContent).toContain('6 $');
+    expect(element.querySelector('.kivu-story__copy')?.textContent).toContain('développer les talents locaux');
+    expect(element.querySelector('#experience')?.textContent).toContain('Ateliers pratiques');
+    expect(element.querySelector('#experience')?.textContent).toContain('Rencontres & opportunités');
+    expect(element.querySelector('#impact')?.textContent).toContain('75+');
+    expect(element.querySelector('#faq-guide')?.textContent).toContain('Comment participer');
+    expect(component.practicalInfoItems[0].answer).toContain(EVENT_CONFIG.venue.conferenceCenter);
+  });
+
+  it('keeps the FAQ interactive and shows configured partners and profile links', () => {
+    const element = fixture.nativeElement as HTMLElement;
+    const question = element.querySelectorAll<HTMLButtonElement>('.kivu-faq__question')[1];
+    expect(question.getAttribute('aria-expanded')).toBe('false');
+    question.click();
+    fixture.detectChanges();
+    expect(question.getAttribute('aria-expanded')).toBe('true');
+    expect(element.querySelectorAll('.kivu-partners__group:not([aria-hidden]) .kivu-partners__item').length).toBe(EVENT_CONFIG.supports.length);
+    expect(element.querySelector<HTMLAnchorElement>('.kivu-partners__contact a')?.getAttribute('href')).toBe('/sponsor');
+    expect(element.querySelector<HTMLAnchorElement>('.kivu-profile a')?.getAttribute('href')).toBe('/dp-generator');
   });
 
   it('should initialize with upcoming event countdown when future days exist', () => {

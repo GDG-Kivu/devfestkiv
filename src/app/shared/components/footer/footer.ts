@@ -11,35 +11,25 @@ import { ShareService } from '../../../features/event/services/share.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, RouterLink],
   template: `
-    <footer class="relative bg-[#1a1200] text-gray-200 overflow-hidden">
-      <!-- Top decorative image -->
-      <div class="w-full h-8 overflow-hidden">
-        <img
-          src="/assets/bottom.png"
-          alt=""
-          aria-hidden="true"
-          class="w-full h-full object-cover"
-        />
-      </div>
-
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+    <footer class="footer relative text-gray-200 overflow-hidden">
+      <div class="footer__inner mx-auto py-16 md:py-24">
         <!-- Main Footer Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
           <!-- Brand Column -->
           <div class="space-y-4">
             <div>
               <img
-                src="/assets/dark-logo.png"
+                src="/assets/Logo%20-%20DevFest%20Kivu%202026.png"
                 alt="DevFest Kivu Logo"
-                class="h-10 w-auto"
-                width="120"
-                height="40"
+                class="h-12 w-auto bg-white p-1 rounded-sm"
+                width="2150"
+                height="612"
                 loading="lazy"
               />
             </div>
             <p class="text-sm text-gray-300 leading-relaxed">
-              Le plus grand événement technologique de la région des Grands Lacs. Rejoignez-nous
-              pour découvrir les dernières innovations et tendances tech.
+              GDG Kivu rassemble les passionnés du numérique pour apprendre, partager et développer
+              les talents de la région. DevFest Kivu est le rendez-vous majeur de notre communauté.
             </p>
           </div>
 
@@ -241,8 +231,8 @@ import { ShareService } from '../../../features/event/services/share.service';
                   class="text-xs pt-0.5 min-h-4"
                   role="status"
                   aria-live="polite"
-                  [class.text-emerald-700]="feedbackType() === 'success'"
-                  [class.text-rose-700]="feedbackType() === 'error'"
+                  [class.text-emerald-200]="feedbackType() === 'success'"
+                  [class.text-rose-200]="feedbackType() === 'error'"
                 >
                   {{ newsletterFeedback() }}
                 </p>
@@ -274,7 +264,18 @@ import { ShareService } from '../../../features/event/services/share.service';
       </div>
     }
   `,
-  styles: ``,
+  styles: `
+    .footer { background: var(--footer-background, var(--kivu-secondary)); color: white; }
+    .footer__inner { width: min(100% - 48px, 1264px); }
+    .footer h3 { color: var(--kivu-primary); letter-spacing: 0; }
+    .footer nav a { color: #e1e9f8; }
+    .footer nav a:hover { color: var(--kivu-primary); }
+    .footer [aria-label="Réseaux sociaux"] a { background: transparent; color: white; border: 1px solid #a7aaa3; }
+    .footer [aria-label="Réseaux sociaux"] a:hover { background: var(--kivu-primary); color: var(--kivu-ink); border-color: var(--kivu-primary); }
+    .footer form button { background: var(--kivu-primary); color: var(--kivu-ink); }
+    .footer form button:hover:not(:disabled) { background: white; }
+    .footer a:focus-visible, .footer button:focus-visible { outline: 2px solid var(--kivu-primary); outline-offset: 3px; }
+  `,
 })
 export class Footer {
   private contactService = inject(ContactService);

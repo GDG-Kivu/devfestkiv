@@ -1,0 +1,115 @@
+<main class="order">
+	<div class="order__layout">
+		<aside class="order__intro">
+			<a routerLink="/" fragment="tshirt" class="order__back">← Retour au T-shirt</a>
+			<p class="order__eyebrow">COLLECTION OFFICIELLE / DEVFEST KIVU</p>
+			<h1>Le T-shirt<br><span>DevFest Kivu.</span></h1>
+			<p>Une pièce pour porter les couleurs de notre communauté.</p>
+			<div class="order__product">
+				<img src="/assets/models/t-shirt_front.png" alt="T-shirt officiel DevFest Kivu, face avant" />
+				<span>GDG KIVU<br>DEVFEST ✳</span>
+			</div>
+		</aside>
+
+		<section class="order__content" aria-labelledby="order-title">
+			@if (succeeded()) {
+				<div class="order__success" role="status">
+					<span class="order__success-icon" aria-hidden="true">✓</span>
+					<p class="order__eyebrow">DEMANDE ENVOYÉE</p>
+					<h2 id="order-title">Merci pour votre demande !</h2>
+					<p>L'équipe DevFest Kivu vous contactera pour la suite de votre commande.</p>
+					<button type="button" class="order__submit" (click)="newOrder()">Faire une autre demande <span aria-hidden="true">↗</span></button>
+				</div>
+			} @else {
+				<div class="order__heading">
+					<p class="order__eyebrow">VOTRE COMMANDE</p>
+					<h2 id="order-title">Votre T-shirt, à votre façon<span>.</span></h2>
+					<p>Choisissez vos tailles et votre lieu de réception. Notre équipe vous contactera pour la suite.</p>
+				</div>
+				@if (failed()) {
+					<p class="order__alert" role="alert"><strong>Envoi impossible.</strong><span>{{ failureMessage() }}</span></p>
+				}
+				@if (submitted() && form.invalid) {
+					<p class="order__alert" role="alert"><strong>Commande incomplète.</strong> Vérifiez les champs obligatoires et choisissez au moins une taille.</p>
+				}
+				<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+					<fieldset [disabled]="submitting()" class="order__form-fields">
+						<section class="order__section">
+							<div class="order__section-title"><span>01</span><h3>Vos coordonnées</h3></div>
+							<div class="order__fields">
+								<div class="order__field order__field--full">
+									<label for="order-name">Nom complet *</label>
+									<input id="order-name" formControlName="name" name="name" autocomplete="name" maxlength="120" required [attr.aria-invalid]="invalid(form.controls.name)" [attr.aria-describedby]="invalid(form.controls.name) ? 'name-error' : null" placeholder="Votre nom complet" />
+									@if (invalid(form.controls.name)) { <p id="name-error" class="order__error">Indiquez votre nom.</p> }
+								</div>
+								<div class="order__field">
+									<label for="order-email">Adresse email *</label>
+									<input id="order-email" type="email" formControlName="email" name="email" autocomplete="email" maxlength="254" autocapitalize="off" spellcheck="false" required [attr.aria-invalid]="invalid(form.controls.email)" [attr.aria-describedby]="invalid(form.controls.email) ? 'email-error' : null" placeholder="nom@exemple.com" />
+									@if (invalid(form.controls.email)) { <p id="email-error" class="order__error">Indiquez une adresse email valide.</p> }
+								</div>
+								<div class="order__field">
+									<label for="order-phone">Numéro WhatsApp *</label>
+									<input id="order-phone" type="tel" formControlName="phone" name="phone" autocomplete="tel" maxlength="40" required [attr.aria-invalid]="invalid(form.controls.phone)" [attr.aria-describedby]="invalid(form.controls.phone) ? 'phone-error' : 'phone-hint'" placeholder="Ex. +243 999 123 456" />
+									<p id="phone-hint" class="order__field-hint">Nous vous contacterons sur WhatsApp pour le suivi.</p>
+									@if (invalid(form.controls.phone)) { <p id="phone-error" class="order__error">Indiquez votre numéro de téléphone.</p> }
+								</div>
+							</div>
+						</section>
+
+						<section class="order__section">
+							<div class="order__section-title"><span>02</span><h3>Lieu de réception</h3></div>
+							<fieldset class="order__location" [attr.aria-invalid]="invalid(form.controls.location)" aria-describedby="location-error">
+								<legend>Où souhaitez-vous recevoir votre T-shirt ? *</legend>
+								<label><input type="radio" name="location" formControlName="location" value="Bukavu" /> <span>Bukavu</span></label>
+								<label><input type="radio" name="location" formControlName="location" value="À l'événement" /> <span>À l'événement</span></label>
+							</fieldset>
+							@if (invalid(form.controls.location)) { <p id="location-error" class="order__error">Choisissez un lieu de réception.</p> }
+							@if (form.controls.location.value === 'Bukavu') {
+								<div class="order__fields order__pickup">
+									<div class="order__field">
+										<label for="order-commune">Commune *</label>
+										<select id="order-commune" formControlName="commune" name="commune" required [attr.aria-invalid]="invalid(form.controls.commune)" aria-describedby="commune-error">
+											<option value="">Choisir une commune</option><option>Ibanda</option><option>Kadutu</option><option>Bagira</option>
+										</select>
+										@if (invalid(form.controls.commune)) { <p id="commune-error" class="order__error">Choisissez votre commune.</p> }
+									</div>
+									<div class="order__field">
+										<label for="order-place">Place publique la plus proche *</label>
+										<select id="order-place" formControlName="place" name="place" required [attr.aria-invalid]="invalid(form.controls.place)" aria-describedby="place-error">
+											<option value="">Choisir une place</option>
+											@for (place of places; track place) { <option [value]="place">{{ place }}</option> }
+										</select>
+										@if (invalid(form.controls.place)) { <p id="place-error" class="order__error">Choisissez une place publique.</p> }
+									</div>
+								</div>
+							}
+						</section>
+
+						<section class="order__section">
+							<div class="order__section-title"><span>03</span><h3>Tailles et quantités</h3></div>
+							<p class="order__hint">Sélectionnez une ou plusieurs tailles.</p>
+							<div class="order__sizes" formGroupName="sizes">
+								@for (size of sizes; track size) {
+									<div class="order__size">
+										<label [for]="'size-' + size">{{ size }}</label>
+										<div class="order__stepper">
+											<button type="button" (click)="changeQuantity(size, -1)" [attr.aria-label]="'Retirer un T-shirt taille ' + size" [disabled]="!form.controls.sizes.controls[size].value">−</button>
+											<input [id]="'size-' + size" type="number" inputmode="numeric" min="0" max="99" step="1" [formControlName]="size" [name]="'size-' + size" [attr.aria-label]="'Quantité taille ' + size" [attr.aria-invalid]="invalid(form.controls.sizes.controls[size])" aria-describedby="sizes-error" />
+											<button type="button" (click)="changeQuantity(size, 1)" [attr.aria-label]="'Ajouter un T-shirt taille ' + size" [disabled]="form.controls.sizes.controls[size].value === 99">+</button>
+										</div>
+									</div>
+								}
+							</div>
+							@if (invalid(form.controls.sizes)) { <p id="sizes-error" class="order__error">Choisissez au moins un T-shirt, avec une quantité entière de 0 à 99 par taille.</p> }
+							<div class="order__total">
+								<div class="order__total-copy"><span>Total de la commande</span><small>{{ total }} × 6 $</small></div>
+								<strong>{{ totalPrice }} $</strong>
+							</div>
+						</section>
+						<button type="submit" class="order__submit" [disabled]="submitting() || form.invalid">{{ submitting() ? 'Envoi en cours...' : 'Envoyer ma demande' }} <span aria-hidden="true">↗</span></button>
+					</fieldset>
+				</form>
+			}
+		</section>
+	</div>
+</main>

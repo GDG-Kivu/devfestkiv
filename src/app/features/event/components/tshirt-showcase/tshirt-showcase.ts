@@ -9,10 +9,12 @@ import {
   ViewChild,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-tshirt-showcase',
   standalone: true,
+  imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './tshirt-showcase.html',
@@ -54,21 +56,4 @@ export default class TshirtShowcase implements OnInit {
     }
   }
 
-  /**
-   * Navigate to the official ticket/merchandise store.
-   *
-   * DEVELOPER NOTE:
-   * When your ticket or merchandise shop link is ready, you can simply uncomment
-   * and replace the URL below:
-   *
-   * Example:
-   *   window.open('https://gdg.community.dev/events/.../tickets', '_blank');
-   * or inject Router and navigate:
-   *   this.router.navigate(['/tickets']);
-   */
-  navigateToOrder(): void {
-    // TODO: Add your ticketing or merchandise URL here:
-    // window.open('https://votre-billetterie.com', '_blank');
-    console.log('Navigate to DevFest Kivu official T-shirt order page');
-  }
 }

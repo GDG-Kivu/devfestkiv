@@ -28,6 +28,7 @@ import { isPlatformBrowser } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [PastEventsGallery, TshirtShowcase, RouterLink, NgOptimizedImage],
   templateUrl: 'home.html',
+  styleUrls: ['home-redesign.css', 'home-sections.css'],
   styles: `
     .video-wrapper {
       aspect-ratio: 16 / 9;
@@ -173,21 +174,6 @@ export default class HomeComponent implements OnInit, OnDestroy {
   activeDayBadge = signal('En direct');
   activeDayLocation = signal('');
 
-  private slideshowInterval: any;
-  private confettiTimeouts: any[] = [];
-
-  // Hero Slideshow (first-1.jpg first for immediate LCP priority matching)
-  heroSlides = [
-    { src: '/assets/past_events/first-1.jpg', alt: 'Moments DevFest Kivu' },
-    { src: '/assets/past_events/first-2.jpg', alt: 'Communauté DevFest Kivu' },
-    { src: '/assets/past_events/second-1.jpg', alt: 'DevFest Kivu en action' },
-  ];
-  heroSlideIndex = signal(0);
-
-  setHeroSlide(index: number): void {
-    this.heroSlideIndex.set(index);
-  }
-
   constructor() {
     this.evaluateEventStatus();
 
@@ -210,8 +196,6 @@ export default class HomeComponent implements OnInit, OnDestroy {
     // Start interval timers promptly after initial browser render without hanging on slow connections
     afterNextRender(() => {
       this.startClock();
-      this.startSlideshow();
-      this.triggerConfetti();
     });
   }
 
@@ -243,23 +227,6 @@ export default class HomeComponent implements OnInit, OnDestroy {
     if (this.clockInterval) {
       clearInterval(this.clockInterval);
       this.clockInterval = null;
-    }
-  }
-
-  private startSlideshow(): void {
-    this.ngZone.runOutsideAngular(() => {
-      this.slideshowInterval = setInterval(() => {
-        this.ngZone.run(() => {
-          this.heroSlideIndex.update((i) => (i + 1) % this.heroSlides.length);
-        });
-      }, 4000);
-    });
-  }
-
-  private stopSlideshow(): void {
-    if (this.slideshowInterval) {
-      clearInterval(this.slideshowInterval);
-      this.slideshowInterval = null;
     }
   }
 
@@ -337,102 +304,15 @@ export default class HomeComponent implements OnInit, OnDestroy {
     this.targetEndMs.set(0);
   }
 
-  private triggerConfetti(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    try {
-      // Respect prefers-reduced-motion: skip animation entirely if user prefers it
-      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        return;
-      }
-    } catch {
-      // Ignore matchMedia access errors in strict sandboxes
-    }
-
-    // Cancel any in-flight confetti from a previous navigation before starting a new burst
-    for (const t of this.confettiTimeouts) clearTimeout(t);
-    this.confettiTimeouts = [];
-
-    // Lazy load confetti outside Angular zone to avoid triggering unnecessary change detection
-    this.ngZone.runOutsideAngular(async () => {
-      try {
-        const confettiModule = await import('canvas-confetti');
-        const confetti = confettiModule.default || confettiModule;
-
-        // Iconic Google colors + white highlight
-        const googleColors = ['#4285F4', '#EA4335', '#FBBC04', '#34A853', '#FFFFFF'];
-
-        // Stage 1: Burst from left & right sides
-        const t1 = setTimeout(() => {
-          confetti({
-            particleCount: 50,
-            angle: 60,
-            spread: 55,
-            origin: { x: 0.12, y: 0.72 },
-            colors: googleColors,
-            ticks: 200,
-            gravity: 1.1,
-            scalar: 0.9,
-            disableForReducedMotion: true,
-          });
-          confetti({
-            particleCount: 50,
-            angle: 120,
-            spread: 55,
-            origin: { x: 0.88, y: 0.72 },
-            colors: googleColors,
-            ticks: 200,
-            gravity: 1.1,
-            scalar: 0.9,
-            disableForReducedMotion: true,
-          });
-        }, 300);
-        this.confettiTimeouts.push(t1);
-
-        // Stage 2: Gentle raining particles from top center
-        const t2 = setTimeout(() => {
-          confetti({
-            particleCount: 40,
-            spread: 80,
-            origin: { x: 0.5, y: 0.2 },
-            colors: googleColors,
-            ticks: 180,
-            gravity: 0.85,
-            scalar: 0.8,
-            disableForReducedMotion: true,
-          });
-        }, 750);
-        this.confettiTimeouts.push(t2);
-      } catch {
-        // Safe fallback if confetti module cannot load
-      }
-    });
-  }
-
   formatTime(value: number): string {
     return String(value).padStart(2, '0');
   }
 
   ngOnDestroy(): void {
     this.stopClock();
-    this.stopSlideshow();
     if (this.visibilityHandler && isPlatformBrowser(this.platformId)) {
       document.removeEventListener('visibilitychange', this.visibilityHandler);
       this.visibilityHandler = undefined;
-    }
-    for (const t of this.confettiTimeouts) {
-      clearTimeout(t);
-    }
-    this.confettiTimeouts = [];
-    if (isPlatformBrowser(this.platformId)) {
-      import('canvas-confetti')
-        .then((m) => {
-          const c = m.default || m;
-          try {
-            c.reset();
-          } catch {}
-        })
-        .catch(() => {});
     }
   }
 
@@ -468,43 +348,14 @@ export default class HomeComponent implements OnInit, OnDestroy {
   }
 
   onCardKeydown(event: KeyboardEvent, cardId: string): void {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
       event.preventDefault();
       this.toggleFlip(cardId);
     }
   }
 
-  // Hero Fan Card helpers
-  // Cards are arranged: left(-1), center(0), right(+1) relative to active index
-  private fanOffset(cardIndex: number, activeIndex: number, total: number): number {
-    let offset = cardIndex - activeIndex;
-    // Wrap around
-    if (offset > total / 2) offset -= total;
-    if (offset < -total / 2) offset += total;
-    return offset;
-  }
-
-  getFanTransform(i: number, activeIndex: number): string {
-    const n = this.heroSlides.length;
-    const offset = this.fanOffset(i, activeIndex, n);
-    if (offset === 0) return 'rotate(0deg) translateX(0) scale(1)';
-    if (offset === -1 || offset === n - 1) return 'rotate(-6deg) translateX(-28px) scale(0.94)';
-    return 'rotate(6deg) translateX(28px) scale(0.94)';
-  }
-
-  getFanZIndex(i: number, activeIndex: number): number {
-    const n = this.heroSlides.length;
-    const offset = Math.abs(this.fanOffset(i, activeIndex, n));
-    return 10 - offset;
-  }
-
-  getFanOpacity(i: number, activeIndex: number): number {
-    const n = this.heroSlides.length;
-    const offset = Math.abs(this.fanOffset(i, activeIndex, n));
-    return offset === 0 ? 1 : 0.85;
-  }
-
   // Practical Information Accordions State
+  partnersPaused = signal(false);
   openAccordionId = signal<string | null>('faq-1');
 
   toggleAccordion(id: string): void {
@@ -526,9 +377,9 @@ export default class HomeComponent implements OnInit, OnDestroy {
   festivalPillars = [
     {
       id: 'pillar-conferences',
-      title: 'Conférences & Keynotes',
+      title: 'Conférences & échanges',
       frontDescription:
-        'Interventions d’experts locaux et internationaux sur les technologies d’avant-garde.',
+        'Des sessions et des retours d’expérience pour apprendre et partager les connaissances.',
       backDetails:
         'Explorez l’IA générative, le Cloud Computing, le Web moderne et les architectures logicielles avec des retours d’expérience concrets.',
       iconPath: '/assets/micro.png',
@@ -543,8 +394,8 @@ export default class HomeComponent implements OnInit, OnDestroy {
     },
     {
       id: 'pillar-workshops',
-      title: 'Workshops & Codelabs',
-      frontDescription: 'Sessions hands-on immersives pour coder et prototyper en direct.',
+      title: 'Ateliers pratiques',
+      frontDescription: 'Développement logiciel, sécurité et intelligence artificielle : apprendre en pratiquant.',
       backDetails:
         'Montez en compétences sur Angular, Flutter, Firebase et les outils Google avec l’accompagnement de mentors expérimentés.',
       iconPath: '/assets/illustrations/bracket.png',
@@ -559,8 +410,8 @@ export default class HomeComponent implements OnInit, OnDestroy {
     },
     {
       id: 'pillar-community',
-      title: 'Communauté & Networking',
-      frontDescription: 'Rencontrez les talents et bâtisseurs de la scène tech des Grands Lacs.',
+      title: 'Rencontres & opportunités',
+      frontDescription: 'Échangez avec les talents, les entreprises et les professionnels de la région.',
       backDetails:
         'Échangez avec des recruteurs, fondateurs de startups congolaises et passionnés de technologie pour créer des opportunités durables.',
       iconPath: '/assets/equipe.png',
@@ -575,8 +426,8 @@ export default class HomeComponent implements OnInit, OnDestroy {
     },
     {
       id: 'pillar-innovation',
-      title: 'Démos & Défis Tech',
-      frontDescription: 'Mise en lumière des innovations conçues au Kivu et pour l’Afrique.',
+      title: 'Solutions locales',
+      frontDescription: 'Partageons des idées et encourageons des solutions adaptées aux besoins de nos communautés.',
       backDetails:
         'Découvrez des projets et applications innovantes apportant des réponses technologiques réelles aux enjeux économiques et sociaux locaux.',
       iconPath: '/assets/mains.png',
@@ -601,35 +452,35 @@ export default class HomeComponent implements OnInit, OnDestroy {
       {
         id: 'faq-1',
         question: 'Où et quand se déroulera le DevFest Kivu ?',
-        answer: `Le DevFest Kivu se déroule ${dateRange} à ${venue.conferenceCenter || 'Bukavu'} (${venue.fullLocation || 'RD Congo'}), offrant un cadre exceptionnel. Les sessions débutent dès 09h00.`,
+        answer: `Le DevFest Kivu se déroule ${dateRange} à ${venue.conferenceCenter || venue.fullLocation || 'Bukavu'}. Consultez le programme pour les horaires des sessions.`,
         category: 'Lieu & Dates',
       },
       {
         id: 'faq-2',
-        question: "L'accès est-il totalement gratuit ?",
+        question: "Comment participer à l'événement ?",
         answer:
-          'Oui ! Conformément aux valeurs des communautés GDG, le DevFest Kivu est 100% gratuit et ouvert à tous. Cependant, en raison du nombre limité de places dans la salle de conférence, l’inscription préalable (RSVP) est obligatoire.',
+          "Consultez la page d'inscription de l'événement pour connaître les modalités de participation et réserver votre place.",
         category: 'Billetterie',
       },
       {
         id: 'faq-3',
         question: 'Dois-je obligatoirement apporter mon ordinateur portable ?',
         answer:
-          'Un ordinateur portable est très utile si vous souhaitez coder durant les workshops pratiques et codelabs. Pour assister aux keynotes, panels et conférences d’inspiration, votre curiosité et votre carnet de notes suffisent amplement.',
+          'Un ordinateur portable peut être utile pour participer aux ateliers pratiques. Consultez le programme pour les besoins propres à chaque session.',
         category: 'Matériel',
       },
       {
         id: 'faq-4',
         question: 'À qui s’adresse cet événement ?',
         answer:
-          'À toute personne passionnée ou curieuse de numérique : développeurs juniors et seniors, étudiants, lycéens, designers UI/UX, entrepreneurs, porteurs de projets et professionnels de la région des Grands Lacs.',
+          'Aux étudiants, développeurs, entrepreneurs, professionnels et à toute personne intéressée par le numérique au Kivu.',
         category: 'Public',
       },
       {
         id: 'faq-5',
         question: 'Comment proposer une conférence ou devenir sponsor ?',
         answer:
-          'Les candidatures d’intervenants s’effectuent via le Call for Speakers. Pour soutenir l’événement et mettre en avant votre marque auprès de la jeunesse tech du Kivu, contactez notre équipe via la page Partenaires ou par e-mail à gdgkivu@gmail.com.',
+          'Pour proposer une intervention ou soutenir les activités de la communauté, contactez notre équipe via la page Contact.',
         category: 'Participation',
       },
     ];
