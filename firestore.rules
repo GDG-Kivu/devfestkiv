@@ -33,6 +33,13 @@ service cloud.firestore {
         && getUserData().disabled != true;
     }
 
+    function isContentManager() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && (getUserData().role == 'admin' || getUserData().role == 'content_manager')
+        && getUserData().disabled != true;
+    }
+
     // User profiles collection
     match /users/{uid} {
       allow read: if true;
@@ -43,7 +50,7 @@ service cloud.firestore {
     // Global site settings
     match /siteSettings/{settingsId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAdmin() || isContentManager();
     }
 
     match /tshirtOrders/{orderId} {
@@ -80,7 +87,7 @@ service cloud.firestore {
     // Event edition documents and subcollections
     match /events/{editionId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAdmin() || isContentManager();
 
       // T-shirt orders subcollection scoped to edition
       match /tshirtOrders/{orderId} {
@@ -134,40 +141,40 @@ service cloud.firestore {
         allow delete: if isAdmin();
       }
 
-      // CMS Collections: Public read for site display, admin-only write
+      // CMS Collections: Public read for site display, content manager / admin write
       match /speakers/{speakerId} {
         allow read: if true;
-        allow write: if isAdmin();
+        allow write: if isContentManager();
       }
 
       match /agenda/{agendaItemId} {
         allow read: if true;
-        allow write: if isAdmin();
+        allow write: if isContentManager();
       }
 
       match /faq/{faqId} {
         allow read: if true;
-        allow write: if isAdmin();
+        allow write: if isContentManager();
       }
 
       match /partners/{partnerId} {
         allow read: if true;
-        allow write: if isAdmin();
+        allow write: if isContentManager();
       }
 
       match /news/{articleId} {
         allow read: if true;
-        allow write: if isAdmin();
+        allow write: if isContentManager();
       }
 
       match /gallery/{imageId} {
         allow read: if true;
-        allow write: if isAdmin();
+        allow write: if isContentManager();
       }
 
       match /albums/{albumId} {
         allow read: if true;
-        allow write: if isAdmin();
+        allow write: if isContentManager();
       }
 
       // Remote presentation control (readable by audience/display, writable by presenters)

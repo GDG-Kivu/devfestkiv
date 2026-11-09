@@ -36,13 +36,13 @@ import { Subscription } from 'rxjs';
         <!-- Heading -->
         <div class="animate-slide-up" style="animation-delay:0.2s;">
           <h1
-            class="text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-tight mb-3 sm:mb-4"
+            class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-tight mb-3 sm:mb-4"
           >
             Posez vos questions
             <span class="block text-[#34A853] mt-1.5 sm:mt-3 break-words">anonymement</span>
           </h1>
           <p
-            class="text-sm sm:text-base md:text-lg text-gray-600 font-normal max-w-2xl mx-auto leading-relaxed px-2"
+            class="text-base sm:text-lg text-gray-600 font-normal max-w-2xl mx-auto leading-relaxed px-3"
           >
             Sélectionnez une session ci-dessous et posez votre question en toute confidentialité.
             Vos messages sont transmis en temps réel aux intervenants.

@@ -243,7 +243,7 @@
               <th scope="col" class="py-3 px-4">Lieu de Retrait</th>
               <th scope="col" class="py-3 px-4">Tailles &amp; Qtés</th>
               <th scope="col" class="py-3 px-4 text-center">Total</th>
-              <th scope="col" class="py-3 px-4 text-right">Date</th>
+              <th scope="col" class="py-3 px-4 text-right">Date livraison</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
@@ -279,7 +279,7 @@
 
                       <!-- Badge -->
                       <span
-                        class="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                        class="whitespace-nowrap text-[10px] sm:text-[11px] font-semibold px-2.5 py-0.5 rounded-full inline-flex items-center justify-center leading-normal"
                         [class.bg-emerald-100]="order.delivered === true"
                         [class.text-emerald-800]="order.delivered === true"
                         [class.bg-amber-100]="!order.delivered"
@@ -297,9 +297,16 @@
                   </div>
                 </td>
 
-                <!-- Participant Name -->
-                <td class="py-3.5 px-4 font-semibold text-gray-900">
-                  {{ order.name }}
+                <!-- Participant Name & Order Date -->
+                <td class="py-3.5 px-4">
+                  <div class="font-semibold text-gray-900 leading-tight">
+                    {{ order.name }}
+                  </div>
+                  @if (order.createdAt) {
+                    <div class="text-[11px] text-gray-400 font-normal mt-0.5 whitespace-nowrap">
+                      {{ formatDate(order.createdAt) }}
+                    </div>
+                  }
                 </td>
 
                 <!-- Contact details -->
@@ -362,9 +369,9 @@
                   {{ getOrderTotal(order) }}
                 </td>
 
-                <!-- Created Date -->
-                <td class="py-3.5 px-4 text-right text-xs text-gray-500 whitespace-nowrap">
-                  {{ formatDate(order.createdAt) }}
+                <!-- Delivery Date -->
+                <td class="py-3.5 px-4 text-right text-xs text-gray-500 whitespace-nowrap" [title]="order.createdAt ? 'Commandé le : ' + formatDate(order.createdAt) : ''">
+                  {{ order.delivered && order.deliveredAt ? formatDate(order.deliveredAt) : '—' }}
                 </td>
               </tr>
             }
@@ -501,24 +508,16 @@
             type="button"
             (click)="confirmDelivery(false)"
             [disabled]="isSubmittingDelivery()"
-            class="px-4 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50 border border-red-200 rounded-xl transition cursor-pointer"
+            class="px-3.5 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 border border-red-200 rounded-xl transition cursor-pointer whitespace-nowrap"
           >
             Remettre en attente
-          </button>
-          <button
-            type="button"
-            (click)="closeDeliveryModal()"
-            [disabled]="isSubmittingDelivery()"
-            class="px-4 py-2.5 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition cursor-pointer"
-          >
-            Fermer
           </button>
         } @else {
           <button
             type="button"
             (click)="closeDeliveryModal()"
             [disabled]="isSubmittingDelivery()"
-            class="px-4 py-2.5 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition cursor-pointer"
+            class="px-3.5 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition cursor-pointer whitespace-nowrap"
           >
             Annuler
           </button>
@@ -528,7 +527,7 @@
           type="button"
           (click)="confirmDelivery(true)"
           [disabled]="isSubmittingDelivery() || !deliveryDeliveredBy().trim()"
-          class="flex items-center gap-1.5 px-5 py-2.5 bg-[#00458f] hover:bg-[#003875] disabled:bg-gray-300 text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition cursor-pointer ml-auto"
+          class="flex items-center gap-1.5 px-4 py-2 bg-[#00458f] hover:bg-[#003875] disabled:bg-gray-300 text-white text-xs font-semibold rounded-xl shadow-xs transition cursor-pointer ml-auto whitespace-nowrap"
         >
           @if (isSubmittingDelivery()) {
             <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

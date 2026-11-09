@@ -28,10 +28,14 @@ export class RoleService {
   readonly isAdmin = signal(false);
   readonly isViewer = signal(false);
   readonly isStaff = signal(false);
+  readonly isContentManager = signal(false);
   readonly isLoadingProfile = signal(false);
   readonly isPresenterOrAdmin = computed(() => this.isAdmin() || this.isViewer());
   readonly isStaffOrAdmin = computed(() => this.isAdmin() || this.isStaff());
-  readonly canAccessAdmin = computed(() => this.isAdmin() || this.isViewer() || this.isStaff());
+  readonly isContentManagerOrAdmin = computed(() => this.isAdmin() || this.isContentManager());
+  readonly canAccessAdmin = computed(
+    () => this.isAdmin() || this.isViewer() || this.isStaff() || this.isContentManager()
+  );
 
   constructor() {
     effect(() => {
@@ -46,6 +50,7 @@ export class RoleService {
         this.isAdmin.set(false);
         this.isViewer.set(false);
         this.isStaff.set(false);
+        this.isContentManager.set(false);
         this.isLoadingProfile.set(false);
       }
     });
@@ -78,7 +83,13 @@ export class RoleService {
         for (const matchedDoc of querySnapshot.docs) {
           const matchedData = matchedDoc.data();
 
-          if (matchedData['disabled'] !== true && (matchedData['role'] === 'admin' || matchedData['role'] === 'viewer' || matchedData['role'] === 'staff')) {
+          if (
+            matchedData['disabled'] !== true &&
+            (matchedData['role'] === 'admin' ||
+              matchedData['role'] === 'viewer' ||
+              matchedData['role'] === 'staff' ||
+              matchedData['role'] === 'content_manager')
+          ) {
             if (!profile || profile.role !== 'admin') {
               profile = {
                 uid: user.uid,
@@ -139,12 +150,14 @@ export class RoleService {
       this.isAdmin.set(profile?.role === 'admin' && isAccountActive);
       this.isViewer.set(profile?.role === 'viewer' && isAccountActive);
       this.isStaff.set(profile?.role === 'staff' && isAccountActive);
+      this.isContentManager.set(profile?.role === 'content_manager' && isAccountActive);
       return profile;
     } catch {
       this.profile.set(null);
       this.isAdmin.set(false);
       this.isViewer.set(false);
       this.isStaff.set(false);
+      this.isContentManager.set(false);
       return null;
     } finally {
       this.isLoadingProfile.set(false);
@@ -330,12 +343,19 @@ export class RoleService {
       this.isAdmin.set(false);
       this.isViewer.set(false);
       this.isStaff.set(false);
+      this.isContentManager.set(false);
       return false;
     }
     if (this.profile() && this.profile()?.uid === user.uid) {
       const isAccountActive = this.profile()?.disabled !== true;
       const role = this.profile()?.role;
-      return (role === 'admin' || role === 'viewer' || role === 'staff') && isAccountActive;
+      return (
+        (role === 'admin' ||
+          role === 'viewer' ||
+          role === 'staff' ||
+          role === 'content_manager') &&
+        isAccountActive
+      );
     }
     await this.ensureProfile(user);
     return this.canAccessAdmin();
@@ -419,6 +439,87 @@ export class RoleService {
       const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
       const staffQuery = query(usersCol, where('role', '==', 'staff'));
       return collectionData(staffQuery, { idField: 'uid' }) as Observable<UserProfile[]>;
+    });
+  }
+
+  /**
+   * Adds a new content manager member.
+   */
+  async addContentManager(email: string, displayName?: string): Promise<void> {
+    const currentUser = this.auth.user();
+    if (!this.isAdmin()) {
+      throw new Error('Seul un administrateur peut ajouter un gestionnaire de contenu.');
+    }
+    const cleanEmail = email.toLowerCase().trim();
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      throw new Error('Adresse email invalide.');
+    }
+
+    const existingSnapshot = await runInInjectionContext(this.injector, () => {
+      const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
+      const existingQuery = query(usersCol, where('email', '==', cleanEmail));
+      return getDocs(existingQuery);
+    });
+
+    if (!existingSnapshot.empty) {
+      for (const existingDoc of existingSnapshot.docs) {
+        const data = existingDoc.data();
+        if (data['role'] === 'admin') {
+          throw new Error('Cet utilisateur est l\'administrateur actif.');
+        }
+        await runInInjectionContext(this.injector, () => {
+          const userRef = doc(this.firestore, firestorePaths.user(existingDoc.id));
+          return setDoc(
+            userRef,
+            {
+              role: 'content_manager',
+              disabled: false,
+              displayName: displayName || data['displayName'] || null,
+              updatedAt: serverTimestamp(),
+              createdBy: currentUser?.email || 'admin',
+            },
+            { merge: true }
+          );
+        });
+      }
+    } else {
+      await runInInjectionContext(this.injector, () => {
+        const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
+        const newRef = doc(usersCol);
+        return setDoc(newRef, {
+          uid: newRef.id,
+          email: cleanEmail,
+          displayName: displayName || null,
+          role: 'content_manager',
+          disabled: false,
+          createdAt: serverTimestamp(),
+          createdBy: currentUser?.email || 'admin',
+        });
+      });
+    }
+  }
+
+  /**
+   * Removes or revokes a content manager.
+   */
+  async removeContentManager(managerId: string): Promise<void> {
+    if (!this.isAdmin()) {
+      throw new Error('Seul un administrateur peut révoquer un gestionnaire de contenu.');
+    }
+    await runInInjectionContext(this.injector, () => {
+      const docRef = doc(this.firestore, firestorePaths.user(managerId));
+      return deleteDoc(docRef);
+    });
+  }
+
+  /**
+   * Real-time stream of all active content managers.
+   */
+  getContentManagers(): Observable<UserProfile[]> {
+    return runInInjectionContext(this.injector, () => {
+      const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
+      const q = query(usersCol, where('role', '==', 'content_manager'));
+      return collectionData(q, { idField: 'uid' }) as Observable<UserProfile[]>;
     });
   }
 }
