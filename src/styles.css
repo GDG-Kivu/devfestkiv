@@ -22,7 +22,6 @@ svg text {
 
 app-navbar > nav {
   background: var(--kivu-surface);
-  border-bottom: 1px solid var(--kivu-border);
 }
 
 app-navbar .nav-link,

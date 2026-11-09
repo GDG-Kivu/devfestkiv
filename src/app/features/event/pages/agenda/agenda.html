@@ -22,7 +22,7 @@
             type="button"
             (click)="selectedDayId.set('all')"
             class="px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap shrink-0"
-            [class.bg-blue-600]="selectedDayId() === 'all'"
+            [class.bg-gray-900]="selectedDayId() === 'all'"
             [class.text-white]="selectedDayId() === 'all'"
             [class.bg-white]="selectedDayId() !== 'all'"
             [class.text-gray-700]="selectedDayId() !== 'all'"
@@ -38,7 +38,7 @@
               type="button"
               (click)="selectedDayId.set(day.id)"
               class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap shrink-0"
-              [class.bg-blue-600]="selectedDayId() === day.id"
+              [class.bg-gray-900]="selectedDayId() === day.id"
               [class.text-white]="selectedDayId() === day.id"
               [class.bg-white]="selectedDayId() !== day.id"
               [class.text-gray-700]="selectedDayId() !== day.id"
@@ -58,7 +58,7 @@
             [value]="selectedFormat()"
             (change)="onFormatChange($event)"
             aria-label="Filtrer par format"
-            class="w-full appearance-none bg-white border border-gray-300 hover:border-gray-400 text-gray-700 font-medium text-xs sm:text-sm rounded-lg px-3 sm:px-3.5 py-1.5 sm:py-2 pr-7 sm:pr-9 shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition cursor-pointer"
+            class="w-full appearance-none bg-white border border-gray-300 hover:border-gray-400 text-gray-700 font-medium text-xs sm:text-sm rounded-lg px-3 sm:px-3.5 py-1.5 sm:py-2 pr-7 sm:pr-9 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#00458f] focus:border-[#00458f] transition cursor-pointer"
           >
             @for (chip of formatChips; track chip.value) {
               <option [value]="chip.value">

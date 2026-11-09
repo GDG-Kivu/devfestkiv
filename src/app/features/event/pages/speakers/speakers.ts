@@ -40,11 +40,11 @@ import { Speaker } from '../../models/speaker.model';
             @for (c of chips; track c.value) {
               <button
                 type="button"
-                class="px-4 py-2 rounded-full text-sm font-medium cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA4335] focus-visible:ring-offset-2"
+                class="px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
                 [class]="
                   selectedTopic() === c.value
-                    ? 'bg-[#EA4335] text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-gray-900 text-white shadow-xs'
+                    : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
                 "
                 [attr.aria-pressed]="selectedTopic() === c.value"
                 (click)="selectedTopic.set(c.value)"
@@ -133,9 +133,10 @@ import { Speaker } from '../../models/speaker.model';
               [href]="eventConfig.cfpUrl"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center px-6 py-3 rounded-full bg-[#EA4335] text-white font-medium hover:opacity-90 transition-opacity duration-200"
+              class="btn btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-bold shadow-xs hover:shadow-md transition"
             >
-              Proposer un talk
+              <span>Proposer un talk</span>
+              <span aria-hidden="true">↗</span>
             </a>
           </div>
         }
