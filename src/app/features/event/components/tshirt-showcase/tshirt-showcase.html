@@ -1,11 +1,5 @@
 <!-- Official DevFest Kivu 3D T-Shirt Showcase Section -->
 <section class="py-16 md:py-24 bg-white relative overflow-hidden border-b border-gray-100" id="tshirt">
-  <!-- Subtle ambient decorative glow matching site design tokens -->
-  <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-40">
-    <div class="hidden md:block absolute -top-24 -right-24 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
-    <div class="hidden md:block absolute -bottom-24 -left-24 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
-  </div>
-
   <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 relative z-10 w-full">
     <!-- Mobile-only Title (placed above the 3D T-shirt on mobile) -->
     <div class="block md:hidden mb-6 text-left">
@@ -19,18 +13,19 @@
       
       <!-- Left Column: 3D Model Viewer Card (without shadow) -->
       <div class="w-full min-w-0">
-        <div class="relative bg-gradient-to-b from-gray-50/90 to-gray-100/60 rounded-3xl p-4 sm:p-6 border border-gray-200/80">
+        <div class="relative bg-background-alt rounded-md p-4 sm:p-6 border border-gray-200/80">
           
           <!-- Model-Viewer Custom Element -->
           <model-viewer
             #modelViewer
-            src="assets/models/tshirt.glb"
+            src="assets/models/devfest-kivu-tshirt.glb"
             poster="assets/t-shirt.png"
             loading="lazy"
             reveal="auto"
             alt="T-shirt Officiel DevFest Kivu"
             auto-rotate
             camera-controls
+            camera-orbit="180deg 75deg 105%"
             touch-action="pan-y"
             shadow-intensity="1.5"
             shadow-softness="0.8"
@@ -58,7 +53,7 @@
           <!-- Front view thumbnail -->
           <button
             type="button"
-            (click)="setView('0deg 75deg 105%')"
+            (click)="setView('180deg 75deg 105%')"
             class="thumbnail-btn group flex flex-col items-center gap-1.5 cursor-pointer focus:outline-none"
             title="Voir la face avant"
           >
@@ -78,7 +73,7 @@
           <!-- Back view thumbnail -->
           <button
             type="button"
-            (click)="setView('180deg 75deg 105%')"
+            (click)="setView('0deg 75deg 105%')"
             class="thumbnail-btn group flex flex-col items-center gap-1.5 cursor-pointer focus:outline-none"
             title="Voir la face arrière"
           >
@@ -98,21 +93,25 @@
 
         <!-- Description text: order-2 on mobile (under thumbnails) and order-2 on desktop (under title) -->
         <p class="order-2 md:order-2 text-base sm:text-lg text-text-muted leading-relaxed">
-          Procurez-vous le t-shirt officiel du DevFest Kivu et affichez les couleurs de la communauté tech.
+          Portez les couleurs de DevFest Kivu et partagez votre appartenance à la communauté.
+        </p>
+
+        <p class="order-3 md:order-4 flex items-baseline gap-3">
+          <span class="text-sm font-semibold text-text-muted">Prix</span>
+          <strong class="text-3xl font-extrabold text-text">6 $</strong>
         </p>
 
         <!-- Call to Action Button: order-3 on mobile, order-4 on desktop -->
-        <div class="order-3 md:order-4 pt-1 flex items-center justify-start">
-          <button
-            type="button"
-            (click)="navigateToOrder()"
+        <div class="order-4 md:order-5 pt-1 flex items-center justify-start">
+          <a
+            routerLink="/tshirt-order"
             class="btn btn-primary group px-6 py-3.5 text-base font-semibold shadow-md inline-flex items-center justify-center w-auto"
           >
-            <span>Commander mon T-Shirt</span>
+            <span>Commander le T-shirt</span>
             <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
             </svg>
-          </button>
+          </a>
         </div>
       </div>
 

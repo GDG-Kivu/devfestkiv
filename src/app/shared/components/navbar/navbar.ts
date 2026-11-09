@@ -10,6 +10,7 @@ import { EventConfigService } from '../../../features/event/services/event-confi
   imports: [RouterLink, RouterLinkActive, CommonModule],
   host: {
     class: 'sticky top-0 z-50 block w-full',
+    '[class.is-scrolled]': 'isScrolled()',
   },
   template: `
     <nav
@@ -20,11 +21,11 @@ import { EventConfigService } from '../../../features/event/services/event-confi
           <div class="flex-shrink-0 flex items-center">
             <a routerLink="/" class="flex items-center space-x-3" aria-label="DevFest Kivu, retour à l'accueil">
               <img
-                src="/assets/logo-1.png"
+                src="/assets/Logo%20-%20DevFest%20Kivu%202026.png"
                 alt="DevFest Kivu Logo"
-                class="h-8 w-auto sm:h-10 lg:h-10"
-                width="139"
-                height="40"
+                class="nav-logo"
+                width="2150"
+                height="612"
                 decoding="async"
               />
             </a>
@@ -56,7 +57,7 @@ import { EventConfigService } from '../../../features/event/services/event-confi
           <div class="lg:hidden">
             <button
               (click)="toggleMobileMenu()"
-              class="relative inline-flex items-center justify-center p-sm text-text hover:text-primary-dark hover:bg-background/50 transition-all duration-300 rounded-sm group"
+              class="nav-menu-toggle relative inline-flex items-center justify-center p-sm text-text hover:text-primary-dark hover:bg-background/50 transition-all duration-300 rounded-sm group"
               [attr.aria-expanded]="isMobileMenuOpen()"
               aria-controls="mobile-menu"
               [attr.aria-label]="
@@ -115,11 +116,11 @@ import { EventConfigService } from '../../../features/event/services/event-confi
         <div class="flex items-center justify-between h-16 px-4 sm:px-6 flex-shrink-0 bg-white">
           <a routerLink="/" (click)="closeMobileMenu()" class="flex items-center space-x-3" aria-label="DevFest Kivu, retour à l'accueil">
             <img
-              src="/assets/logo-1.png"
+              src="/assets/Logo%20-%20DevFest%20Kivu%202026.png"
               alt="DevFest Kivu Logo"
-              class="h-8 w-auto sm:h-10"
-              width="139"
-              height="40"
+              class="nav-logo"
+              width="2150"
+              height="612"
             />
           </a>
           <button
@@ -182,6 +183,15 @@ import { EventConfigService } from '../../../features/event/services/event-confi
   styles: [
     `
       /* Navigation Links */
+      .nav-logo {
+        width: 150px;
+        height: 43px;
+        object-fit: contain;
+        padding: 3px 6px;
+        background: white;
+        border-radius: 3px;
+      }
+
       .nav-link {
         position: relative;
         padding: var(--spacing-sm);
@@ -194,13 +204,12 @@ import { EventConfigService } from '../../../features/event/services/event-confi
       .nav-link::after {
         content: '';
         position: absolute;
-        bottom: -2px;
-        left: 50%;
+        bottom: 0;
+        left: var(--spacing-sm);
         width: 0;
-        height: 2px;
-        background-color: var(--color-primary);
-        transition: all 0.3s ease-in-out;
-        transform: translateX(-50%);
+        height: 3px;
+        background-color: var(--kivu-secondary);
+        transition: width 0.2s ease;
       }
 
       .nav-link:hover {
@@ -208,7 +217,7 @@ import { EventConfigService } from '../../../features/event/services/event-confi
       }
 
       .nav-link:hover::after {
-        width: 100%;
+        width: calc(100% - 2 * var(--spacing-sm));
       }
 
       .nav-link.nav-active {
@@ -217,18 +226,13 @@ import { EventConfigService } from '../../../features/event/services/event-confi
       }
 
       .nav-link.nav-active::after {
-        width: 100%;
+        width: calc(100% - 2 * var(--spacing-sm));
       }
 
       .nav-link:focus-visible {
         outline: 2px solid #b45309;
         outline-offset: 2px;
         border-radius: 4px;
-      }
-
-      /* Hide active line when hovering other links */
-      .group:hover .nav-link.nav-active:not(:hover)::after {
-        width: 0;
       }
 
       /* Mobile active state and link styles */
@@ -261,12 +265,13 @@ import { EventConfigService } from '../../../features/event/services/event-confi
       }
 
       .nav-mobile-link.nav-active-mobile {
-        color: var(--color-primary-dark, #d99500) !important;
+        color: var(--kivu-secondary) !important;
         font-weight: 600 !important;
+        border-bottom: 2px solid var(--kivu-secondary);
       }
 
       .nav-mobile-link.nav-active-mobile .nav-arrow {
-        color: var(--color-primary-dark, #d99500) !important;
+        color: var(--kivu-secondary) !important;
       }
 
       .nav-mobile-link.nav-active-mobile:hover .nav-arrow {
@@ -290,6 +295,8 @@ export class Navbar implements OnDestroy {
   private readonly document = inject(DOCUMENT);
   readonly eventConfig = inject(EventConfigService);
   isMobileMenuOpen = signal(false);
+  isScrolled = signal(false);
+  private scrollHandler?: () => void;
   /** Stays false during SSR and the hydration flash window; set true after first browser render. */
   isReady = signal(false);
 
@@ -305,6 +312,12 @@ export class Navbar implements OnDestroy {
   constructor() {
     afterNextRender(() => {
       this.isReady.set(true);
+      const view = this.document.defaultView;
+      if (view) {
+        this.scrollHandler = () => this.isScrolled.set(view.scrollY > 24);
+        this.scrollHandler();
+        view.addEventListener('scroll', this.scrollHandler, { passive: true });
+      }
     });
   }
 
@@ -335,6 +348,9 @@ export class Navbar implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.scrollHandler) {
+      this.document.defaultView?.removeEventListener('scroll', this.scrollHandler);
+    }
     this.setScrollLocked(false);
   }
 }

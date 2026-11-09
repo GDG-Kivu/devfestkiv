@@ -1,6 +1,130 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'tailwindcss';
 
+@font-face {
+  font-family: 'Google Sans';
+  src: url('/font/GoogleSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Google Sans';
+  src: url('/font/%20GoogleSans-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Google Sans';
+  src: url('/font/%20GoogleSans-Bold.ttf') format('truetype');
+  font-weight: 700 900;
+  font-display: swap;
+}
+
+html, body, button, input, select, textarea {
+  font-family: 'Google Sans', sans-serif;
+}
+
+svg text {
+  font-family: 'Google Sans', sans-serif;
+}
+
+:root {
+  --kivu-primary: #fbbc04;
+  --kivu-secondary: #174ea6;
+  --kivu-ink: #1a1200;
+  --kivu-surface: #fff;
+  --kivu-surface-soft: #f3f6fa;
+  --kivu-muted: #4e5965;
+  --kivu-border: #cbd5e1;
+}
+
+app-navbar > nav {
+  background: var(--kivu-surface);
+  border-bottom: 1px solid var(--kivu-border);
+}
+
+app-navbar .nav-link,
+app-navbar .nav-link.nav-active,
+app-navbar .nav-menu-toggle {
+  color: var(--kivu-ink);
+}
+
+app-navbar .nav-link:hover,
+app-navbar .nav-link.nav-active {
+  color: var(--kivu-secondary);
+}
+
+app-home {
+  --home-gutter: max(24px, calc((100% - 1264px) / 2));
+}
+
+app-site:has(app-home),
+app-site:has(app-tshirt-order) {
+  --kivu-primary: #e8c270;
+}
+
+app-site:has(app-home) app-footer,
+app-site:has(app-tshirt-order) app-footer {
+  --footer-background: #202b26;
+}
+
+app-home > section:not(.kivu-hero):not(.kivu-countdown),
+app-home app-tshirt-showcase > section,
+app-home app-past-events-gallery > section {
+  padding-block: 96px;
+}
+
+app-home > section:not(.kivu-hero):not(.kivu-countdown),
+app-home app-tshirt-showcase > section {
+  padding-inline: var(--home-gutter);
+}
+
+app-home > section > .max-w-7xl,
+app-home > section > .max-w-6xl,
+app-home > section > .max-w-5xl,
+app-home app-tshirt-showcase > section > .max-w-7xl {
+  max-width: none;
+  padding-inline: 0;
+}
+
+app-home .kivu-event-strip { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 30px; padding: 25px var(--home-gutter); background: var(--kivu-primary); color: var(--kivu-ink); }
+app-home .kivu-event-strip > div { display: flex; flex-direction: column; gap: 5px; }
+app-home .kivu-event-strip__label { font-size: 10px; font-weight: 700; }
+app-home .kivu-event-strip strong { font-size: 17px; }
+app-home .kivu-event-strip a { display: flex; gap: 20px; align-items: center; font-size: 13px; font-weight: 700; text-decoration: none; }
+app-home .kivu-event-strip a:hover { text-decoration: underline; }
+app-home .kivu-impact { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 9%; background: var(--kivu-surface); color: var(--kivu-ink); }
+app-home :is(#experience, #impact, #faq-guide) h2 { letter-spacing: 0; }
+app-home .kivu-impact h2 { font-size: 60px; line-height: 1.04; font-weight: 700; }
+app-home .kivu-impact h2 span { color: var(--kivu-secondary); }
+app-home .kivu-impact__intro > p:not(.kivu-section-label) { max-width: 430px; margin: 28px 0; color: var(--kivu-muted); font-size: 18px; line-height: 1.6; }
+app-home .kivu-impact__intro a { display: inline-flex; gap: 30px; align-items: center; border-bottom: 2px solid var(--kivu-ink); padding-bottom: 8px; font-weight: 700; }
+app-home .kivu-impact__intro a span { font-size: 22px; }
+app-home .kivu-impact__stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 36px; }
+app-home .kivu-impact__stat { min-width: 0; padding: 24px 0; }
+app-home .kivu-impact__stat strong { display: block; color: var(--kivu-secondary); font-size: 48px; line-height: 1; }
+app-home .kivu-impact__stat strong::before { content: ''; display: block; width: 40px; height: 5px; margin-bottom: 18px; background: var(--kivu-primary); }
+app-home .kivu-impact__stat h3 { margin-top: 14px; font-size: 17px; font-weight: 700; }
+app-home .kivu-impact__stat p { margin-top: 6px; color: var(--kivu-muted); font-size: 14px; line-height: 1.5; }
+
+@media (max-width: 700px) {
+  app-home > section:not(.kivu-hero):not(.kivu-countdown),
+  app-home app-tshirt-showcase > section,
+  app-home app-past-events-gallery > section {
+    padding-block: 64px;
+  }
+  app-home .kivu-impact { grid-template-columns: 1fr; gap: 42px; }
+  app-home .kivu-impact h2 { font-size: 43px; }
+  app-home .kivu-impact__intro > p:not(.kivu-section-label) { font-size: 16px; }
+  app-home .kivu-impact__stats { column-gap: 20px; }
+  app-home .kivu-impact__stat strong { font-size: 34px; }
+  app-home .kivu-event-strip { grid-template-columns: 1fr; gap: 20px; }
+  app-home .kivu-event-strip strong { font-size: 14px; }
+  app-home .kivu-event-strip a { grid-column: 1 / -1; }
+}
+
 /* Global overflow fix - prevent horizontal scroll while allowing sticky positioning */
 html {
   overflow-x: clip;
@@ -44,8 +168,9 @@ to use them :
 
 /* global variable */
 @theme {
+  --font-mono: 'Google Sans', sans-serif;
   /* Primary brand colors */
-  --color-primary: #f9ab00; /* DevFest Yellow */
+  --color-primary: var(--kivu-primary); /* DevFest Yellow */
   --color-primary-dark: #d99500; /* High-contrast darker yellow */
   --color-secondary: #34a853; /* Google Green */
   --color-secondary-dark: #2d9247;

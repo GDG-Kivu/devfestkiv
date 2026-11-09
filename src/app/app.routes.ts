@@ -62,6 +62,12 @@ export const routes: Routes = [
         loadComponent: () => import('./features/event/pages/dp-generator/dp-generator'),
       },
       {
+        path: 'tshirt-order',
+        title: 'Commander un T-shirt',
+        data: { description: 'Demandez votre T-shirt officiel DevFest Kivu.' },
+        loadComponent: () => import('./features/event/pages/tshirt-order/tshirt-order'),
+      },
+      {
         path: 'contact',
         title: 'Contact',
         data: {
