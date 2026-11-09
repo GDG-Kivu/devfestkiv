@@ -8,11 +8,11 @@
         <div class="relative flex-shrink-0">
           @if (userPhotoURL() && !photoLoadError()) {
           <img [src]="userPhotoURL()" [alt]="userDisplayName()" (error)="onPhotoError()"
-            class="w-16 h-16 rounded-full object-cover border-2 border-[#4285F4]/30 shadow-xs"
+            class="w-16 h-16 rounded-full object-cover border-2 border-[#00458f]/30 shadow-xs"
             referrerpolicy="no-referrer" />
           } @else {
           <div
-            class="w-16 h-16 rounded-full bg-gradient-to-br from-[#4285F4] to-[#1a73e8] text-white flex items-center justify-center font-bold text-xl shadow-xs">
+            class="w-16 h-16 rounded-full bg-gradient-to-br from-[#00458f] to-[#002f63] text-white flex items-center justify-center font-bold text-xl shadow-xs">
             {{ getInitials(userDisplayName()) }}
           </div>
           }
@@ -46,12 +46,12 @@
   <!-- ============================================== -->
   <!-- SECTION 2: QUICK ADMINISTRATION ACTIONS        -->
   <!-- ============================================== -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Action Card: Add Presenter -->
     <div
       class="bg-white rounded-2xl p-6 shadow-xs border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
       <div class="space-y-3">
-        <div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center">
+        <div class="w-12 h-12 rounded-xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[#00458f] flex items-center justify-center">
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -60,14 +60,14 @@
         <div>
           <h3 class="text-base font-bold text-gray-900">Ajouter un Présentateur</h3>
           <p class="text-xs text-gray-500 mt-1 leading-relaxed">
-            Autorisez un intervenant ou co-animateur à projeter les questions en direct lors des sessions.
+            Autorisez un intervenant à gérer les sessions live et à projeter les questions en direct.
           </p>
         </div>
       </div>
 
       <div class="pt-5">
         <button type="button" (click)="openAddViewerModal()"
-          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-black text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer">
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#00458f] hover:bg-[#003875] text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
@@ -76,11 +76,40 @@
       </div>
     </div>
 
+    <!-- Action Card: Add Staff -->
+    <div
+      class="bg-white rounded-2xl p-6 shadow-xs border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
+      <div class="space-y-3">
+        <div class="w-12 h-12 rounded-xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[#00458f] flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-gray-900">Ajouter un Membre Staff</h3>
+          <p class="text-xs text-gray-500 mt-1 leading-relaxed">
+            Autorisez un membre de l'équipe à gérer et marquer les commandes de T-shirts livrées.
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-5">
+        <button type="button" (click)="openAddStaffModal()"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#00458f] hover:bg-[#003875] text-white rounded-xl text-xs font-semibold shadow-xs transition cursor-pointer">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Nouveau Membre Staff</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Action Card: Transfer Admin -->
     <div
       class="bg-white rounded-2xl p-6 shadow-xs border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
       <div class="space-y-3">
-        <div class="w-12 h-12 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center">
+        <div class="w-12 h-12 rounded-xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[#00458f] flex items-center justify-center">
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -114,7 +143,7 @@
     <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
       <div>
         <h3 class="text-base font-bold text-gray-900">Présentateurs Actifs</h3>
-        <p class="text-xs text-gray-500">Membres autorisés à accéder au mode projection des questions</p>
+        <p class="text-xs text-gray-500">Membres autorisés à accéder au mode projection des questions et à gérer les sessions</p>
       </div>
       <span class="px-2.5 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded-full">
         {{ viewers().length }} présentateur(s)
@@ -168,6 +197,56 @@
     </div>
     }
   </div>
+
+  <!-- ============================================== -->
+  <!-- SECTION 4: ACTIVE STAFF LIST                   -->
+  <!-- ============================================== -->
+  <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-xs border border-gray-100">
+    <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+      <div>
+        <h3 class="text-base font-bold text-gray-900">Membres du Staff</h3>
+        <p class="text-xs text-gray-500">Membres autorisés à accéder et gérer les commandes de T-shirts</p>
+      </div>
+      <span class="px-2.5 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded-full">
+        {{ staffMembers().length }} membre(s) staff
+      </span>
+    </div>
+
+    @if (staffMembers().length === 0) {
+    <div class="text-center py-8 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200 text-gray-500 text-xs">
+      Aucun membre du staff n'a encore été configuré.
+    </div>
+    } @else {
+    <div class="divide-y divide-gray-100 border border-gray-200 rounded-2xl overflow-hidden">
+      @for (s of staffMembers(); track s.uid) {
+      <div class="flex items-center justify-between p-4 bg-white hover:bg-gray-50/80 transition">
+        <div class="flex items-center gap-3 min-w-0">
+          <div
+            class="w-10 h-10 rounded-full bg-[var(--kivu-surface-soft,#f3f6fa)] text-[#00458f] flex items-center justify-center font-bold text-xs flex-shrink-0">
+            {{ getInitials(s.displayName || s.email) }}
+          </div>
+          <div class="min-w-0">
+            <p class="text-sm font-semibold text-gray-900 truncate">
+              {{ s.displayName || s.email }}
+            </p>
+            <p class="text-xs text-gray-500 font-mono truncate mt-0.5">
+              {{ s.email }}
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 flex-shrink-0">
+          <button type="button" (click)="openRemoveStaffConfirm(s)"
+            class="px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg transition cursor-pointer border border-red-200"
+            title="Révoquer l'accès staff">
+            Supprimer
+          </button>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
 </div>
 
 <!-- ============================================== -->
@@ -189,7 +268,7 @@
         </div>
         <div>
           <h3 class="text-lg font-bold text-gray-900">Ajouter un Présentateur</h3>
-          <p class="text-xs text-gray-500">Accès au mode projection des questions</p>
+          <p class="text-xs text-gray-500">Accès au mode projection des questions et gestion des sessions</p>
         </div>
       </div>
     </div>
@@ -198,47 +277,44 @@
     <form (ngSubmit)="submitAddViewer()" class="space-y-4">
       <div>
         <label for="modalViewerEmail" class="block text-xs font-semibold text-gray-700 mb-1.5">
-          Adresse e-mail Google du présentateur <span class="text-red-500">*</span>
+          Adresse e-mail Google du Présentateur <span class="text-red-500">*</span>
         </label>
-        <input id="modalViewerEmail" type="email" name="viewerEmail" [(ngModel)]="newViewerEmail"
-          placeholder="nom.prenom@gmail.com" required
-          class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40 focus:border-[#4285F4] transition placeholder:text-gray-400" />
+        <input id="modalViewerEmail" type="email" name="newViewerEmail" [(ngModel)]="newViewerEmail"
+          placeholder="nom.intervenant@gmail.com" required
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00458f]/40 focus:border-[#00458f] transition" />
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label for="modalViewerName" class="block text-xs font-semibold text-gray-700 mb-1.5">
-            Nom de l'intervenant (Optionnel)
-          </label>
-          <input id="modalViewerName" type="text" name="viewerName" [(ngModel)]="newViewerName"
-            placeholder="Ex: Merlin Lubambo"
-            class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40 focus:border-[#4285F4] transition placeholder:text-gray-400" />
-        </div>
+      <div>
+        <label for="modalViewerName" class="block text-xs font-semibold text-gray-700 mb-1.5">
+          Nom Complet / Pseudo (Optionnel)
+        </label>
+        <input id="modalViewerName" type="text" name="newViewerName" [(ngModel)]="newViewerName"
+          placeholder="ex: Jean Dupont"
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00458f]/40 focus:border-[#00458f] transition" />
+      </div>
 
-        <div>
-          <label for="modalViewerRoom" class="block text-xs font-semibold text-gray-700 mb-1.5">
-            Nom de la Salle (Optionnel)
-          </label>
-          <input id="modalViewerRoom" type="text" name="viewerRoom" [(ngModel)]="newViewerRoom"
-            placeholder="Ex: Salle A - Grand Amphi"
-            class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40 focus:border-[#4285F4] transition placeholder:text-gray-400" />
-        </div>
+      <div>
+        <label for="modalViewerRoom" class="block text-xs font-semibold text-gray-700 mb-1.5">
+          Salle ou Scène attribuée (Optionnel)
+        </label>
+        <input id="modalViewerRoom" type="text" name="newViewerRoom" [(ngModel)]="newViewerRoom"
+          placeholder="ex: Main Stage, Salle B, Workshop 1"
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00458f]/40 focus:border-[#00458f] transition" />
       </div>
 
       @if (viewerErrorMessage()) {
-      <div class="text-xs font-semibold text-red-600 bg-red-50 p-3 rounded-xl border border-red-200">
+      <div class="text-xs font-semibold text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
         {{ viewerErrorMessage() }}
       </div>
       }
 
       <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
-        <button type="button" (click)="showAddModal.set(false)"
+        <button type="button" (click)="showAddModal.set(false)" [disabled]="isAddingViewer()"
           class="px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl transition cursor-pointer">
           Annuler
         </button>
-
-        <button type="submit" [disabled]="!isValidViewerEmail() || isAddingViewer()"
-          class="flex items-center gap-2 px-5 py-2.5 bg-[#4285F4] hover:bg-[#3367D6] disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl shadow-xs transition cursor-pointer">
+        <button type="submit" [disabled]="!newViewerEmail || isAddingViewer()"
+          class="flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-gray-900 hover:bg-black disabled:opacity-50 rounded-xl shadow-xs transition cursor-pointer">
           @if (isAddingViewer()) {
           <svg class="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -246,9 +322,9 @@
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
             </path>
           </svg>
-          <span>Ajout en cours...</span>
+          <span>Enregistrement...</span>
           } @else {
-          <span>Enregistrer</span>
+          <span>Valider l'Accès</span>
           }
         </button>
       </div>
@@ -258,14 +334,89 @@
 }
 
 <!-- ============================================== -->
-<!-- MODAL 2: TRANSFER ADMIN CONFIRMATION           -->
+<!-- MODAL 2: ADD STAFF                             -->
+<!-- ============================================== -->
+@if (showAddStaffModal()) {
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in">
+  <div
+    class="relative bg-white rounded-3xl w-full max-w-lg min-w-[320px] sm:min-w-[500px] p-6 sm:p-8 shadow-2xl border border-gray-100 animate-pop-in space-y-5 my-auto">
+    <!-- Modal Header -->
+    <div class="flex items-center pb-3 border-b border-gray-100">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center flex-shrink-0">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900">Ajouter un Membre du Staff</h3>
+          <p class="text-xs text-gray-500">Accès à l'espace de suivi et validation des commandes de T-shirts</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Body Form -->
+    <form (ngSubmit)="submitAddStaff()" class="space-y-4">
+      <div>
+        <label for="modalStaffEmail" class="block text-xs font-semibold text-gray-700 mb-1.5">
+          Adresse e-mail Google du membre staff <span class="text-red-500">*</span>
+        </label>
+        <input id="modalStaffEmail" type="email" name="newStaffEmail" [(ngModel)]="newStaffEmail"
+          placeholder="staff.prenom@gmail.com" required
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00458f]/40 focus:border-[#00458f] transition" />
+      </div>
+
+      <div>
+        <label for="modalStaffName" class="block text-xs font-semibold text-gray-700 mb-1.5">
+          Nom Complet (Optionnel)
+        </label>
+        <input id="modalStaffName" type="text" name="newStaffName" [(ngModel)]="newStaffName"
+          placeholder="ex: Alice Safari"
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00458f]/40 focus:border-[#00458f] transition" />
+      </div>
+
+      @if (staffErrorMessage()) {
+      <div class="text-xs font-semibold text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
+        {{ staffErrorMessage() }}
+      </div>
+      }
+
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+        <button type="button" (click)="showAddStaffModal.set(false)" [disabled]="isAddingStaff()"
+          class="px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl transition cursor-pointer">
+          Annuler
+        </button>
+        <button type="submit" [disabled]="!newStaffEmail || isAddingStaff()"
+          class="flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-[#00458f] hover:bg-[#003875] disabled:opacity-50 rounded-xl shadow-xs transition cursor-pointer">
+          @if (isAddingStaff()) {
+          <svg class="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+          </svg>
+          <span>Enregistrement...</span>
+          } @else {
+          <span>Valider l'Accès Staff</span>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+}
+
+<!-- ============================================== -->
+<!-- MODAL 3: TRANSFER ADMIN RIGHTS                 -->
 <!-- ============================================== -->
 @if (showTransferModal()) {
 <div
   class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in">
   <div
     class="relative bg-white rounded-3xl w-full max-w-lg min-w-[320px] sm:min-w-[500px] p-6 sm:p-8 shadow-2xl border border-gray-100 animate-pop-in space-y-6 my-auto">
-    <div class="flex items-start gap-4">
+    <div class="flex items-center gap-3">
       <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0">
         <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -326,7 +477,7 @@
 }
 
 <!-- ============================================== -->
-<!-- MODAL 3: REMOVE PRESENTER CONFIRMATION         -->
+<!-- MODAL 4: REMOVE PRESENTER CONFIRMATION         -->
 <!-- ============================================== -->
 @if (viewerToRemove(); as selectedViewer) {
 <div
@@ -357,6 +508,45 @@
         Annuler
       </button>
       <button type="button" (click)="confirmRemoveViewer()"
+        class="px-5 py-2 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl transition cursor-pointer">
+        Supprimer
+      </button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- ============================================== -->
+<!-- MODAL 5: REMOVE STAFF CONFIRMATION             -->
+<!-- ============================================== -->
+@if (staffToRemove(); as selectedStaff) {
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in">
+  <div
+    class="relative bg-white rounded-3xl w-full max-w-md min-w-[300px] sm:min-w-[420px] p-6 sm:p-8 shadow-2xl border border-gray-100 animate-pop-in space-y-5 my-auto">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold text-gray-900">Supprimer ce Membre du Staff ?</h3>
+        <p class="text-xs text-gray-500">Révocation des accès</p>
+      </div>
+    </div>
+
+    <p class="text-sm text-gray-600 leading-relaxed">
+      L'utilisateur <strong class="text-gray-900">{{ selectedStaff.email }}</strong> n'aura plus accès à la gestion des commandes de T-shirts.
+    </p>
+
+    <div class="flex items-center justify-end gap-3 pt-2 border-t border-gray-100">
+      <button type="button" (click)="staffToRemove.set(null)"
+        class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl transition cursor-pointer">
+        Annuler
+      </button>
+      <button type="button" (click)="confirmRemoveStaff()"
         class="px-5 py-2 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl transition cursor-pointer">
         Supprimer
       </button>

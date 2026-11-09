@@ -67,7 +67,7 @@ import { LiveSession } from '../../../../models/live-session.model';
                 name="theme"
                 required
                 placeholder="Ex: Architecture Web Moderne & Angular v20"
-                class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#4285F4] focus:ring-2 focus:ring-[#4285F4]/20 transition"
+                class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#00458f] focus:ring-2 focus:ring-[#00458f]/20 transition"
               />
             </div>
 
@@ -83,7 +83,7 @@ import { LiveSession } from '../../../../models/live-session.model';
                   name="speaker"
                   required
                   placeholder="Ex: Daniella Ansima"
-                  class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#4285F4] focus:ring-2 focus:ring-[#4285F4]/20 transition"
+                  class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#00458f] focus:ring-2 focus:ring-[#00458f]/20 transition"
                 />
               </div>
 
@@ -97,7 +97,7 @@ import { LiveSession } from '../../../../models/live-session.model';
                   name="title"
                   placeholder="Ex: Google Developer Expert (GDE)"
                   required
-                  class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#4285F4] focus:ring-2 focus:ring-[#4285F4]/20 transition"
+                  class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#00458f] focus:ring-2 focus:ring-[#00458f]/20 transition"
                 />
               </div>
             </div>
@@ -128,7 +128,7 @@ import { LiveSession } from '../../../../models/live-session.model';
                     [ngModel]="startsAt()"
                     (ngModelChange)="onStartTimeChange($event)"
                     required
-                    class="w-full px-3.5 py-2 bg-white border rounded-xl text-xs sm:text-sm font-mono focus:outline-none focus:border-[#4285F4] focus:ring-2 focus:ring-[#4285F4]/20 transition"
+                    class="w-full px-3.5 py-2 bg-white border rounded-xl text-xs sm:text-sm font-mono focus:outline-none focus:border-[#00458f] focus:ring-2 focus:ring-[#00458f]/20 transition"
                     [class.border-red-400]="isTimeRangeInvalid()"
                     [class.border-gray-200]="!isTimeRangeInvalid()"
                   />
@@ -142,7 +142,7 @@ import { LiveSession } from '../../../../models/live-session.model';
                     [ngModel]="endsAt()"
                     (ngModelChange)="onEndTimeChange($event)"
                     required
-                    class="w-full px-3.5 py-2 bg-white border rounded-xl text-xs sm:text-sm font-mono focus:outline-none focus:border-[#4285F4] focus:ring-2 focus:ring-[#4285F4]/20 transition"
+                    class="w-full px-3.5 py-2 bg-white border rounded-xl text-xs sm:text-sm font-mono focus:outline-none focus:border-[#00458f] focus:ring-2 focus:ring-[#00458f]/20 transition"
                     [class.border-red-400]="isTimeRangeInvalid()"
                     [class.border-gray-200]="!isTimeRangeInvalid()"
                   />
@@ -204,7 +204,7 @@ import { LiveSession } from '../../../../models/live-session.model';
                     [(ngModel)]="session.track"
                     name="track"
                     placeholder="Ex: Dev Track, AI Track..."
-                    class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#4285F4] focus:ring-2 focus:ring-[#4285F4]/20 transition"
+                    class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#00458f] focus:ring-2 focus:ring-[#00458f]/20 transition"
                   />
                   <datalist id="tracksList">
                     <option value="Dev Track"></option>
@@ -224,7 +224,7 @@ import { LiveSession } from '../../../../models/live-session.model';
                     [(ngModel)]="session.slides"
                     name="slides"
                     placeholder="https://docs.google.com/presentation/d/..."
-                    class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#4285F4] focus:ring-2 focus:ring-[#4285F4]/20 transition"
+                    class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#00458f] focus:ring-2 focus:ring-[#00458f]/20 transition"
                   />
                 </div>
               </div>
@@ -261,7 +261,7 @@ import { LiveSession } from '../../../../models/live-session.model';
                 name="description"
                 rows="3"
                 placeholder="Décrivez les objectifs et les thèmes abordés lors de cette session..."
-                class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#4285F4] focus:ring-2 focus:ring-[#4285F4]/20 transition"
+                class="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#00458f] focus:ring-2 focus:ring-[#00458f]/20 transition"
               ></textarea>
             </div>
 
@@ -300,7 +300,7 @@ import { LiveSession } from '../../../../models/live-session.model';
             <button
               type="submit"
               [disabled]="isTimeRangeInvalid()"
-              class="px-5 py-2.5 bg-[#4285F4] hover:bg-[#3367D6] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-xs sm:text-sm rounded-xl transition cursor-pointer shadow-xs"
+              class="px-5 py-2.5 bg-[#00458f] hover:bg-[#003875] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-xs sm:text-sm rounded-xl transition cursor-pointer shadow-xs"
             >
               {{ editingSession ? 'Mettre à jour' : 'Enregistrer la session' }}
             </button>

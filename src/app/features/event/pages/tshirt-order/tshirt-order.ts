@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormControl, NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { Meta } from '@angular/platform-browser';
 import { TshirtOrderService } from '../../services/tshirt-order.service';
 
 const quantityValidator = (control: AbstractControl): ValidationErrors | null => {
@@ -18,9 +19,10 @@ const sizesValidator = (control: AbstractControl): ValidationErrors | null =>
   templateUrl: './tshirt-order.html',
   styleUrl: './tshirt-order.css',
 })
-export default class TshirtOrder {
+export default class TshirtOrder implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly orderService = inject(TshirtOrderService);
+  private readonly meta = inject(Meta);
 
   readonly sizes = ['S', 'M', 'L', 'XL', 'XXL'] as const;
   readonly places = ['Place Mulamba', 'Place du 24', 'Place de la Paix', 'Poste', 'Feu vert', 'Feu rouge', 'Cap Nguba', 'Rond-point ISP', 'Lycée Wima', 'Campus Mulindwa (UCB)', 'Campus Bugabo (UCB)', 'Campus Karhale (UCB)'];
@@ -53,6 +55,15 @@ export default class TshirtOrder {
         control.updateValueAndValidity();
       }
     });
+  }
+
+  ngOnInit(): void {
+    const imageUrl = 'https://www.devfestkivu.site/assets/t-shirt.png';
+    const altText = 'T-shirt officiel DevFest Kivu';
+    this.meta.updateTag({ property: 'og:image', content: imageUrl });
+    this.meta.updateTag({ property: 'og:image:alt', content: altText });
+    this.meta.updateTag({ name: 'twitter:image', content: imageUrl });
+    this.meta.updateTag({ name: 'twitter:image:alt', content: altText });
   }
 
   get total(): number {

@@ -21,11 +21,11 @@ import { EventConfigService } from '../../../features/event/services/event-confi
           <div class="flex-shrink-0 flex items-center">
             <a routerLink="/" class="flex items-center space-x-3" aria-label="DevFest Kivu, retour à l'accueil">
               <img
-                src="/assets/Logo%20-%20DevFest%20Kivu%202026.png"
+                src="/assets/logo-1.png"
                 alt="DevFest Kivu Logo"
                 class="nav-logo"
-                width="2150"
-                height="612"
+                width="600"
+                height="173"
                 decoding="async"
               />
             </a>
@@ -116,11 +116,11 @@ import { EventConfigService } from '../../../features/event/services/event-confi
         <div class="flex items-center justify-between h-16 px-4 sm:px-6 flex-shrink-0 bg-white">
           <a routerLink="/" (click)="closeMobileMenu()" class="flex items-center space-x-3" aria-label="DevFest Kivu, retour à l'accueil">
             <img
-              src="/assets/Logo%20-%20DevFest%20Kivu%202026.png"
+              src="/assets/logo-1.png"
               alt="DevFest Kivu Logo"
               class="nav-logo"
-              width="2150"
-              height="612"
+              width="600"
+              height="173"
             />
           </a>
           <button

@@ -17,7 +17,14 @@
 .kivu-partners { background: var(--kivu-surface-soft); }
 .kivu-partners__heading { display: flex; justify-content: space-between; align-items: end; gap: 48px; margin-bottom: 48px; }
 .kivu-partners__heading > p { max-width: 365px; line-height: 1.6; }
-.kivu-partners__carousel { overflow-x: auto; }
+.kivu-partners__carousel {
+  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.kivu-partners__carousel::-webkit-scrollbar {
+  display: none;
+}
 .kivu-partners__track { display: flex; width: max-content; }
 .kivu-partners__group { display: flex; justify-content: space-around; gap: 16px; min-width: 100vw; padding-right: 16px; }
 .kivu-partners__item { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; width: 190px; min-height: 145px; padding: 20px; background: #fff; text-align: center; font-size: 14px; font-weight: 700; }

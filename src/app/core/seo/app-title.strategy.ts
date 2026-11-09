@@ -5,6 +5,7 @@ import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 import { EventConfigService } from '../../features/event/services/event-config.service';
 
 const SITE_URL = 'https://www.devfestkivu.site';
+const DEFAULT_IMAGE = `${SITE_URL}/assets/DevFest2026og.png`;
 const DEFAULT_DESCRIPTION =
   'Rejoignez le DevFest Kivu : conférences, ateliers, innovation, networking et technologies Google à Bukavu.';
 
@@ -27,6 +28,13 @@ export class AppTitleStrategy extends TitleStrategy {
     const description: string = route.data['description'] ?? DEFAULT_DESCRIPTION;
     const noindex: boolean = route.data['noindex'] === true;
 
+    const rawImage: string | undefined = route.data['image'];
+    const image = rawImage
+      ? (rawImage.startsWith('http') ? rawImage : `${SITE_URL}${rawImage.startsWith('/') ? '' : '/'}${rawImage}`)
+      : DEFAULT_IMAGE;
+    const imageAlt: string =
+      route.data['imageAlt'] ?? `Affiche du DevFest Kivu ${this.eventConfig.year}`;
+
     const path = snapshot.url.split(/[?#]/)[0];
     const url = `${SITE_URL}${path}`;
 
@@ -40,10 +48,14 @@ export class AppTitleStrategy extends TitleStrategy {
     this.meta.updateTag({ property: 'og:title', content: fullTitle });
     this.meta.updateTag({ property: 'og:description', content: description });
     this.meta.updateTag({ property: 'og:url', content: url });
+    this.meta.updateTag({ property: 'og:image', content: image });
+    this.meta.updateTag({ property: 'og:image:alt', content: imageAlt });
 
     this.meta.updateTag({ name: 'twitter:title', content: fullTitle });
     this.meta.updateTag({ name: 'twitter:description', content: description });
     this.meta.updateTag({ name: 'twitter:url', content: url });
+    this.meta.updateTag({ name: 'twitter:image', content: image });
+    this.meta.updateTag({ name: 'twitter:image:alt', content: imageAlt });
 
     this.setCanonical(url);
   }

@@ -1,4 +1,4 @@
-﻿import { Component, ElementRef, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal } from '@angular/core';
 import {
   NavigationCancel,
   NavigationEnd,
@@ -46,6 +46,7 @@ export class NavBar {
   readonly eventConfig = inject(EventConfigService);
 
   readonly isUserMenuOpen = signal(false);
+  readonly isMobileNavOpen = signal(false);
   readonly photoLoadError = signal(false);
   readonly navigatingUrl = signal<string | null>(null);
 
@@ -66,6 +67,8 @@ export class NavBar {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         this.navigatingUrl.set(event.url);
+        this.isMobileNavOpen.set(false);
+        this.isUserMenuOpen.set(false);
       } else if (
         event instanceof NavigationEnd ||
         event instanceof NavigationCancel ||
@@ -121,11 +124,22 @@ export class NavBar {
 
   toggleUserMenu(event: Event): void {
     event.stopPropagation();
+    this.isMobileNavOpen.set(false);
     this.isUserMenuOpen.update((v) => !v);
   }
 
   closeUserMenu(): void {
     this.isUserMenuOpen.set(false);
+  }
+
+  toggleMobileNav(event: Event): void {
+    event.stopPropagation();
+    this.isUserMenuOpen.set(false);
+    this.isMobileNavOpen.update((v) => !v);
+  }
+
+  closeMobileNav(): void {
+    this.isMobileNavOpen.set(false);
   }
 
   onDocumentClick(event: MouseEvent): void {
@@ -135,6 +149,14 @@ export class NavBar {
         ?.contains(event.target as Node);
       if (!clickedInside) {
         this.closeUserMenu();
+      }
+    }
+    if (this.isMobileNavOpen()) {
+      const clickedInside = this.elementRef.nativeElement
+        .querySelector('.mobile-nav-container')
+        ?.contains(event.target as Node);
+      if (!clickedInside) {
+        this.closeMobileNav();
       }
     }
   }

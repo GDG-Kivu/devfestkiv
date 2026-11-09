@@ -13,7 +13,7 @@ import { FirestoreService } from '../../../../../../core/firestore/firestore.ser
         <!-- Fixed Header -->
         <div class="flex items-center px-6 py-5 border-b border-gray-100 flex-shrink-0 bg-white">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#4285F4] flex items-center justify-center flex-shrink-0">
+            <div class="w-10 h-10 rounded-xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[#00458f] flex items-center justify-center flex-shrink-0">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
               </svg>
@@ -35,7 +35,7 @@ import { FirestoreService } from '../../../../../../core/firestore/firestore.ser
                 [(ngModel)]="editionId"
                 required
                 placeholder="Ex: 2026"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+                class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00458f]/40 focus:border-[#00458f]"
               />
             </div>
 
@@ -46,7 +46,7 @@ import { FirestoreService } from '../../../../../../core/firestore/firestore.ser
                 name="fullName"
                 [(ngModel)]="fullName"
                 placeholder="Ex: DevFest Kivu 2026"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+                class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00458f]/40 focus:border-[#00458f]"
               />
             </div>
 
@@ -57,7 +57,7 @@ import { FirestoreService } from '../../../../../../core/firestore/firestore.ser
                 name="theme"
                 [(ngModel)]="theme"
                 placeholder="Ex: AI & Beyond"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#4285F4]/40"
+                class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00458f]/40 focus:border-[#00458f]"
               />
             </div>
 
@@ -67,7 +67,7 @@ import { FirestoreService } from '../../../../../../core/firestore/firestore.ser
                 id="setAsActive"
                 name="setAsActive"
                 [(ngModel)]="setAsActive"
-                class="w-4 h-4 text-[#4285F4] rounded border-gray-300 focus:ring-[#4285F4]"
+                class="w-4 h-4 text-[#00458f] rounded border-gray-300 focus:ring-[#00458f]"
               />
               <label for="setAsActive" class="text-xs font-semibold text-gray-700 cursor-pointer">
                 Définir immédiatement comme édition active du site public
@@ -94,7 +94,7 @@ import { FirestoreService } from '../../../../../../core/firestore/firestore.ser
             <button
               type="submit"
               [disabled]="isSubmitting()"
-              class="flex items-center gap-2 px-5 py-2.5 bg-[#4285F4] hover:bg-[#3367D6] disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
+              class="flex items-center gap-2 px-5 py-2.5 bg-[#00458f] hover:bg-[#003875] disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
             >
               @if (isSubmitting()) {
                 <svg class="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">

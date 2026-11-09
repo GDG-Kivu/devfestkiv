@@ -6,6 +6,7 @@ import AdminComponent from './admin';
 import { AuthService } from '../../../../core/auth/services/auth.service';
 import { RoleService } from '../../../../core/auth/services/role.service';
 import { FirestoreService } from '../../../../core/firestore/firestore.service';
+import { TshirtOrderService } from '../../../event/services/tshirt-order.service';
 
 describe('AdminComponent', () => {
   let component: AdminComponent;
@@ -13,6 +14,7 @@ describe('AdminComponent', () => {
   let fsMock: any;
   let authMock: any;
   let roleMock: any;
+  let tshirtOrderMock: any;
 
   beforeEach(async () => {
     fsMock = {
@@ -28,7 +30,13 @@ describe('AdminComponent', () => {
     };
     roleMock = {
       isAdmin: signal(true),
+      isViewer: signal(false),
+      isStaff: signal(false),
       transferAdminRole: jasmine.createSpy('transferAdminRole').and.resolveTo(),
+    };
+    tshirtOrderMock = {
+      getOrders: jasmine.createSpy('getOrders').and.returnValue(of([])),
+      updateDelivered: jasmine.createSpy('updateDelivered').and.resolveTo(),
     };
 
     await TestBed.configureTestingModule({
@@ -38,6 +46,7 @@ describe('AdminComponent', () => {
         { provide: FirestoreService, useValue: fsMock },
         { provide: AuthService, useValue: authMock },
         { provide: RoleService, useValue: roleMock },
+        { provide: TshirtOrderService, useValue: tshirtOrderMock },
       ],
     }).compileComponents();
 

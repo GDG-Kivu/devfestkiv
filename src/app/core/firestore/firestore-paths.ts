@@ -11,6 +11,7 @@ export const FIRESTORE_COLLECTIONS = {
   news: 'news',
   remote: 'remote',
   emojis: 'emojis',
+  tshirtOrders: 'tshirtOrders',
 } as const;
 
 export type EventSubcollection =
@@ -24,7 +25,8 @@ export type EventSubcollection =
   | 'emojis'
   | 'gallery'
   | 'albums'
-  | 'questionQuotas';
+  | 'questionQuotas'
+  | 'tshirtOrders';
 
 const eventPath = (editionId: string | number) =>
   `${FIRESTORE_COLLECTIONS.events}/${String(editionId)}`;
@@ -47,4 +49,8 @@ export const firestorePaths = {
     `${eventPath(editionId)}/${collection}`,
   eventDocument: (editionId: string | number, collection: EventSubcollection, documentId: string) =>
     `${eventPath(editionId)}/${collection}/${documentId}`,
+  eventTshirtOrders: (editionId: string | number) =>
+    `${eventPath(editionId)}/${FIRESTORE_COLLECTIONS.tshirtOrders}`,
+  eventTshirtOrder: (editionId: string | number, orderId: string) =>
+    `${eventPath(editionId)}/${FIRESTORE_COLLECTIONS.tshirtOrders}/${orderId}`,
 };

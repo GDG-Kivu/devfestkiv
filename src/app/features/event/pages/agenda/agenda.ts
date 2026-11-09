@@ -290,29 +290,29 @@ export default class AgendaComponent implements OnInit {
     switch (cat) {
       case 'conference':
       case 'conférence':
-        return 'bg-blue-500 text-white'; // Bleu vif
+        return 'bg-[#00458f] text-white'; // DevFest Bleu
       case 'keynote':
-        return 'bg-green-500 text-white'; // Vert vif
+        return 'bg-[#34A853] text-white'; // Google Vert
       case 'talk':
-        return 'bg-red-500 text-white'; // Rouge vif
+        return 'bg-[#fbbc04] text-[#1a1200] font-bold'; // DevFest Jaune
       case 'discussion':
       case 'panel':
-        return 'bg-purple-500 text-white'; // Violet vif
+        return 'bg-purple-600 text-white';
       case 'break':
       case 'pause':
-        return 'bg-slate-400 text-white'; // Gris équilibré
+        return 'bg-slate-400 text-white';
       case 'sponsor':
-        return 'bg-emerald-500 text-white'; // Vert émeraude
+        return 'bg-emerald-600 text-white';
       case 'closing':
       case 'clôture':
-        return 'bg-orange-500 text-white'; // Orange vif
+        return 'bg-[#00458f] text-white';
       case 'workshop':
       case 'atelier':
-        return 'bg-amber-500 text-white'; // Ambre
+        return 'bg-[#EA4335] text-white'; // Google Rouge
       case 'codelab':
-        return 'bg-sky-500 text-white'; // Bleu ciel
+        return 'bg-sky-600 text-white';
       default:
-        return 'bg-blue-500 text-white';
+        return 'bg-[#00458f] text-white';
     }
   }
 }
