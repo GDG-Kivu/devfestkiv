@@ -35,7 +35,7 @@ export interface TshirtOrderData {
 
 export interface DeliveryDetails {
   deliveredBy?: string | null;
-  deliveredAt?: any;
+  deliveredAt?: Date | string | Timestamp | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -48,7 +48,7 @@ export class TshirtOrderService {
   async submit(order: TshirtOrderData, editionId?: string | number): Promise<void> {
     const user = await this.auth.ensureAnonymousOrAuthenticated();
     if (!user) {
-      throw Object.assign(new Error('Anonymous sign-in unavailable'), {
+      throw Object.assign(new Error('Authentification indisponible'), {
         code: 'auth/anonymous-sign-in-failed',
       });
     }
@@ -57,13 +57,13 @@ export class TshirtOrderService {
       ? String(editionId)
       : await firstValueFrom(this.fsService.getCurrentEditionId());
 
-    await runInInjectionContext(this.injector, () =>
+    return runInInjectionContext(this.injector, () =>
       addDoc(collection(this.firestore, firestorePaths.eventTshirtOrders(targetEdition)), {
         ...order,
         editionId: targetEdition,
         uid: user.uid,
         createdAt: serverTimestamp(),
-      }),
+      }).then(() => {}),
     );
   }
 
@@ -83,42 +83,28 @@ export class TshirtOrderService {
     );
   }
 
-  async updateDelivered(
+  updateDelivered(
     orderId: string,
     delivered: boolean,
-    editionId?: string | number,
-    deliveryDetails?: DeliveryDetails,
+    editionId: string | number,
+    details?: DeliveryDetails,
   ): Promise<void> {
+    const targetEdition = String(editionId);
     const user = this.auth.user();
-    const targetEdition = editionId !== undefined
-      ? String(editionId)
-      : await firstValueFrom(this.fsService.getCurrentEditionId());
+    const orderRef = doc(this.firestore, firestorePaths.eventTshirtOrder(targetEdition, orderId));
 
-    await runInInjectionContext(this.injector, () => {
-      const orderRef = doc(this.firestore, firestorePaths.eventTshirtOrder(targetEdition, orderId));
+    const deliveredAt = delivered
+      ? (details?.deliveredAt
+          ? (details.deliveredAt instanceof Timestamp
+              ? details.deliveredAt
+              : Timestamp.fromDate(new Date(details.deliveredAt)))
+          : serverTimestamp())
+      : null;
 
-      let deliveredAtVal: any = null;
-      if (delivered) {
-        if (deliveryDetails?.deliveredAt) {
-          deliveredAtVal = deliveryDetails.deliveredAt instanceof Timestamp
-            ? deliveryDetails.deliveredAt
-            : (deliveryDetails.deliveredAt instanceof Date
-                ? Timestamp.fromDate(deliveryDetails.deliveredAt)
-                : Timestamp.fromDate(new Date(deliveryDetails.deliveredAt)));
-        } else {
-          deliveredAtVal = serverTimestamp();
-        }
-      }
+    const deliveredBy = delivered
+      ? (details?.deliveredBy?.trim() || user?.displayName || user?.email || 'Staff')
+      : null;
 
-      const deliveredByVal = delivered
-        ? (deliveryDetails?.deliveredBy?.trim() || user?.displayName || user?.email || 'staff')
-        : null;
-
-      return updateDoc(orderRef, {
-        delivered,
-        deliveredAt: deliveredAtVal,
-        deliveredBy: deliveredByVal,
-      });
-    });
+    return updateDoc(orderRef, { delivered, deliveredAt, deliveredBy });
   }
 }
