@@ -177,7 +177,12 @@ export class NavBar {
       if (user) {
         const profile = await this.roles.ensureProfile(user);
         if (profile?.disabled !== true) {
-          if (profile?.role === 'admin' || profile?.role === 'viewer' || profile?.role === 'staff') {
+          if (
+            profile?.role === 'admin' ||
+            profile?.role === 'viewer' ||
+            profile?.role === 'staff' ||
+            profile?.role === 'content_manager'
+          ) {
             await this.router.navigateByUrl('/live_q/admin');
           }
         }

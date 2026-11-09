@@ -59,6 +59,16 @@ export class AdminSettings implements OnInit, OnDestroy {
   staffErrorMessage = signal<string | null>(null);
   staffToRemove = signal<UserProfile | null>(null);
 
+  // Content Managers state
+  contentManagers = signal<UserProfile[]>([]);
+  private contentManagersSub?: Subscription;
+  newContentManagerEmail = '';
+  newContentManagerName = '';
+  showAddContentManagerModal = signal(false);
+  isAddingContentManager = signal(false);
+  contentManagerErrorMessage = signal<string | null>(null);
+  contentManagerToRemove = signal<UserProfile | null>(null);
+
   // Admin Transfer state
   newEmail = '';
   showTransferModal = signal(false);
@@ -71,6 +81,9 @@ export class AdminSettings implements OnInit, OnDestroy {
     });
     this.staffSub = this.roles.getStaffMembers().subscribe((sList) => {
       this.staffMembers.set(sList);
+    });
+    this.contentManagersSub = this.roles.getContentManagers().subscribe((cList) => {
+      this.contentManagers.set(cList);
     });
   }
 
@@ -227,6 +240,53 @@ export class AdminSettings implements OnInit, OnDestroy {
     }
   }
 
+  // --- CONTENT MANAGERS METHODS ---
+  openAddContentManagerModal(): void {
+    this.newContentManagerEmail = '';
+    this.newContentManagerName = '';
+    this.contentManagerErrorMessage.set(null);
+    this.showAddContentManagerModal.set(true);
+  }
+
+  async submitAddContentManager(): Promise<void> {
+    if (!this.newContentManagerEmail.trim()) {
+      this.contentManagerErrorMessage.set('L\'adresse email est obligatoire.');
+      return;
+    }
+
+    this.isAddingContentManager.set(true);
+    this.contentManagerErrorMessage.set(null);
+
+    try {
+      await this.roles.addContentManager(
+        this.newContentManagerEmail.trim(),
+        this.newContentManagerName.trim()
+      );
+      this.newContentManagerEmail = '';
+      this.newContentManagerName = '';
+      this.showAddContentManagerModal.set(false);
+    } catch (err: any) {
+      this.contentManagerErrorMessage.set(err?.message || 'Erreur lors de l\'ajout du gestionnaire de contenu.');
+    } finally {
+      this.isAddingContentManager.set(false);
+    }
+  }
+
+  openRemoveContentManagerConfirm(member: UserProfile): void {
+    this.contentManagerToRemove.set(member);
+  }
+
+  async confirmRemoveContentManager(): Promise<void> {
+    const c = this.contentManagerToRemove();
+    if (!c) return;
+    try {
+      await this.roles.removeContentManager(c.uid);
+      this.contentManagerToRemove.set(null);
+    } catch {
+      this.contentManagerToRemove.set(null);
+    }
+  }
+
   // --- ADMIN TRANSFER METHODS ---
   openTransferModal(): void {
     this.newEmail = '';
@@ -264,6 +324,7 @@ export class AdminSettings implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.viewersSub?.unsubscribe();
     this.staffSub?.unsubscribe();
+    this.contentManagersSub?.unsubscribe();
   }
 }
 export default AdminSettings;

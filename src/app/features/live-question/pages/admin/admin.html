@@ -1,6 +1,7 @@
 <div class="min-h-screen bg-gray-50/50 py-8 px-4 sm:px-6 lg:px-8">
   <div class="max-w-7xl mx-auto space-y-6">
-    <!-- Admin Tab Header -->
+    <!-- Admin Tab Header (only if role has access to multiple tabs) -->
+    @if (accessibleTabsCount() > 1) {
     <div class="bg-white rounded-2xl px-4 sm:px-6 pt-4 pb-0 shadow-xs border border-gray-100">
       <!-- Clean Horizontal Tab Strip -->
       <div class="flex items-center border-b border-gray-200 overflow-x-auto gap-2 sm:gap-6 -mb-2 pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -53,8 +54,8 @@
           </button>
         }
 
-        <!-- Tab 3: Module CMS (Admin only) -->
-        @if (roles.isAdmin()) {
+        <!-- Tab 3: Module CMS (Admin & Content Manager) -->
+        @if (roles.isAdmin() || roles.isContentManager()) {
           <button
             type="button"
             (click)="activeTab.set('cms')"
@@ -95,6 +96,7 @@
         }
       </div>
     </div>
+    }
 
     <!-- TAB 1: SESSIONS LIVE (Admin & Presenter) -->
     @if (activeTab() === 'sessions' && (roles.isAdmin() || roles.isViewer())) {
@@ -165,8 +167,8 @@
       <app-admin-tshirt-orders />
     }
 
-    <!-- TAB 3: CMS MODULE (Admin only) -->
-    @if (activeTab() === 'cms' && roles.isAdmin()) {
+    <!-- TAB 3: CMS MODULE (Admin & Content Manager) -->
+    @if (activeTab() === 'cms' && (roles.isAdmin() || roles.isContentManager())) {
       <app-admin-cms />
     }
 

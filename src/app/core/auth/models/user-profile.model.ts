@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'viewer' | 'staff' | 'participant';
+export type UserRole = 'admin' | 'viewer' | 'staff' | 'content_manager' | 'participant';
 
 /**
  * Represents a user profile stored in Firestore and loaded into the session.

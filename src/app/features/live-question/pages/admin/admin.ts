@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminSettings } from './admin-settings/admin-settings';
 import { AdminCms } from './admin-cms/admin-cms';
@@ -33,6 +33,15 @@ export default class AdminComponent implements OnInit, OnDestroy {
   sessionsLoading = signal(true);
   speakersSub!: Subscription;
 
+  readonly accessibleTabsCount = computed(() => {
+    let count = 0;
+    if (this.roles.isAdmin() || this.roles.isViewer()) count++;
+    if (this.roles.isAdmin() || this.roles.isStaff()) count++;
+    if (this.roles.isAdmin() || this.roles.isContentManager()) count++;
+    if (this.roles.isAdmin()) count++;
+    return count;
+  });
+
   constructor() {
     effect(() => {
       // Adjust default active tab based on active role
@@ -40,6 +49,8 @@ export default class AdminComponent implements OnInit, OnDestroy {
         this.activeTab.set('tshirts');
       } else if (this.roles.isViewer() && !this.roles.isAdmin()) {
         this.activeTab.set('sessions');
+      } else if (this.roles.isContentManager() && !this.roles.isAdmin()) {
+        this.activeTab.set('cms');
       }
     });
   }
