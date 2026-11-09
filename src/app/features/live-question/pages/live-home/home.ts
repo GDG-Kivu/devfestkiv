@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
     <!-- HERO SECTION -->
     <!-- ========================== -->
     <section
-      class="relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-gray-100 py-12 sm:py-20 md:py-24 min-h-[65vh] sm:min-h-[75vh] flex items-center justify-center w-full max-w-full px-4 sm:px-6 md:px-8"
+      class="relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-gray-100 pt-6 pb-10 sm:py-16 md:py-20 min-h-0 sm:min-h-[45vh] flex items-center justify-center w-full max-w-full px-4 sm:px-6 md:px-8"
     >
       <!-- Background Deco -->
       <div class="absolute inset-0 overflow-hidden opacity-50 animate-fade-in pointer-events-none">
@@ -32,14 +32,14 @@ import { Subscription } from 'rxjs';
       </div>
 
       <!-- Hero Content -->
-      <div class="relative z-10 max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
+      <div class="relative z-10 max-w-4xl mx-auto text-center space-y-4 sm:space-y-6">
         <!-- Heading -->
         <div class="animate-slide-up" style="animation-delay:0.2s;">
           <h1
-            class="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-tight mb-4"
+            class="text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-tight mb-3 sm:mb-4"
           >
             Posez vos questions
-            <span class="block text-[#34A853] mt-2 sm:mt-3 break-words">anonymement</span>
+            <span class="block text-[#34A853] mt-1.5 sm:mt-3 break-words">anonymement</span>
           </h1>
           <p
             class="text-sm sm:text-base md:text-lg text-gray-600 font-normal max-w-2xl mx-auto leading-relaxed px-2"

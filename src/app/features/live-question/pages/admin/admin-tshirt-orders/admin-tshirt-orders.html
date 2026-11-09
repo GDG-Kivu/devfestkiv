@@ -1,14 +1,48 @@
 <div class="space-y-6 animate-fade-in">
-  <!-- Top Metrics Overview — 3 cards: Commandes+Pièces merged, Livrées, En Attente -->
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+  <!-- Edition Selector & Header Bar -->
+  <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h2 class="text-base sm:text-lg font-bold text-gray-900">Commandes de T-shirts</h2>
+      <p class="text-xs text-gray-500">Suivi et remise des t-shirts du festival par édition</p>
+    </div>
+
+    <!-- Edition Switcher Dropdown -->
+    <div class="flex items-center gap-2 bg-gray-50 px-3.5 py-2 rounded-xl border border-gray-200">
+      <label for="tshirtEditionSelector" class="text-xs font-bold text-gray-700 whitespace-nowrap">
+        Édition :
+      </label>
+      <select
+        id="tshirtEditionSelector"
+        [ngModel]="selectedEditionId()"
+        (ngModelChange)="onEditionChange($event)"
+        class="bg-transparent text-xs sm:text-sm font-bold text-gray-900 focus:outline-none cursor-pointer pr-2"
+      >
+        @for (ed of availableEditions(); track ed) {
+          <option [value]="ed">
+            {{ ed }} {{ ed === liveEditionId() ? '★ (En ligne)' : '' }}
+          </option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Top Metrics Overview — 3 cards: Commandes+Pièces merged, Livrées, En Attente (horizontal on mobile) -->
+  <div class="grid grid-cols-3 gap-2 sm:gap-4">
     <!-- Metric: Commandes & Pièces (merged) -->
-    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center justify-between">
-      <div>
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Commandes</p>
-        <p class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">{{ totalOrders() }}</p>
-        <p class="text-xs text-gray-400 mt-0.5">{{ totalTshirts() }} pièce(s) à produire</p>
+    <div class="bg-white rounded-xl sm:rounded-2xl p-2.5 sm:p-5 border border-gray-100 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 min-w-0">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center justify-between sm:block">
+          <p class="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider truncate">Commandes</p>
+          <div class="sm:hidden w-6 h-6 rounded-lg bg-[var(--kivu-surface-soft,#f3f6fa)] text-[var(--kivu-secondary,#00458f)] flex items-center justify-center flex-shrink-0">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+          </div>
+        </div>
+        <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 mt-0.5 sm:mt-1 leading-tight">{{ totalOrders() }}</p>
+        <p class="text-[10px] sm:text-xs text-gray-400 mt-0.5 truncate">{{ totalTshirts() }} pièce(s)<span class="hidden sm:inline"> à produire</span></p>
       </div>
-      <div class="w-12 h-12 rounded-2xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[var(--kivu-secondary,#00458f)] flex items-center justify-center flex-shrink-0">
+      <div class="hidden sm:flex w-12 h-12 rounded-2xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[var(--kivu-secondary,#00458f)] items-center justify-center flex-shrink-0">
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
         </svg>
@@ -16,13 +50,23 @@
     </div>
 
     <!-- Metric: Delivered Orders -->
-    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center justify-between">
-      <div>
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Livrées / Remises</p>
-        <p class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">{{ deliveredOrders() }}</p>
-        <p class="text-xs text-gray-400 mt-0.5">{{ deliveryPercentage() }}% des commandes</p>
+    <div class="bg-white rounded-xl sm:rounded-2xl p-2.5 sm:p-5 border border-gray-100 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 min-w-0">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center justify-between sm:block">
+          <p class="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider truncate">
+            <span class="sm:hidden">Livrées</span>
+            <span class="hidden sm:inline">Livrées / Remises</span>
+          </p>
+          <div class="sm:hidden w-6 h-6 rounded-lg bg-[var(--kivu-surface-soft,#f3f6fa)] text-[var(--kivu-secondary,#00458f)] flex items-center justify-center flex-shrink-0">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+        </div>
+        <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 mt-0.5 sm:mt-1 leading-tight">{{ deliveredOrders() }}</p>
+        <p class="text-[10px] sm:text-xs text-gray-400 mt-0.5 truncate">{{ deliveryPercentage() }}%<span class="hidden sm:inline"> des commandes</span></p>
       </div>
-      <div class="w-12 h-12 rounded-2xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[var(--kivu-secondary,#00458f)] flex items-center justify-center flex-shrink-0">
+      <div class="hidden sm:flex w-12 h-12 rounded-2xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[var(--kivu-secondary,#00458f)] items-center justify-center flex-shrink-0">
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
         </svg>
@@ -30,13 +74,23 @@
     </div>
 
     <!-- Metric: Pending Orders -->
-    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center justify-between">
-      <div>
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">En Attente</p>
-        <p class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">{{ pendingOrders() }}</p>
-        <p class="text-xs text-gray-400 mt-0.5">À remettre aux participants</p>
+    <div class="bg-white rounded-xl sm:rounded-2xl p-2.5 sm:p-5 border border-gray-100 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 min-w-0">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center justify-between sm:block">
+          <p class="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider truncate">En Attente</p>
+          <div class="sm:hidden w-6 h-6 rounded-lg bg-[var(--kivu-surface-soft,#f3f6fa)] text-[var(--kivu-secondary,#00458f)] flex items-center justify-center flex-shrink-0">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        </div>
+        <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 mt-0.5 sm:mt-1 leading-tight">{{ pendingOrders() }}</p>
+        <p class="text-[10px] sm:text-xs text-gray-400 mt-0.5 truncate">
+          <span class="sm:hidden">À remettre</span>
+          <span class="hidden sm:inline">À remettre aux participants</span>
+        </p>
       </div>
-      <div class="w-12 h-12 rounded-2xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[var(--kivu-secondary,#00458f)] flex items-center justify-center flex-shrink-0">
+      <div class="hidden sm:flex w-12 h-12 rounded-2xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[var(--kivu-secondary,#00458f)] items-center justify-center flex-shrink-0">
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
@@ -142,11 +196,11 @@
         </button>
       </div>
 
-      <!-- Location Filter -->
+      <!-- Location Filter Dropdown -->
       <select
         [ngModel]="locationFilter()"
         (ngModelChange)="locationFilter.set($event)"
-        class="px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00458f]/40 cursor-pointer"
+        class="bg-gray-100 text-gray-700 text-xs font-semibold py-2 px-3 rounded-xl border-none focus:outline-none cursor-pointer"
       >
         <option value="all">Tous les lieux</option>
         <option value="event">À l'événement</option>
@@ -161,7 +215,7 @@
       <div>
         <h3 class="text-base font-bold text-gray-900">Liste des Commandes de T-shirts</h3>
         <p class="text-xs text-gray-500 mt-0.5">
-          {{ filteredOrders().length }} commande(s) affichée(s)
+          {{ filteredOrders().length }} commande(s) affichée(s) pour l'édition {{ selectedEditionId() }}
         </p>
       </div>
     </div>
@@ -176,14 +230,14 @@
         <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
         </svg>
-        Aucune commande ne correspond aux critères sélectionnés.
+        Aucune commande ne correspond aux critères sélectionnés pour cette édition.
       </div>
     } @else {
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse text-xs sm:text-sm">
           <thead>
             <tr class="bg-gray-50/80 border-b border-gray-100 text-gray-600 font-semibold text-xs uppercase tracking-wider">
-              <th scope="col" class="py-3 px-4 w-28 text-center">Statut</th>
+              <th scope="col" class="py-3 px-4 w-36 text-center">Statut</th>
               <th scope="col" class="py-3 px-4">Participant</th>
               <th scope="col" class="py-3 px-4">Contact</th>
               <th scope="col" class="py-3 px-4">Lieu de Retrait</th>
@@ -198,25 +252,41 @@
                 class="hover:bg-gray-50/70 transition"
                 [class.bg-emerald-50/30]="order.delivered"
               >
-                <!-- Status / Delivery toggle -->
+                <!-- Status / Delivery dialog trigger -->
                 <td class="py-3.5 px-4 text-center">
-                  <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      [checked]="order.delivered === true"
-                      (change)="toggleDelivered(order)"
-                      class="w-4 h-4 rounded text-[#00458f] focus:ring-[#00458f] border-gray-300 transition cursor-pointer"
-                    />
-                    <span
-                      class="text-[11px] font-bold px-2 py-0.5 rounded-full"
-                      [class.bg-emerald-100]="order.delivered === true"
+                  <button
+                    type="button"
+                    (click)="openDeliveryModal(order)"
+                    class="inline-flex flex-col items-center gap-1 cursor-pointer group text-center"
+                    title="Cliquer pour renseigner la date et le livreur"
+                  >
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border transition"
+                      [class.bg-emerald-50]="order.delivered === true"
+                      [class.border-emerald-200]="order.delivered === true"
                       [class.text-emerald-800]="order.delivered === true"
-                      [class.bg-amber-100]="!order.delivered"
+                      [class.hover:bg-emerald-100]="order.delivered === true"
+                      [class.bg-amber-50]="!order.delivered"
+                      [class.border-amber-200]="!order.delivered"
                       [class.text-amber-800]="!order.delivered"
+                      [class.hover:bg-amber-100]="!order.delivered"
                     >
-                      {{ order.delivered === true ? 'Livré' : 'En attente' }}
-                    </span>
-                  </label>
+                      <span class="w-2 h-2 rounded-full"
+                        [class.bg-emerald-500]="order.delivered === true"
+                        [class.bg-amber-500]="!order.delivered"
+                      ></span>
+                      <span class="text-xs font-bold">
+                        {{ order.delivered === true ? 'Livré' : 'En attente' }}
+                      </span>
+                      <svg class="w-3 h-3 text-gray-400 group-hover:text-gray-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                    </div>
+                    @if (order.delivered === true && order.deliveredBy) {
+                      <span class="text-[10px] text-gray-500 font-medium">
+                        Par: {{ order.deliveredBy }}
+                      </span>
+                    }
+                  </button>
                 </td>
 
                 <!-- Participant Name -->
@@ -295,5 +365,151 @@
       </div>
     }
   </div>
-</div>
 
+  <!-- Delivery Confirmation & Details Modal Dialog -->
+  @if (deliveryModalOrder(); as modalOrder) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in" (click)="closeDeliveryModal()">
+      <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-gray-100 overflow-hidden animate-pop-in" (click)="$event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-blue-50 text-[#00458f] flex items-center justify-center">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-gray-900">
+                {{ modalOrder.delivered ? 'Détails de la livraison' : 'Confirmer la remise du t-shirt' }}
+              </h3>
+              <p class="text-xs text-gray-500">Commande de {{ modalOrder.name }}</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            (click)="closeDeliveryModal()"
+            class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+          >
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 space-y-4">
+          <!-- Order Summary Card -->
+          <div class="bg-[var(--kivu-surface-soft,#f3f6fa)] rounded-xl p-3 border border-gray-100 text-xs space-y-1.5">
+            <div class="flex justify-between items-center text-gray-700">
+              <span class="font-medium text-gray-500">Lieu de retrait :</span>
+              <span class="font-semibold">{{ modalOrder.location }} {{ modalOrder.commune ? '• ' + modalOrder.commune : '' }}</span>
+            </div>
+            <div class="flex justify-between items-center text-gray-700">
+              <span class="font-medium text-gray-500">Quantité totale :</span>
+              <span class="font-bold text-[#00458f]">{{ getOrderTotal(modalOrder) }} pièce(s)</span>
+            </div>
+            @if (modalOrder.delivered && modalOrder.deliveredAt) {
+              <div class="flex justify-between items-center text-gray-700 pt-1 border-t border-gray-200/60">
+                <span class="font-medium text-gray-500">Remis précédemment le :</span>
+                <span class="font-semibold text-emerald-800">{{ formatDate(modalOrder.deliveredAt) }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Deliverer Name Field -->
+          <div>
+            <label for="deliveredByField" class="block text-xs font-bold text-gray-700 mb-1.5">
+              Nom de la personne ayant livré / remis *
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <input
+                id="deliveredByField"
+                type="text"
+                [ngModel]="deliveryDeliveredBy()"
+                (ngModelChange)="deliveryDeliveredBy.set($event)"
+                placeholder="Ex: Patrick Musole"
+                class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00458f]/30 focus:border-[#00458f] transition"
+              />
+            </div>
+            <p class="text-[11px] text-gray-400 mt-1">
+              Pré-rempli automatiquement avec votre nom d'utilisateur connecté.
+            </p>
+          </div>
+
+          <!-- Delivery Date & Time Field -->
+          <div>
+            <label for="deliveredAtField" class="block text-xs font-bold text-gray-700 mb-1.5">
+              Date et heure de remise *
+            </label>
+            <div class="relative">
+              <input
+                id="deliveredAtField"
+                type="datetime-local"
+                [ngModel]="deliveryDeliveredAt()"
+                (ngModelChange)="deliveryDeliveredAt.set($event)"
+                class="w-full px-3 py-2 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00458f]/30 focus:border-[#00458f] transition"
+              />
+            </div>
+            <p class="text-[11px] text-gray-400 mt-1">
+              Pré-rempli avec la date et l'heure courantes.
+            </p>
+          </div>
+
+          @if (deliveryError()) {
+            <div class="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700">
+              {{ deliveryError() }}
+            </div>
+          }
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="px-6 py-4 bg-gray-50/80 border-t border-gray-100 flex items-center justify-between gap-3">
+          @if (modalOrder.delivered) {
+            <button
+              type="button"
+              (click)="confirmDelivery(false)"
+              [disabled]="isSubmittingDelivery()"
+              class="px-3.5 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 border border-red-200 rounded-xl transition cursor-pointer"
+            >
+              Remettre en attente
+            </button>
+          } @else {
+            <button
+              type="button"
+              (click)="closeDeliveryModal()"
+              [disabled]="isSubmittingDelivery()"
+              class="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition cursor-pointer"
+            >
+              Annuler
+            </button>
+          }
+
+          <button
+            type="button"
+            (click)="confirmDelivery(true)"
+            [disabled]="isSubmittingDelivery() || !deliveryDeliveredBy().trim()"
+            class="flex items-center gap-1.5 px-5 py-2 bg-[#00458f] hover:bg-[#003875] disabled:bg-gray-300 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-xs transition cursor-pointer ml-auto"
+          >
+            @if (isSubmittingDelivery()) {
+              <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>Enregistrement...</span>
+            } @else {
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>{{ modalOrder.delivered ? 'Mettre à jour' : 'Valider la livraison' }}</span>
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

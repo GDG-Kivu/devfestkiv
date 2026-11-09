@@ -7,6 +7,8 @@ describe('firestorePaths', () => {
       'events/2026/sessions/session-1/questions',
     );
     expect(firestorePaths.questionQuota('2026', 'uid-1')).toBe('events/2026/questionQuotas/uid-1');
+    expect(firestorePaths.eventTshirtOrders('2026')).toBe('events/2026/tshirtOrders');
+    expect(firestorePaths.eventTshirtOrder('2026', 'order-1')).toBe('events/2026/tshirtOrders/order-1');
   });
 
   it('uses a single partners collection and global profile/settings documents', () => {

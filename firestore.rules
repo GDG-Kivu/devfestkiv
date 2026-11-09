@@ -53,7 +53,7 @@ service cloud.firestore {
 
       function validOrder(data) {
         return data.keys().hasAll(['uid', 'name', 'email', 'phone', 'location', 'commune', 'place', 'sizes', 'createdAt'])
-          && data.keys().hasOnly(['uid', 'name', 'email', 'phone', 'location', 'commune', 'place', 'sizes', 'createdAt'])
+          && data.keys().hasOnly(['uid', 'name', 'email', 'phone', 'location', 'commune', 'place', 'sizes', 'createdAt', 'editionId'])
           && data.uid == request.auth.uid
           && data.name is string && data.name.size() > 0 && data.name.size() <= 120
           && data.email is string && data.email.size() <= 254 && data.email.matches('^.+@.+$')
@@ -81,6 +81,38 @@ service cloud.firestore {
     match /events/{editionId} {
       allow read: if true;
       allow write: if isAdmin();
+
+      // T-shirt orders subcollection scoped to edition
+      match /tshirtOrders/{orderId} {
+        function validQuantity(value) {
+          return value is int && value >= 0 && value <= 99;
+        }
+
+        function validOrder(data) {
+          return data.keys().hasAll(['uid', 'name', 'email', 'phone', 'location', 'commune', 'place', 'sizes', 'createdAt'])
+            && data.keys().hasOnly(['uid', 'name', 'email', 'phone', 'location', 'commune', 'place', 'sizes', 'createdAt', 'editionId'])
+            && data.uid == request.auth.uid
+            && data.name is string && data.name.size() > 0 && data.name.size() <= 120
+            && data.email is string && data.email.size() <= 254 && data.email.matches('^.+@.+$')
+            && data.phone is string && data.phone.size() > 0 && data.phone.size() <= 40
+            && data.location in ['Bukavu', 'À l\'événement']
+            && data.commune is string && data.place is string
+            && ((data.location == 'Bukavu'
+              && data.commune in ['Ibanda', 'Kadutu', 'Bagira']
+              && data.place in ['Place Mulamba', 'Place du 24', 'Place de la Paix', 'Poste', 'Feu vert', 'Feu rouge', 'Cap Nguba', 'Rond-point ISP', 'Lycée Wima', 'Campus Mulindwa (UCB)', 'Campus Bugabo (UCB)', 'Campus Karhale (UCB)'])
+              || (data.location == 'À l\'événement' && data.commune == '' && data.place == ''))
+            && data.sizes is map && data.sizes.keys().hasAll(['S', 'M', 'L', 'XL', 'XXL'])
+            && data.sizes.keys().hasOnly(['S', 'M', 'L', 'XL', 'XXL'])
+            && validQuantity(data.sizes.S) && validQuantity(data.sizes.M) && validQuantity(data.sizes.L)
+            && validQuantity(data.sizes.XL) && validQuantity(data.sizes.XXL)
+            && (data.sizes.S + data.sizes.M + data.sizes.L + data.sizes.XL + data.sizes.XXL) > 0
+            && data.createdAt == request.time;
+        }
+
+        allow create: if signedIn() && validOrder(request.resource.data);
+        allow read, update: if isStaff();
+        allow delete: if isAdmin();
+      }
 
       // Live sessions and questions
       match /sessions/{sessionId} {
