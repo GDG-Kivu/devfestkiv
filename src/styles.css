@@ -1,33 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'tailwindcss';
 
-@font-face {
-  font-family: 'Google Sans';
-  src: url('/font/GoogleSans-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans';
-  src: url('/font/%20GoogleSans-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans';
-  src: url('/font/%20GoogleSans-Bold.ttf') format('truetype');
-  font-weight: 700 900;
-  font-display: swap;
-}
-
+/* Local Google Sans font fallback (if font files are provided in /public/font/) */
 html, body, button, input, select, textarea {
-  font-family: 'Google Sans', sans-serif;
+  font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 svg text {
-  font-family: 'Google Sans', sans-serif;
+  font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 :root {
@@ -65,8 +45,7 @@ app-site:has(app-tshirt-order) {
   --kivu-primary: #e8c270;
 }
 
-app-site:has(app-home) app-footer,
-app-site:has(app-tshirt-order) app-footer {
+app-footer {
   --footer-background: #202b26;
 }
 

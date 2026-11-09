@@ -26,6 +26,13 @@ service cloud.firestore {
         && getUserData().disabled != true;
     }
 
+    function isStaff() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && (getUserData().role == 'admin' || getUserData().role == 'staff')
+        && getUserData().disabled != true;
+    }
+
     // User profiles collection
     match /users/{uid} {
       allow read: if true;
@@ -66,7 +73,8 @@ service cloud.firestore {
       }
 
       allow create: if signedIn() && validOrder(request.resource.data);
-      allow read, update, delete: if false;
+      allow read, update: if isStaff();
+      allow delete: if isAdmin();
     }
 
     // Event edition documents and subcollections
@@ -77,13 +85,13 @@ service cloud.firestore {
       // Live sessions and questions
       match /sessions/{sessionId} {
         allow read: if true;
-        allow write: if isAdmin();
+        allow write: if isAdmin() || isViewer();
 
         match /questions/{questionId} {
           allow read: if true;
           // Allows both anonymous and Google signed-in users to post questions
           allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
-          allow update, delete: if isAdmin();
+          allow update, delete: if isAdmin() || isViewer();
         }
       }
 

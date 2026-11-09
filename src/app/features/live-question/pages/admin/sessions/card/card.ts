@@ -110,7 +110,7 @@ import { LiveSession } from '../../../../models/live-session.model';
           <div class="flex items-center gap-2">
             <button
               (click)="vieuwDialog(session)"
-              class="px-3 py-1.5 text-xs font-semibold bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition cursor-pointer"
+              class="px-3 py-1.5 text-xs font-semibold bg-[#00458f] hover:bg-[#003875] text-white rounded-lg transition cursor-pointer"
             >
               Voir
             </button>

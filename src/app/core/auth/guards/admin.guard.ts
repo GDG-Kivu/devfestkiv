@@ -8,5 +8,5 @@ export const adminGuard: CanActivateFn = async () => {
   const roles = inject(RoleService);
   const router = inject(Router);
   const user = await auth.ensureAuthenticated();
-  return (await roles.isCurrentUserAdmin(user)) ? true : router.createUrlTree(['/live_q']);
+  return (await roles.canCurrentUserAccessAdmin(user)) ? true : router.createUrlTree(['/live_q']);
 };

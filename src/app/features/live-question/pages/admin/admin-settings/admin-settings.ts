@@ -49,6 +49,16 @@ export class AdminSettings implements OnInit, OnDestroy {
   viewerErrorMessage = signal<string | null>(null);
   viewerToRemove = signal<UserProfile | null>(null);
 
+  // Staff state
+  staffMembers = signal<UserProfile[]>([]);
+  private staffSub?: Subscription;
+  newStaffEmail = '';
+  newStaffName = '';
+  showAddStaffModal = signal(false);
+  isAddingStaff = signal(false);
+  staffErrorMessage = signal<string | null>(null);
+  staffToRemove = signal<UserProfile | null>(null);
+
   // Admin Transfer state
   newEmail = '';
   showTransferModal = signal(false);
@@ -58,6 +68,9 @@ export class AdminSettings implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.viewersSub = this.roles.getViewers().subscribe((vList) => {
       this.viewers.set(vList);
+    });
+    this.staffSub = this.roles.getStaffMembers().subscribe((sList) => {
+      this.staffMembers.set(sList);
     });
   }
 
@@ -169,6 +182,51 @@ export class AdminSettings implements OnInit, OnDestroy {
     }
   }
 
+  // --- STAFF METHODS ---
+  openAddStaffModal(): void {
+    this.newStaffEmail = '';
+    this.newStaffName = '';
+    this.staffErrorMessage.set(null);
+    this.showAddStaffModal.set(true);
+  }
+
+  async submitAddStaff(): Promise<void> {
+    if (!this.newStaffEmail.trim()) {
+      this.staffErrorMessage.set('L\'adresse email est obligatoire.');
+      return;
+    }
+    this.isAddingStaff.set(true);
+    this.staffErrorMessage.set(null);
+    try {
+      await this.roles.addStaff(
+        this.newStaffEmail.trim(),
+        this.newStaffName.trim()
+      );
+      this.newStaffEmail = '';
+      this.newStaffName = '';
+      this.showAddStaffModal.set(false);
+    } catch (err: any) {
+      this.staffErrorMessage.set(err?.message || 'Erreur lors de l\'ajout du membre du staff.');
+    } finally {
+      this.isAddingStaff.set(false);
+    }
+  }
+
+  openRemoveStaffConfirm(member: UserProfile): void {
+    this.staffToRemove.set(member);
+  }
+
+  async confirmRemoveStaff(): Promise<void> {
+    const s = this.staffToRemove();
+    if (!s) return;
+    try {
+      await this.roles.removeStaff(s.uid);
+      this.staffToRemove.set(null);
+    } catch {
+      this.staffToRemove.set(null);
+    }
+  }
+
   // --- ADMIN TRANSFER METHODS ---
   openTransferModal(): void {
     this.newEmail = '';
@@ -205,6 +263,7 @@ export class AdminSettings implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.viewersSub?.unsubscribe();
+    this.staffSub?.unsubscribe();
   }
 }
 export default AdminSettings;

@@ -19,11 +19,11 @@ import { ShareService } from '../../../features/event/services/share.service';
           <div class="space-y-4">
             <div>
               <img
-                src="/assets/Logo%20-%20DevFest%20Kivu%202026.png"
+                src="/assets/dark-logo.png"
                 alt="DevFest Kivu Logo"
-                class="h-12 w-auto bg-white p-1 rounded-sm"
-                width="2150"
-                height="612"
+                class="h-10 w-auto"
+                width="865"
+                height="289"
                 loading="lazy"
               />
             </div>
@@ -265,7 +265,7 @@ import { ShareService } from '../../../features/event/services/share.service';
     }
   `,
   styles: `
-    .footer { background: var(--footer-background, var(--kivu-secondary)); color: white; }
+    .footer { background: var(--footer-background, #202b26); color: white; }
     .footer__inner { width: min(100% - 48px, 1264px); }
     .footer h3 { color: var(--kivu-primary); letter-spacing: 0; }
     .footer nav a { color: #e1e9f8; }

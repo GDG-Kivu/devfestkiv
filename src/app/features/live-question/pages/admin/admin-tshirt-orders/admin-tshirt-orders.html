@@ -1,0 +1,313 @@
+<div class="space-y-6 animate-fade-in">
+  <!-- Top Metrics Overview -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Metric: Total Orders -->
+    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Commandes Totales</p>
+        <p class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">{{ totalOrders() }}</p>
+        <p class="text-xs text-gray-400 mt-0.5">Demandes enregistrées</p>
+      </div>
+      <div class="w-12 h-12 rounded-2xl bg-blue-50 text-[#00458f] flex items-center justify-center flex-shrink-0">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Metric: Total T-shirts items -->
+    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">T-shirts Commandés</p>
+        <p class="text-2xl sm:text-3xl font-extrabold text-[#00458f] mt-1">{{ totalTshirts() }}</p>
+        <p class="text-xs text-gray-400 mt-0.5">Pièces totales à produire</p>
+      </div>
+      <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Metric: Delivered Orders -->
+    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Livrées / Remises</p>
+        <p class="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-1">{{ deliveredOrders() }}</p>
+        <p class="text-xs text-gray-400 mt-0.5">{{ deliveryPercentage() }}% des commandes</p>
+      </div>
+      <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Metric: Pending Orders -->
+    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">En Attente</p>
+        <p class="text-2xl sm:text-3xl font-extrabold text-amber-600 mt-1">{{ pendingOrders() }}</p>
+        <p class="text-xs text-gray-400 mt-0.5">À remettre aux participants</p>
+      </div>
+      <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Breakdown Details: Sizes & Locations -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Sizes Breakdown -->
+    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3">
+      <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+        <h3 class="text-sm font-bold text-gray-900">Répartition par Tailles</h3>
+        <span class="text-xs text-gray-500 font-medium">{{ totalTshirts() }} pièce(s)</span>
+      </div>
+      <div class="grid grid-cols-5 gap-2 pt-1 text-center">
+        @for (size of availableSizes; track size) {
+          <div class="bg-gray-50 rounded-xl p-2.5 border border-gray-100">
+            <span class="text-xs font-bold text-gray-600 block">{{ size }}</span>
+            <span class="text-lg font-extrabold text-[#00458f] mt-0.5 block">
+              {{ sizesBreakdown()[size] || 0 }}
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Locations Breakdown -->
+    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs space-y-3">
+      <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+        <h3 class="text-sm font-bold text-gray-900">Points de Retrait</h3>
+        <span class="text-xs text-gray-500 font-medium">{{ totalOrders() }} commande(s)</span>
+      </div>
+      <div class="grid grid-cols-2 gap-3 pt-1">
+        <div class="bg-emerald-50/60 rounded-xl p-3 border border-emerald-100">
+          <p class="text-xs font-semibold text-emerald-800">À l'événement DevFest</p>
+          <p class="text-xl font-extrabold text-emerald-700 mt-1">{{ locationBreakdown().event }}</p>
+          <p class="text-[11px] text-emerald-600 mt-0.5">Distribution sur place</p>
+        </div>
+        <div class="bg-blue-50/60 rounded-xl p-3 border border-blue-100">
+          <p class="text-xs font-semibold text-blue-800">Retrait à Bukavu</p>
+          <p class="text-xl font-extrabold text-blue-700 mt-1">{{ locationBreakdown().bukavu }}</p>
+          <p class="text-[11px] text-blue-600 mt-0.5">Points relais en ville</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls Strip: Search & Filters -->
+  <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <!-- Search bar -->
+    <div class="relative flex-1 max-w-md">
+      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <input
+        type="text"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        placeholder="Rechercher par nom, email, téléphone ou commune..."
+        class="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00458f]/40 focus:border-[#00458f] transition"
+      />
+    </div>
+
+    <!-- Filter pills -->
+    <div class="flex items-center gap-2 flex-wrap">
+      <!-- Status Filter -->
+      <div class="flex items-center bg-gray-100 p-1 rounded-xl text-xs font-semibold">
+        <button
+          type="button"
+          (click)="statusFilter.set('all')"
+          [class.bg-white]="statusFilter() === 'all'"
+          [class.text-gray-900]="statusFilter() === 'all'"
+          [class.shadow-xs]="statusFilter() === 'all'"
+          [class.text-gray-600]="statusFilter() !== 'all'"
+          class="px-3 py-1.5 rounded-lg transition cursor-pointer"
+        >
+          Tous
+        </button>
+        <button
+          type="button"
+          (click)="statusFilter.set('pending')"
+          [class.bg-white]="statusFilter() === 'pending'"
+          [class.text-amber-800]="statusFilter() === 'pending'"
+          [class.shadow-xs]="statusFilter() === 'pending'"
+          [class.text-gray-600]="statusFilter() !== 'pending'"
+          class="px-3 py-1.5 rounded-lg transition cursor-pointer"
+        >
+          En attente
+        </button>
+        <button
+          type="button"
+          (click)="statusFilter.set('delivered')"
+          [class.bg-white]="statusFilter() === 'delivered'"
+          [class.text-emerald-800]="statusFilter() === 'delivered'"
+          [class.shadow-xs]="statusFilter() === 'delivered'"
+          [class.text-gray-600]="statusFilter() !== 'delivered'"
+          class="px-3 py-1.5 rounded-lg transition cursor-pointer"
+        >
+          Livrés
+        </button>
+      </div>
+
+      <!-- Location Filter -->
+      <select
+        [ngModel]="locationFilter()"
+        (ngModelChange)="locationFilter.set($event)"
+        class="px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00458f]/40 cursor-pointer"
+      >
+        <option value="all">Tous les lieux</option>
+        <option value="event">À l'événement</option>
+        <option value="bukavu">Bukavu</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Orders Data Table -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
+    <div class="p-4 sm:p-5 border-b border-gray-100 flex items-center justify-between">
+      <div>
+        <h3 class="text-base font-bold text-gray-900">Liste des Commandes de T-shirts</h3>
+        <p class="text-xs text-gray-500 mt-0.5">
+          {{ filteredOrders().length }} commande(s) affichée(s)
+        </p>
+      </div>
+    </div>
+
+    @if (isLoading()) {
+      <div class="p-12 text-center text-gray-500 text-sm">
+        <div class="w-8 h-8 border-2 border-[#00458f] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        Chargement des commandes en cours...
+      </div>
+    } @else if (filteredOrders().length === 0) {
+      <div class="p-12 text-center text-gray-500 text-sm">
+        <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        Aucune commande ne correspond aux critères sélectionnés.
+      </div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs sm:text-sm">
+          <thead>
+            <tr class="bg-gray-50/80 border-b border-gray-100 text-gray-600 font-semibold text-xs uppercase tracking-wider">
+              <th scope="col" class="py-3 px-4 w-28 text-center">Statut</th>
+              <th scope="col" class="py-3 px-4">Participant</th>
+              <th scope="col" class="py-3 px-4">Contact</th>
+              <th scope="col" class="py-3 px-4">Lieu de Retrait</th>
+              <th scope="col" class="py-3 px-4">Tailles &amp; Qtés</th>
+              <th scope="col" class="py-3 px-4 text-center">Total</th>
+              <th scope="col" class="py-3 px-4 text-right">Date</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            @for (order of filteredOrders(); track order.id || $index) {
+              <tr
+                class="hover:bg-gray-50/70 transition"
+                [class.bg-emerald-50/30]="order.delivered"
+              >
+                <!-- Status / Delivery toggle -->
+                <td class="py-3.5 px-4 text-center">
+                  <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      [checked]="order.delivered === true"
+                      (change)="toggleDelivered(order)"
+                      class="w-4 h-4 rounded text-[#00458f] focus:ring-[#00458f] border-gray-300 transition cursor-pointer"
+                    />
+                    <span
+                      class="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                      [class.bg-emerald-100]="order.delivered === true"
+                      [class.text-emerald-800]="order.delivered === true"
+                      [class.bg-amber-100]="!order.delivered"
+                      [class.text-amber-800]="!order.delivered"
+                    >
+                      {{ order.delivered === true ? 'Livré' : 'En attente' }}
+                    </span>
+                  </label>
+                </td>
+
+                <!-- Participant Name -->
+                <td class="py-3.5 px-4 font-semibold text-gray-900">
+                  {{ order.name }}
+                </td>
+
+                <!-- Contact details -->
+                <td class="py-3.5 px-4 text-xs">
+                  <p class="text-gray-900 font-mono">{{ order.email }}</p>
+                  @if (order.phone) {
+                    <a
+                      [href]="'tel:' + order.phone"
+                      class="text-[#00458f] hover:underline flex items-center gap-1 mt-0.5 font-medium"
+                    >
+                      <svg class="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
+                      {{ order.phone }}
+                    </a>
+                  }
+                </td>
+
+                <!-- Pickup Location -->
+                <td class="py-3.5 px-4 text-xs">
+                  @if (isEventLocation(order.location)) {
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 font-medium border border-emerald-200">
+                      <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      </svg>
+                      À l'événement DevFest
+                    </span>
+                  } @else {
+                    <div>
+                      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50 text-blue-800 font-medium border border-blue-200">
+                        <svg class="w-3.5 h-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        </svg>
+                        Bukavu - {{ order.commune }}
+                      </span>
+                      @if (order.place) {
+                        <p class="text-gray-500 text-[11px] mt-0.5 pl-1">
+                          Point : {{ order.place }}
+                        </p>
+                      }
+                    </div>
+                  }
+                </td>
+
+                <!-- Sizes & breakdown pills -->
+                <td class="py-3.5 px-4">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    @for (size of availableSizes; track size) {
+                      @if (order.sizes && order.sizes[size] > 0) {
+                        <span class="px-2 py-0.5 bg-gray-100 text-gray-800 rounded-md text-xs font-semibold border border-gray-200">
+                          {{ size }}: <strong class="text-gray-900">{{ order.sizes[size] }}</strong>
+                        </span>
+                      }
+                    }
+                  </div>
+                </td>
+
+                <!-- Total count for this order -->
+                <td class="py-3.5 px-4 text-center font-bold text-gray-900">
+                  {{ getOrderTotal(order) }}
+                </td>
+
+                <!-- Created Date -->
+                <td class="py-3.5 px-4 text-right text-xs text-gray-500 whitespace-nowrap">
+                  {{ formatDate(order.createdAt) }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
+

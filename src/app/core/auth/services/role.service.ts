@@ -27,8 +27,11 @@ export class RoleService {
   readonly profile = signal<UserProfile | null>(null);
   readonly isAdmin = signal(false);
   readonly isViewer = signal(false);
+  readonly isStaff = signal(false);
   readonly isLoadingProfile = signal(false);
   readonly isPresenterOrAdmin = computed(() => this.isAdmin() || this.isViewer());
+  readonly isStaffOrAdmin = computed(() => this.isAdmin() || this.isStaff());
+  readonly canAccessAdmin = computed(() => this.isAdmin() || this.isViewer() || this.isStaff());
 
   constructor() {
     effect(() => {
@@ -42,6 +45,7 @@ export class RoleService {
         this.profile.set(null);
         this.isAdmin.set(false);
         this.isViewer.set(false);
+        this.isStaff.set(false);
         this.isLoadingProfile.set(false);
       }
     });
@@ -74,7 +78,7 @@ export class RoleService {
         for (const matchedDoc of querySnapshot.docs) {
           const matchedData = matchedDoc.data();
 
-          if (matchedData['disabled'] !== true && (matchedData['role'] === 'admin' || matchedData['role'] === 'viewer')) {
+          if (matchedData['disabled'] !== true && (matchedData['role'] === 'admin' || matchedData['role'] === 'viewer' || matchedData['role'] === 'staff')) {
             if (!profile || profile.role !== 'admin') {
               profile = {
                 uid: user.uid,
@@ -134,11 +138,13 @@ export class RoleService {
       const isAccountActive = profile?.disabled !== true;
       this.isAdmin.set(profile?.role === 'admin' && isAccountActive);
       this.isViewer.set(profile?.role === 'viewer' && isAccountActive);
+      this.isStaff.set(profile?.role === 'staff' && isAccountActive);
       return profile;
     } catch {
       this.profile.set(null);
       this.isAdmin.set(false);
       this.isViewer.set(false);
+      this.isStaff.set(false);
       return null;
     } finally {
       this.isLoadingProfile.set(false);
@@ -293,6 +299,126 @@ export class RoleService {
       const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
       const viewersQuery = query(usersCol, where('role', '==', 'viewer'));
       return collectionData(viewersQuery, { idField: 'uid' }) as Observable<UserProfile[]>;
+    });
+  }
+
+  /**
+   * Checks if current user has staff or admin privileges.
+   */
+  async isCurrentUserStaff(user: User | null): Promise<boolean> {
+    if (!user) {
+      this.profile.set(null);
+      this.isAdmin.set(false);
+      this.isViewer.set(false);
+      this.isStaff.set(false);
+      return false;
+    }
+    if (this.profile() && this.profile()?.uid === user.uid) {
+      const isAccountActive = this.profile()?.disabled !== true;
+      return (this.profile()?.role === 'staff' || this.profile()?.role === 'admin') && isAccountActive;
+    }
+    await this.ensureProfile(user);
+    return this.isStaffOrAdmin();
+  }
+
+  /**
+   * Checks if current user can access the admin area (admin, viewer/presenter, or staff).
+   */
+  async canCurrentUserAccessAdmin(user: User | null): Promise<boolean> {
+    if (!user) {
+      this.profile.set(null);
+      this.isAdmin.set(false);
+      this.isViewer.set(false);
+      this.isStaff.set(false);
+      return false;
+    }
+    if (this.profile() && this.profile()?.uid === user.uid) {
+      const isAccountActive = this.profile()?.disabled !== true;
+      const role = this.profile()?.role;
+      return (role === 'admin' || role === 'viewer' || role === 'staff') && isAccountActive;
+    }
+    await this.ensureProfile(user);
+    return this.canAccessAdmin();
+  }
+
+  /**
+   * Adds a new staff member.
+   */
+  async addStaff(email: string, displayName?: string): Promise<void> {
+    const currentUser = this.auth.user();
+    if (!this.isAdmin()) {
+      throw new Error('Seul un administrateur peut ajouter des membres du staff.');
+    }
+    const cleanEmail = email.toLowerCase().trim();
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      throw new Error('Adresse email invalide.');
+    }
+
+    const existingSnapshot = await runInInjectionContext(this.injector, () => {
+      const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
+      const existingQuery = query(usersCol, where('email', '==', cleanEmail));
+      return getDocs(existingQuery);
+    });
+
+    if (!existingSnapshot.empty) {
+      for (const existingDoc of existingSnapshot.docs) {
+        const data = existingDoc.data();
+        if (data['role'] === 'admin') {
+          throw new Error('Cet utilisateur est l\'administrateur actif.');
+        }
+        await runInInjectionContext(this.injector, () => {
+          const userRef = doc(this.firestore, firestorePaths.user(existingDoc.id));
+          return setDoc(
+            userRef,
+            {
+              role: 'staff',
+              disabled: false,
+              displayName: displayName || data['displayName'] || null,
+              updatedAt: serverTimestamp(),
+              createdBy: currentUser?.email || 'admin',
+            },
+            { merge: true }
+          );
+        });
+      }
+    } else {
+      await runInInjectionContext(this.injector, () => {
+        const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
+        const newStaffRef = doc(usersCol);
+        return setDoc(newStaffRef, {
+          uid: newStaffRef.id,
+          email: cleanEmail,
+          displayName: displayName || null,
+          role: 'staff',
+          disabled: false,
+          createdAt: serverTimestamp(),
+          createdBy: currentUser?.email || 'admin',
+        });
+      });
+    }
+  }
+
+  /**
+   * Removes or revokes a staff member.
+   */
+  async removeStaff(staffId: string): Promise<void> {
+    if (!this.isAdmin()) {
+      throw new Error('Seul un administrateur peut révoquer un membre du staff.');
+    }
+    await runInInjectionContext(this.injector, () => {
+      const staffRef = doc(this.firestore, firestorePaths.user(staffId));
+      return deleteDoc(staffRef);
+    });
+  }
+
+  /**
+   * Real-time stream of all active staff members.
+   */
+  getStaffMembers(): Observable<UserProfile[]> {
+    return runInInjectionContext(this.injector, () => {
+      const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
+      const staffQuery = query(usersCol, where('role', '==', 'staff'));
+      return collectionData(staffQuery, { idField: 'uid' }) as Observable<UserProfile[]>;
     });
   }
 }
