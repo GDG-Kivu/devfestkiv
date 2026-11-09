@@ -32,6 +32,7 @@ describe('AdminComponent', () => {
       isAdmin: signal(true),
       isViewer: signal(false),
       isStaff: signal(false),
+      isContentManager: signal(false),
       transferAdminRole: jasmine.createSpy('transferAdminRole').and.resolveTo(),
     };
     tshirtOrderMock = {

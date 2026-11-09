@@ -1,14 +1,15 @@
-<div class="min-h-screen bg-gray-50/50 py-8 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-[#f3f6fa] py-8 px-4 sm:px-6 lg:px-8" style="--kivu-primary: #e8c270">
   <div class="max-w-7xl mx-auto space-y-6">
     <!-- Admin Tab Header (only if role has access to multiple tabs) -->
     @if (accessibleTabsCount() > 1) {
-    <div class="bg-white rounded-2xl px-4 sm:px-6 pt-4 pb-0 shadow-xs border border-gray-100">
+    <nav aria-label="Sections d'administration" class="bg-white px-4 sm:px-6 border-b border-gray-200">
       <!-- Clean Horizontal Tab Strip -->
-      <div class="flex items-center border-b border-gray-200 overflow-x-auto gap-2 sm:gap-6 -mb-2 pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div class="flex items-stretch overflow-x-auto gap-4 sm:gap-8">
         <!-- Tab 1: Sessions Live (Admin & Presenter) -->
         @if (roles.isAdmin() || roles.isViewer()) {
           <button
             type="button"
+            [attr.aria-pressed]="activeTab() === 'sessions'"
             (click)="activeTab.set('sessions')"
             [class.border-[#00458f]]="activeTab() === 'sessions'"
             [class.text-[#00458f]]="activeTab() === 'sessions'"
@@ -16,7 +17,7 @@
             [class.border-transparent]="activeTab() !== 'sessions'"
             [class.text-gray-500]="activeTab() !== 'sessions'"
             [class.hover:text-gray-900]="activeTab() !== 'sessions'"
-            class="flex items-center gap-2 pb-3.5 pt-1 px-1 border-b-2 text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap"
+            class="flex items-center gap-2 py-4 px-1 border-b-2 text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap focus-visible:outline-2 focus-visible:outline-[#174ea6]"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
@@ -38,6 +39,7 @@
         @if (roles.isAdmin() || roles.isStaff()) {
           <button
             type="button"
+            [attr.aria-pressed]="activeTab() === 'tshirts'"
             (click)="activeTab.set('tshirts')"
             [class.border-[#00458f]]="activeTab() === 'tshirts'"
             [class.text-[#00458f]]="activeTab() === 'tshirts'"
@@ -45,7 +47,7 @@
             [class.border-transparent]="activeTab() !== 'tshirts'"
             [class.text-gray-500]="activeTab() !== 'tshirts'"
             [class.hover:text-gray-900]="activeTab() !== 'tshirts'"
-            class="flex items-center gap-2 pb-3.5 pt-1 px-1 border-b-2 text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap"
+            class="flex items-center gap-2 py-4 px-1 border-b-2 text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap focus-visible:outline-2 focus-visible:outline-[#174ea6]"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -58,6 +60,7 @@
         @if (roles.isAdmin() || roles.isContentManager()) {
           <button
             type="button"
+            [attr.aria-pressed]="activeTab() === 'cms'"
             (click)="activeTab.set('cms')"
             [class.border-[#00458f]]="activeTab() === 'cms'"
             [class.text-[#00458f]]="activeTab() === 'cms'"
@@ -65,7 +68,7 @@
             [class.border-transparent]="activeTab() !== 'cms'"
             [class.text-gray-500]="activeTab() !== 'cms'"
             [class.hover:text-gray-900]="activeTab() !== 'cms'"
-            class="flex items-center gap-2 pb-3.5 pt-1 px-1 border-b-2 text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap"
+            class="flex items-center gap-2 py-4 px-1 border-b-2 text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap focus-visible:outline-2 focus-visible:outline-[#174ea6]"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/>
@@ -78,6 +81,7 @@
         @if (roles.isAdmin()) {
           <button
             type="button"
+            [attr.aria-pressed]="activeTab() === 'settings'"
             (click)="activeTab.set('settings')"
             [class.border-[#00458f]]="activeTab() === 'settings'"
             [class.text-[#00458f]]="activeTab() === 'settings'"
@@ -85,7 +89,7 @@
             [class.border-transparent]="activeTab() !== 'settings'"
             [class.text-gray-500]="activeTab() !== 'settings'"
             [class.hover:text-gray-900]="activeTab() !== 'settings'"
-            class="flex items-center gap-2 pb-3.5 pt-1 px-1 border-b-2 text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap"
+            class="flex items-center gap-2 py-4 px-1 border-b-2 text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap focus-visible:outline-2 focus-visible:outline-[#174ea6]"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -95,7 +99,7 @@
           </button>
         }
       </div>
-    </div>
+    </nav>
     }
 
     <!-- TAB 1: SESSIONS LIVE (Admin & Presenter) -->
@@ -148,7 +152,7 @@
             </div>
           </div>
         } @else {
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="divide-y divide-gray-200 border-t border-gray-200 bg-white">
             @for (session of sessions; track session.id || $index) {
               <app-card
                 [session]="session"
@@ -186,4 +190,3 @@
     (closed)="onFormClosed()"
   ></app-session-form>
 }
-

@@ -11,125 +11,24 @@ import { LiveSession } from '../../../../models/live-session.model';
   selector: 'app-card',
   imports: [CommonModule, FormsModule, SessionForm, Questions],
   template: `
-    <div
-      class="relative cursor-pointer rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl group"
-      [ngClass]="getBorderColor('Dev Track')"
-    >
-      <!-- Background image -->
-      <div
-        class="absolute inset-0 bg-cover bg-center opacity-100 transition-all duration-300 group-hover:opacity-100"
-        [ngStyle]="{
-          'background-image': 'url(' + 'assets/back.png' + ')',
-        }"
-      ></div>
-
-      <!-- Semi-transparent overlay -->
-      <div class="absolute inset-0 bg-white/70 backdrop-blur-[1px]"></div>
-
-      <!-- Main card content -->
-      <div class="relative z-10 p-6 flex flex-col justify-between min-h-[300px] text-gray-800">
-        <!-- Header -->
-        <div>
-          <div class="flex items-start justify-between mb-3">
-            <span
-              class="text-xs font-bold px-2 py-1 rounded-full bg-gray-100 border border-gray-300"
-              [ngClass]="getBadgeColor(session.track)"
-            >
-              {{ session.track }}
-            </span>
-            <span class="text-xs text-gray-600 font-mono">{{ session.time }}</span>
-          </div>
-
-          <!-- Theme -->
-          <h3 class="text-2xl font-extrabold leading-snug mb-2 text-gray-900 tracking-tight">
-            {{ session.theme }}
-          </h3>
-
-          <!-- Speaker info -->
-          <div class="text-sm text-gray-700 mb-3">
-            <div class="flex items-center gap-2">
-              <span class="material-icons text-[18px] text-gray-500">person</span>
-              <span class="font-medium">{{ session.speaker }}</span>
-            </div>
-            <p class="text-xs italic text-gray-500">{{ session.title }}</p>
-          </div>
-        </div>
-
-        <!-- Description -->
-        <p class="text-sm text-gray-700 mb-4 line-clamp-3">
-          {{ session.description }}
-        </p>
-
-        <!-- Session active status toggle -->
-        <div class="flex items-center justify-between border-t border-gray-200 pt-3 pb-2">
-          <span class="text-sm font-medium text-gray-700">Statut de la session</span>
-          <div class="flex items-center gap-2 cursor-pointer" (click)="statusChange(session)">
-            <!-- Switch toggle -->
-            <div
-              class="relative w-12 h-6 rounded-full transition-all duration-300"
-              [ngClass]="session.isActive ? 'bg-green-500' : 'bg-gray-300'"
-            >
-              <div
-                class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transform transition-all duration-300"
-                [ngClass]="session.isActive ? 'translate-x-6' : 'translate-x-0'"
-              ></div>
-            </div>
-            <span
-              class="text-xs font-semibold transition-colors duration-300"
-              [ngClass]="session.isActive ? 'text-green-600' : 'text-gray-500'"
-            >
-              {{ session.isActive ? 'En cours' : 'Terminée' }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Footer actions -->
-        <div
-          class="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 pt-3"
-        >
-          <!-- Questions count -->
-          <div class="flex items-center gap-2 text-sm text-gray-600">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-5 h-5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
-              />
-            </svg>
-            <span>{{ session.questions.length || 0 }} question(s)</span>
-          </div>
-
-          <!-- Action buttons -->
-          <div class="flex items-center gap-2">
-            <button
-              (click)="vieuwDialog(session)"
-              class="px-3 py-1.5 text-xs font-semibold bg-[#00458f] hover:bg-[#003875] text-white rounded-lg transition cursor-pointer"
-            >
-              Voir
-            </button>
-            <button
-              (click)="editSession(session)"
-              class="px-3 py-1.5 text-xs font-semibold bg-yellow-400 hover:bg-yellow-500 text-black rounded-lg transition cursor-pointer"
-            >
-              Modifier
-            </button>
-            <button
-              (click)="promptDelete(session)"
-              class="px-3 py-1.5 text-xs font-semibold bg-red-500 hover:bg-red-600 text-white rounded-lg transition cursor-pointer"
-            >
-              Supprimer
-            </button>
-          </div>
-        </div>
+    <article class="flex flex-wrap items-center justify-between gap-5 p-5 sm:p-6">
+      <div class="min-w-0 flex-1">
+        <p class="text-xs font-bold text-[#174ea6] uppercase">{{ session.track }} · {{ session.time }}</p>
+        <h3 class="mt-2 text-xl font-bold text-gray-900">{{ session.theme }}</h3>
+        <p class="mt-1 text-sm text-gray-600">{{ session.speaker }} · {{ session.title }}</p>
+        <p class="mt-2 text-sm text-gray-600">{{ session.description }}</p>
+        <p class="mt-2 text-xs text-gray-500">{{ session.questions.length || 0 }} question(s)</p>
       </div>
-    </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button type="button" (click)="statusChange(session)" [attr.aria-pressed]="session.isActive"
+          class="border border-gray-300 px-3 py-2 text-xs font-bold">
+          {{ session.isActive ? 'En cours' : 'Terminée' }}
+        </button>
+        <button type="button" (click)="vieuwDialog(session)" class="bg-[#174ea6] text-white px-3 py-2 text-xs font-bold">Voir</button>
+        <button type="button" (click)="editSession(session)" class="bg-[#e8c270] px-3 py-2 text-xs font-bold">Modifier</button>
+        <button type="button" (click)="promptDelete(session)" class="text-red-700 px-3 py-2 text-xs font-bold">Supprimer</button>
+      </div>
+    </article>
 
     <!-- Edit Session Form Modal -->
     @if (showForm) {
@@ -285,4 +184,3 @@ export class Card {
     this.dialogOuvert = true;
   }
 }
-

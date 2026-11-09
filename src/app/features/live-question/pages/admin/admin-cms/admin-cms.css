@@ -1,0 +1,33 @@
+:host { display: block; color: var(--kivu-ink); }
+.cms-page { background: #fff; padding: clamp(20px, 3.5vw, 40px); }
+.cms-heading { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 20px; padding-bottom: 24px; border-bottom: 4px solid var(--kivu-primary); }
+.cms-heading h1 { margin: 0; font-size: clamp(1.5rem, 1.15rem + 1vw, 2rem); font-weight: 800; line-height: 1.15; }
+.edition-actions { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; }
+.edition-field { display: grid; gap: 6px; min-width: 150px; }
+.edition-field label { color: #525a54; font-size: 11px; }
+.edition-field select { min-height: 42px; padding: 8px 12px; border: 1px solid #c9cfc9; background: #fff; font-size: 1rem; }
+.edition-actions button, .edition-actions a { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 10px 14px; border: 1px solid #202a23; border-radius: 0; background: #fff; color: #202a23; font-size: 13px; font-weight: 700; box-shadow: none; }
+.edition-actions button:hover:not(:disabled), .edition-actions a:hover { background: #202a23; color: #fff; }
+.edition-actions button:disabled { opacity: .5; cursor: not-allowed; }
+.edition-actions svg { color: inherit; }
+.module-list { margin-top: 20px; border-top: 1px solid #d5dad6; }
+.module-list > div { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 20px 0; border-bottom: 1px solid #d5dad6; }
+.module-list > div > :first-child { flex: 1 1 400px; min-width: 0; }
+.module-list > div > :first-child > div:first-child { align-items: center; }
+.module-list > div > :first-child > div:first-child > div:first-child { min-width: 0; }
+.module-list > div > :first-child > div:first-child > div:first-child > div:first-child { display: none; }
+.module-list h3 { font-size: 1rem; }
+.module-list p { font-size: 13px; line-height: 1.5; }
+.module-list > div > :last-child { padding: 0; margin: 0; border: 0; }
+.module-list a { min-height: 42px; color: #00458f; font-size: 13px; }
+.module-list button { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 8px 12px; border: 1px solid #202a23; border-radius: 0; background: #fff; color: #202a23; font-size: 13px; font-weight: 700; }
+.module-list button::after { content: 'Modifier'; }
+.module-list button:hover { background: #202a23; color: #fff; }
+.cms-page :is(button, a, select):focus-visible { outline: 3px solid #00458f; outline-offset: 2px; }
+@media (max-width: 600px) {
+  .cms-heading { align-items: stretch; flex-direction: column; }
+  .edition-actions { align-items: stretch; }
+  .edition-field { flex: 1 1 100%; }
+  .edition-actions button, .edition-actions a { flex: 1 1 auto; }
+  .module-list > div > :first-child { flex-basis: 100%; }
+}
