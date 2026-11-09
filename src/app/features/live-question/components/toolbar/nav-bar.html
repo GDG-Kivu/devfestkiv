@@ -27,7 +27,7 @@
         } @else {
         <!-- Desktop Navigation: Horizontal buttons -->
         <div class="hidden md:flex items-center gap-2 lg:gap-3">
-          @if (roles.isPresenterOrAdmin()) {
+          @if (roles.canAccessAdmin()) {
           <a routerLink="/live_q" routerLinkActive="!border-[#00458f] !text-[#00458f] !bg-blue-50/60 shadow-xs"
             [routerLinkActiveOptions]="{ exact: true }"
             class="flex items-center gap-1.5 border border-gray-200 text-gray-600 hover:text-[#00458f] hover:bg-blue-50/40 bg-white rounded-lg px-3 py-1.5 text-sm font-medium transition cursor-pointer animate-pop-in">
@@ -47,7 +47,9 @@
             }
             <span>Accueil</span>
           </a>
+          }
 
+          @if (roles.isPresenterOrAdmin()) {
           <a routerLink="/presenter" routerLinkActive="!border-[#00458f] !text-[#00458f] !bg-blue-50/60 shadow-xs"
             class="flex items-center gap-1.5 border border-gray-200 text-gray-600 hover:text-[#00458f] hover:bg-blue-50/40 bg-white rounded-lg px-3 py-1.5 text-sm font-medium transition cursor-pointer animate-pop-in">
             @if (isNavigatingTo('/presenter')) {
@@ -68,7 +70,7 @@
           </a>
           }
 
-          @if (roles.isAdmin() || roles.isStaff()) {
+          @if (roles.canAccessAdmin()) {
           <a routerLink="/live_q/admin" routerLinkActive="!border-[#00458f] !text-[#00458f] !bg-blue-50/60 shadow-xs"
             class="flex items-center gap-1.5 border border-gray-200 text-gray-600 hover:text-[#00458f] hover:bg-blue-50/40 bg-white rounded-lg px-3 py-1.5 text-sm font-medium transition cursor-pointer animate-pop-in">
             @if (isNavigatingTo('/live_q/admin')) {
@@ -135,7 +137,7 @@
             </a>
             }
 
-            @if (roles.isAdmin() || roles.isStaff()) {
+            @if (roles.canAccessAdmin()) {
             <a
               routerLink="/live_q/admin"
               (click)="closeMobileNav()"

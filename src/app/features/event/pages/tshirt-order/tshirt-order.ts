@@ -91,6 +91,7 @@ export default class TshirtOrder implements OnInit {
     this.failureMessage.set('');
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.scrollToTop();
       return;
     }
 
@@ -105,9 +106,11 @@ export default class TshirtOrder implements OnInit {
         sizes: { S: order.sizes.S!, M: order.sizes.M!, L: order.sizes.L!, XL: order.sizes.XL!, XXL: order.sizes.XXL! },
       });
       this.succeeded.set(true);
+      this.scrollToTop();
     } catch (error) {
       this.failed.set(true);
       this.failureMessage.set(this.describeSubmissionError(error));
+      this.scrollToTop();
     } finally {
       this.submitting.set(false);
     }
@@ -119,6 +122,13 @@ export default class TshirtOrder implements OnInit {
     this.succeeded.set(false);
     this.failed.set(false);
     this.failureMessage.set('');
+    this.scrollToTop();
+  }
+
+  private scrollToTop(): void {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   private describeSubmissionError(error: unknown): string {

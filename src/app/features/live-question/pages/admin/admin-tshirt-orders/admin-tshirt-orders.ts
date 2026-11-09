@@ -57,8 +57,8 @@ export class AdminTshirtOrders implements OnInit, OnDestroy {
 
   // Modal dialog state
   deliveryModalOrder = signal<TshirtOrderData | null>(null);
-  deliveryDeliveredBy = '';
-  deliveryDeliveredAt = '';
+  deliveryDeliveredBy = signal('');
+  deliveryDeliveredAt = signal('');
   isSubmittingDelivery = signal(false);
   deliveryError = signal('');
 
@@ -187,6 +187,20 @@ export class AdminTshirtOrders implements OnInit, OnDestroy {
     }
   }
 
+  currentStaffName(): string {
+    const profile = this.roles.profile();
+    if (profile?.displayName?.trim()) return profile.displayName.trim();
+    const user = this.auth.user();
+    if (user?.displayName?.trim()) return user.displayName.trim();
+    if (user?.providerData && user.providerData.length > 0) {
+      for (const p of user.providerData) {
+        if (p?.displayName?.trim()) return p.displayName.trim();
+      }
+    }
+    if (user?.email) return user.email.split('@')[0];
+    return '';
+  }
+
   toggleDelivered(order: TshirtOrderData): void {
     this.openDeliveryModal(order);
   }
@@ -195,11 +209,12 @@ export class AdminTshirtOrders implements OnInit, OnDestroy {
     this.deliveryModalOrder.set(order);
     this.deliveryError.set('');
 
+    const staffName = this.currentStaffName();
     const defaultName = order.delivered && order.deliveredBy
       ? order.deliveredBy
-      : (this.roles.profile()?.displayName || this.auth.user()?.displayName || this.auth.user()?.email?.split('@')[0] || '');
+      : (staffName || 'Staff');
 
-    this.deliveryDeliveredBy = defaultName;
+    this.deliveryDeliveredBy.set(defaultName);
 
     let defaultDate = new Date();
     if (order.delivered && order.deliveredAt) {
@@ -209,7 +224,7 @@ export class AdminTshirtOrders implements OnInit, OnDestroy {
         defaultDate = new Date();
       }
     }
-    this.deliveryDeliveredAt = toIsoLocalString(defaultDate);
+    this.deliveryDeliveredAt.set(toIsoLocalString(defaultDate));
   }
 
   closeDeliveryModal(): void {
@@ -226,8 +241,8 @@ export class AdminTshirtOrders implements OnInit, OnDestroy {
     this.deliveryError.set('');
 
     const edition = this.selectedEditionId() || order.editionId || this.liveEditionId();
-    const name = this.deliveryDeliveredBy.trim() || 'Staff';
-    const date = this.deliveryDeliveredAt ? new Date(this.deliveryDeliveredAt) : new Date();
+    const name = this.deliveryDeliveredBy().trim() || this.currentStaffName() || 'Staff';
+    const date = this.deliveryDeliveredAt() ? new Date(this.deliveryDeliveredAt()) : new Date();
 
     this.tshirtService
       .updateDelivered(order.id, markDelivered, edition, { deliveredBy: name, deliveredAt: date })

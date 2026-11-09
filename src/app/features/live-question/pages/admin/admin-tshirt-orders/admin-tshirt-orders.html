@@ -1,6 +1,6 @@
 <div class="space-y-6 animate-fade-in">
   <!-- Edition Selector & Header Bar -->
-  <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs flex flex-wrap items-center justify-between gap-3">
+  <div class="flex flex-wrap items-center justify-between gap-3">
     <div>
       <h2 class="text-base sm:text-lg font-bold text-gray-900">Commandes de T-shirts</h2>
       <p class="text-xs text-gray-500">Suivi et remise des t-shirts du festival par édition</p>
@@ -456,7 +456,8 @@
               <input
                 id="deliveredByField"
                 type="text"
-                [(ngModel)]="deliveryDeliveredBy"
+                [ngModel]="deliveryDeliveredBy()"
+                (ngModelChange)="deliveryDeliveredBy.set($event)"
                 placeholder="Ex: Patrick Musole"
                 class="w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00458f]/30 focus:border-[#00458f] transition"
               />
@@ -475,7 +476,8 @@
               <input
                 id="deliveredAtField"
                 type="datetime-local"
-                [(ngModel)]="deliveryDeliveredAt"
+                [ngModel]="deliveryDeliveredAt()"
+                (ngModelChange)="deliveryDeliveredAt.set($event)"
                 class="w-full px-3 py-2.5 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00458f]/30 focus:border-[#00458f] transition"
               />
             </div>
@@ -524,7 +526,7 @@
           <button
             type="button"
             (click)="confirmDelivery(true)"
-            [disabled]="isSubmittingDelivery() || !deliveryDeliveredBy.trim()"
+            [disabled]="isSubmittingDelivery() || !deliveryDeliveredBy().trim()"
             class="flex items-center gap-1.5 px-5 py-2.5 bg-[#00458f] hover:bg-[#003875] disabled:bg-gray-300 text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition cursor-pointer ml-auto"
           >
             @if (isSubmittingDelivery()) {
