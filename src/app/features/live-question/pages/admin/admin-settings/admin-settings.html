@@ -46,10 +46,16 @@
           @for (v of viewers(); track v.uid) {
           <div class="flex items-center justify-between p-3 bg-white hover:bg-gray-50/80 transition gap-2">
             <div class="flex items-center gap-2.5 min-w-0">
+              @if (v.photoURL) {
+              <img [src]="v.photoURL" [alt]="v.displayName || v.email"
+                class="w-8 h-8 rounded-full object-cover border border-gray-200 shadow-2xs flex-shrink-0"
+                referrerpolicy="no-referrer" />
+              } @else {
               <div
                 class="w-8 h-8 rounded-full bg-gray-100 text-gray-700 flex items-center justify-center font-bold text-xs flex-shrink-0">
                 {{ getInitials(v.displayName || v.email) }}
               </div>
+              }
               <div class="min-w-0">
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <p class="text-xs font-semibold text-gray-900 truncate">
@@ -122,10 +128,16 @@
           @for (s of staffMembers(); track s.uid) {
           <div class="flex items-center justify-between p-3 bg-white hover:bg-gray-50/80 transition gap-2">
             <div class="flex items-center gap-2.5 min-w-0">
+              @if (s.photoURL) {
+              <img [src]="s.photoURL" [alt]="s.displayName || s.email"
+                class="w-8 h-8 rounded-full object-cover border border-gray-200 shadow-2xs flex-shrink-0"
+                referrerpolicy="no-referrer" />
+              } @else {
               <div
                 class="w-8 h-8 rounded-full bg-[var(--kivu-surface-soft,#f3f6fa)] text-[#00458f] flex items-center justify-center font-bold text-xs flex-shrink-0">
                 {{ getInitials(s.displayName || s.email) }}
               </div>
+              }
               <div class="min-w-0">
                 <p class="text-xs font-semibold text-gray-900 truncate">
                   {{ s.displayName || s.email }}
@@ -190,10 +202,16 @@
           @for (c of contentManagers(); track c.uid) {
           <div class="flex items-center justify-between p-3 bg-white hover:bg-gray-50/80 transition gap-2">
             <div class="flex items-center gap-2.5 min-w-0">
+              @if (c.photoURL) {
+              <img [src]="c.photoURL" [alt]="c.displayName || c.email"
+                class="w-8 h-8 rounded-full object-cover border border-gray-200 shadow-2xs flex-shrink-0"
+                referrerpolicy="no-referrer" />
+              } @else {
               <div
                 class="w-8 h-8 rounded-full bg-[var(--kivu-surface-soft,#f3f6fa)] text-[#00458f] flex items-center justify-center font-bold text-xs flex-shrink-0">
                 {{ getInitials(c.displayName || c.email) }}
               </div>
+              }
               <div class="min-w-0">
                 <p class="text-xs font-semibold text-gray-900 truncate">
                   {{ c.displayName || c.email }}
