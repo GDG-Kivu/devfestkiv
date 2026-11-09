@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { TshirtOrderData, TshirtOrderService } from '../../../../event/services/tshirt-order.service';
+import { FirestoreService } from '../../../../../core/firestore/firestore.service';
 import { AuthService } from '../../../../../core/auth/services/auth.service';
 import { RoleService } from '../../../../../core/auth/services/role.service';
-import { FirestoreService } from '../../../../../core/firestore/firestore.service';
 
 const toIsoLocalString = (d: Date): string => {
   const pad = (n: number) => String(n).padStart(2, '0');
@@ -20,15 +20,15 @@ const toIsoLocalString = (d: Date): string => {
   templateUrl: './admin-tshirt-orders.html',
   styles: `
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
     .animate-fade-in {
       animation: fadeIn 0.2s ease-out forwards;
     }
     @keyframes popIn {
-      0% { opacity: 0; transform: scale(0.96) translateY(-6px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
+      0% { opacity: 0; transform: scale(0.96); }
+      100% { opacity: 1; transform: scale(1); }
     }
     .animate-pop-in {
       animation: popIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -57,8 +57,8 @@ export class AdminTshirtOrders implements OnInit, OnDestroy {
 
   // Modal dialog state
   deliveryModalOrder = signal<TshirtOrderData | null>(null);
-  deliveryDeliveredBy = signal('');
-  deliveryDeliveredAt = signal('');
+  deliveryDeliveredBy = '';
+  deliveryDeliveredAt = '';
   isSubmittingDelivery = signal(false);
   deliveryError = signal('');
 
@@ -199,7 +199,7 @@ export class AdminTshirtOrders implements OnInit, OnDestroy {
       ? order.deliveredBy
       : (this.roles.profile()?.displayName || this.auth.user()?.displayName || this.auth.user()?.email?.split('@')[0] || '');
 
-    this.deliveryDeliveredBy.set(defaultName);
+    this.deliveryDeliveredBy = defaultName;
 
     let defaultDate = new Date();
     if (order.delivered && order.deliveredAt) {
@@ -209,7 +209,7 @@ export class AdminTshirtOrders implements OnInit, OnDestroy {
         defaultDate = new Date();
       }
     }
-    this.deliveryDeliveredAt.set(toIsoLocalString(defaultDate));
+    this.deliveryDeliveredAt = toIsoLocalString(defaultDate);
   }
 
   closeDeliveryModal(): void {
@@ -226,8 +226,8 @@ export class AdminTshirtOrders implements OnInit, OnDestroy {
     this.deliveryError.set('');
 
     const edition = this.selectedEditionId() || order.editionId || this.liveEditionId();
-    const name = this.deliveryDeliveredBy().trim() || 'Staff';
-    const date = this.deliveryDeliveredAt() ? new Date(this.deliveryDeliveredAt()) : new Date();
+    const name = this.deliveryDeliveredBy.trim() || 'Staff';
+    const date = this.deliveryDeliveredAt ? new Date(this.deliveryDeliveredAt) : new Date();
 
     this.tshirtService
       .updateDelivered(order.id, markDelivered, edition, { deliveredBy: name, deliveredAt: date })

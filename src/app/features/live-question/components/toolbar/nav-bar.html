@@ -68,7 +68,7 @@
           </a>
           }
 
-          @if (roles.isAdmin()) {
+          @if (roles.isAdmin() || roles.isStaff()) {
           <a routerLink="/live_q/admin" routerLinkActive="!border-[#00458f] !text-[#00458f] !bg-blue-50/60 shadow-xs"
             class="flex items-center gap-1.5 border border-gray-200 text-gray-600 hover:text-[#00458f] hover:bg-blue-50/40 bg-white rounded-lg px-3 py-1.5 text-sm font-medium transition cursor-pointer animate-pop-in">
             @if (isNavigatingTo('/live_q/admin')) {
@@ -135,7 +135,7 @@
             </a>
             }
 
-            @if (roles.isAdmin()) {
+            @if (roles.isAdmin() || roles.isStaff()) {
             <a
               routerLink="/live_q/admin"
               (click)="closeMobileNav()"
