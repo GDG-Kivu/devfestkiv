@@ -176,10 +176,10 @@ export class NavBar {
     this.authService.signInWithGoogle().then(async (user) => {
       if (user) {
         const profile = await this.roles.ensureProfile(user);
-        if (profile?.role === 'admin' && profile.disabled !== true) {
-          await this.router.navigateByUrl('/live_q/admin');
-        } else if (profile?.role === 'viewer' && profile.disabled !== true) {
-          await this.router.navigateByUrl('/presenter');
+        if (profile?.disabled !== true) {
+          if (profile?.role === 'admin' || profile?.role === 'viewer' || profile?.role === 'staff') {
+            await this.router.navigateByUrl('/live_q/admin');
+          }
         }
       }
     }).catch(() => {
