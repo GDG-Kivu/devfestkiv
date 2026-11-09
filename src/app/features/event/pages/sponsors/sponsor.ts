@@ -81,10 +81,10 @@ interface SponsorData {
                 <div class="flex items-center gap-3 mb-4">
                   <h3 class="text-lg font-semibold text-gray-900">Partenaire Principal</h3>
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="flex items-center flex-wrap gap-3">
                   @for (s of mainSponsors(); track s.id || s.name) {
                     <div
-                      class="w-16 h-16 rounded-xl overflow-hidden border-2 border-yellow-200 shadow-sm flex items-center justify-center bg-white"
+                      class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 border-yellow-200 shadow-sm flex items-center justify-center bg-white flex-shrink-0"
                     >
                       <a
                         [href]="s.link"
@@ -109,10 +109,10 @@ interface SponsorData {
                 <div class="flex items-center gap-3 mb-4">
                   <h3 class="text-lg font-semibold text-gray-900">Autres Partenaires</h3>
                 </div>
-                <div class="flex gap-3">
+                <div class="flex flex-wrap gap-2">
                   @for (p of otherSponsors(); track p.id || p.name) {
                     <div
-                      class="w-12 h-12 rounded-lg overflow-hidden border-2 border-gray-200 shadow-sm flex items-center justify-center bg-white"
+                      class="w-11 h-11 sm:w-12 sm:h-12 rounded-lg overflow-hidden border-2 border-gray-200 shadow-sm flex items-center justify-center bg-white flex-shrink-0"
                     >
                       <a
                         [href]="p.link"

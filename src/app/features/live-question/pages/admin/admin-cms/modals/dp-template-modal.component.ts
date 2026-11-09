@@ -14,7 +14,7 @@ import { DpTemplateConfig } from '../../../../../event/models/event.model';
         <!-- Fixed Header -->
         <div class="flex items-center px-6 py-5 border-b border-gray-100 flex-shrink-0 bg-white">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-red-50 text-[#EA4335] flex items-center justify-center flex-shrink-0">
+            <div class="w-10 h-10 rounded-xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[#00458f] flex items-center justify-center flex-shrink-0">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
               </svg>
@@ -291,7 +291,7 @@ import { DpTemplateConfig } from '../../../../../event/models/event.model';
               <button
                 type="submit"
                 [disabled]="isSaving()"
-                class="flex items-center gap-2 px-5 py-2.5 bg-[#EA4335] hover:bg-[#d3382b] disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
+                class="flex items-center gap-2 px-5 py-2.5 bg-[#00458f] hover:bg-[#003875] disabled:bg-gray-300 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition cursor-pointer"
               >
                 @if (isSaving()) {
                   <svg class="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">

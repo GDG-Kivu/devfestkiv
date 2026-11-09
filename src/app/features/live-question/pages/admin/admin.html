@@ -1,43 +1,7 @@
 <div class="min-h-screen bg-gray-50/50 py-8 px-4 sm:px-6 lg:px-8">
   <div class="max-w-7xl mx-auto space-y-6">
-    <!-- Main Admin Header -->
-    <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-xs border border-gray-100 space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div class="flex items-center gap-2 mb-2 flex-wrap">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-[#00458f] border border-blue-100">
-              <span class="w-1.5 h-1.5 rounded-full bg-[#00458f]"></span>
-              DevFest Kivu 2026
-            </span>
-            @if (roles.isAdmin()) {
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-900 text-white">
-                Administrateur Principal
-              </span>
-            } @else if (roles.isViewer()) {
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#00458f] text-white">
-                Présentateur Live
-              </span>
-            } @else if (roles.isStaff()) {
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-600 text-white">
-                Staff & Logistique
-              </span>
-            }
-          </div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-            Tableau de Bord
-          </h1>
-          <p class="text-xs sm:text-sm text-gray-500 mt-1">
-            @if (roles.isAdmin()) {
-              Gérez les sessions en direct, les commandes de t-shirts, les contenus du festival et les privilèges d'accès.
-            } @else if (roles.isViewer()) {
-              Gérez et animez les sessions en direct, consultez et projetez les questions des participants.
-            } @else if (roles.isStaff()) {
-              Suivez et validez la remise des commandes officielles de T-shirts DevFest Kivu.
-            }
-          </p>
-        </div>
-      </div>
-
+    <!-- Admin Tab Header -->
+    <div class="bg-white rounded-2xl px-4 sm:px-6 pt-4 pb-0 shadow-xs border border-gray-100">
       <!-- Clean Horizontal Tab Strip -->
       <div class="flex items-center border-b border-gray-200 overflow-x-auto gap-2 sm:gap-6 -mb-2 pb-0">
         <!-- Tab 1: Sessions Live (Admin & Presenter) -->

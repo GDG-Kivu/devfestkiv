@@ -1,30 +1,16 @@
 <div class="space-y-6 animate-fade-in">
-  <!-- Top Metrics Overview -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <!-- Metric: Total Orders -->
+  <!-- Top Metrics Overview — 3 cards: Commandes+Pièces merged, Livrées, En Attente -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <!-- Metric: Commandes & Pièces (merged) -->
     <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center justify-between">
       <div>
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Commandes Totales</p>
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Commandes</p>
         <p class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">{{ totalOrders() }}</p>
-        <p class="text-xs text-gray-400 mt-0.5">Demandes enregistrées</p>
+        <p class="text-xs text-gray-400 mt-0.5">{{ totalTshirts() }} pièce(s) à produire</p>
       </div>
-      <div class="w-12 h-12 rounded-2xl bg-blue-50 text-[#00458f] flex items-center justify-center flex-shrink-0">
+      <div class="w-12 h-12 rounded-2xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[var(--kivu-secondary,#00458f)] flex items-center justify-center flex-shrink-0">
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-        </svg>
-      </div>
-    </div>
-
-    <!-- Metric: Total T-shirts items -->
-    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center justify-between">
-      <div>
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">T-shirts Commandés</p>
-        <p class="text-2xl sm:text-3xl font-extrabold text-[#00458f] mt-1">{{ totalTshirts() }}</p>
-        <p class="text-xs text-gray-400 mt-0.5">Pièces totales à produire</p>
-      </div>
-      <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
-        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
         </svg>
       </div>
     </div>
@@ -33,10 +19,10 @@
     <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center justify-between">
       <div>
         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Livrées / Remises</p>
-        <p class="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-1">{{ deliveredOrders() }}</p>
+        <p class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">{{ deliveredOrders() }}</p>
         <p class="text-xs text-gray-400 mt-0.5">{{ deliveryPercentage() }}% des commandes</p>
       </div>
-      <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
+      <div class="w-12 h-12 rounded-2xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[var(--kivu-secondary,#00458f)] flex items-center justify-center flex-shrink-0">
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
         </svg>
@@ -47,10 +33,10 @@
     <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center justify-between">
       <div>
         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">En Attente</p>
-        <p class="text-2xl sm:text-3xl font-extrabold text-amber-600 mt-1">{{ pendingOrders() }}</p>
+        <p class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">{{ pendingOrders() }}</p>
         <p class="text-xs text-gray-400 mt-0.5">À remettre aux participants</p>
       </div>
-      <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
+      <div class="w-12 h-12 rounded-2xl bg-[var(--kivu-surface-soft,#f3f6fa)] text-[var(--kivu-secondary,#00458f)] flex items-center justify-center flex-shrink-0">
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
@@ -68,9 +54,9 @@
       </div>
       <div class="grid grid-cols-5 gap-2 pt-1 text-center">
         @for (size of availableSizes; track size) {
-          <div class="bg-gray-50 rounded-xl p-2.5 border border-gray-100">
+          <div class="bg-[var(--kivu-surface-soft,#f3f6fa)] rounded-xl p-2.5 border border-gray-100">
             <span class="text-xs font-bold text-gray-600 block">{{ size }}</span>
-            <span class="text-lg font-extrabold text-[#00458f] mt-0.5 block">
+            <span class="text-lg font-extrabold text-[var(--kivu-secondary,#00458f)] mt-0.5 block">
               {{ sizesBreakdown()[size] || 0 }}
             </span>
           </div>
@@ -85,15 +71,15 @@
         <span class="text-xs text-gray-500 font-medium">{{ totalOrders() }} commande(s)</span>
       </div>
       <div class="grid grid-cols-2 gap-3 pt-1">
-        <div class="bg-emerald-50/60 rounded-xl p-3 border border-emerald-100">
-          <p class="text-xs font-semibold text-emerald-800">À l'événement DevFest</p>
-          <p class="text-xl font-extrabold text-emerald-700 mt-1">{{ locationBreakdown().event }}</p>
-          <p class="text-[11px] text-emerald-600 mt-0.5">Distribution sur place</p>
+        <div class="bg-[var(--kivu-surface-soft,#f3f6fa)] rounded-xl p-3 border border-gray-100">
+          <p class="text-xs font-semibold text-gray-700">À l'événement DevFest</p>
+          <p class="text-xl font-extrabold text-[var(--kivu-secondary,#00458f)] mt-1">{{ locationBreakdown().event }}</p>
+          <p class="text-[11px] text-gray-500 mt-0.5">Distribution sur place</p>
         </div>
-        <div class="bg-blue-50/60 rounded-xl p-3 border border-blue-100">
-          <p class="text-xs font-semibold text-blue-800">Retrait à Bukavu</p>
-          <p class="text-xl font-extrabold text-blue-700 mt-1">{{ locationBreakdown().bukavu }}</p>
-          <p class="text-[11px] text-blue-600 mt-0.5">Points relais en ville</p>
+        <div class="bg-[var(--kivu-surface-soft,#f3f6fa)] rounded-xl p-3 border border-gray-100">
+          <p class="text-xs font-semibold text-gray-700">Retrait à Bukavu</p>
+          <p class="text-xl font-extrabold text-[var(--kivu-secondary,#00458f)] mt-1">{{ locationBreakdown().bukavu }}</p>
+          <p class="text-[11px] text-gray-500 mt-0.5">Points relais en ville</p>
         </div>
       </div>
     </div>
@@ -102,7 +88,7 @@
   <!-- Controls Strip: Search & Filters -->
   <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
     <!-- Search bar -->
-    <div class="relative flex-1 max-w-md">
+    <div class="relative flex-1 min-w-0">
       <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -113,7 +99,7 @@
         [ngModel]="searchQuery()"
         (ngModelChange)="searchQuery.set($event)"
         placeholder="Rechercher par nom, email, téléphone ou commune..."
-        class="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00458f]/40 focus:border-[#00458f] transition"
+        class="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--kivu-secondary,#00458f)]/40 focus:border-[var(--kivu-secondary,#00458f)] transition"
       />
     </div>
 
