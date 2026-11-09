@@ -11,6 +11,7 @@ import {
   serverTimestamp,
   setDoc,
   where,
+  writeBatch,
 } from '@angular/fire/firestore';
 import { User } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
@@ -202,32 +203,85 @@ export class RoleService {
 
   /**
    * Transfers the unique admin role to another Google account email.
+   * Promotes the target user to admin and demotes the current user to participant.
    */
   async transferAdminRole(newEmail: string): Promise<void> {
     const currentUser = this.auth.user();
     if (!currentUser) {
-      throw new Error('No user currently connected.');
+      throw new Error('Aucun utilisateur actuellement connecté.');
     }
-    const cleanEmail = newEmail.toLowerCase().trim();
-    if (!cleanEmail || !cleanEmail.includes('@')) {
-      throw new Error('Invalid email address.');
+    if (!this.isAdmin()) {
+      throw new Error('Seul l\'administrateur actuel peut transférer ses droits.');
     }
 
-    // Update current document with the new admin email
-    await runInInjectionContext(this.injector, () => {
-      const currentDocRef = doc(this.firestore, firestorePaths.user(currentUser.uid));
-      return setDoc(
-        currentDocRef,
-        {
+    const cleanEmail = newEmail.toLowerCase().trim();
+    const currentEmail = currentUser.email?.toLowerCase().trim();
+
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      throw new Error('Adresse e-mail invalide.');
+    }
+    if (cleanEmail === currentEmail) {
+      throw new Error('Vous êtes déjà l\'administrateur avec cette adresse e-mail.');
+    }
+
+    await runInInjectionContext(this.injector, async () => {
+      const batch = writeBatch(this.firestore);
+      const usersCol = collection(this.firestore, FIRESTORE_COLLECTIONS.users);
+
+      // 1. Check if target user already has a document (by email)
+      const existingQuery = query(usersCol, where('email', '==', cleanEmail));
+      const targetSnapshot = await getDocs(existingQuery);
+
+      if (!targetSnapshot.empty) {
+        // Promote existing document(s) for this email to admin
+        for (const targetDoc of targetSnapshot.docs) {
+          const targetRef = doc(this.firestore, firestorePaths.user(targetDoc.id));
+          batch.set(
+            targetRef,
+            {
+              email: cleanEmail,
+              role: 'admin',
+              disabled: false,
+              transferredAt: serverTimestamp(),
+              transferredBy: currentEmail || currentUser.uid,
+              updatedAt: serverTimestamp(),
+            },
+            { merge: true }
+          );
+        }
+      } else {
+        // Create an invitation document for the new admin
+        const newAdminDocRef = doc(usersCol);
+        batch.set(newAdminDocRef, {
+          uid: newAdminDocRef.id,
           email: cleanEmail,
           role: 'admin',
           disabled: false,
+          createdAt: serverTimestamp(),
           transferredAt: serverTimestamp(),
-          transferredBy: currentUser.email || currentUser.uid,
+          transferredBy: currentEmail || currentUser.uid,
+        });
+      }
+
+      // 2. Demote current administrator to participant
+      const currentDocRef = doc(this.firestore, firestorePaths.user(currentUser.uid));
+      batch.set(
+        currentDocRef,
+        {
+          role: 'participant',
+          transferredAdminTo: cleanEmail,
+          updatedAt: serverTimestamp(),
         },
         { merge: true }
       );
+
+      // Execute atomic batch
+      await batch.commit();
     });
+
+    // 3. Update local state
+    this.isAdmin.set(false);
+    this.profile.update((p) => (p ? { ...p, role: 'participant' } : null));
   }
 
   /**
