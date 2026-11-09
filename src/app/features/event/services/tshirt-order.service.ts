@@ -10,6 +10,7 @@ import {
   serverTimestamp,
   Timestamp,
   updateDoc,
+  writeBatch,
 } from '@angular/fire/firestore';
 import { firstValueFrom, Observable, of, switchMap } from 'rxjs';
 import { AuthService } from '../../../core/auth/services/auth.service';
@@ -30,6 +31,10 @@ export interface TshirtOrderData {
   delivered?: boolean;
   deliveredAt?: any;
   deliveredBy?: string | null;
+  contacted?: boolean;
+  contactedAt?: Timestamp | Date | null;
+  assignedToEmail?: string | null;
+  assignedToName?: string | null;
   editionId?: string;
 }
 
@@ -106,5 +111,31 @@ export class TshirtOrderService {
       : null;
 
     return updateDoc(orderRef, { delivered, deliveredAt, deliveredBy });
+  }
+
+  updateContacted(orderId: string, editionId: string, contacted: boolean): Promise<void> {
+    const orderRef = doc(this.firestore, firestorePaths.eventTshirtOrder(editionId, orderId));
+    return updateDoc(orderRef, {
+      contacted,
+      contactedAt: contacted ? serverTimestamp() : null,
+    });
+  }
+
+  assignOrders(
+    orderIds: string[],
+    editionId: string,
+    assignee: { email: string; name: string } | null,
+  ): Promise<void> {
+    if (!orderIds.length || orderIds.length > 500) {
+      return Promise.reject(new Error('Sélectionnez entre 1 et 500 commandes.'));
+    }
+    const batch = writeBatch(this.firestore);
+    for (const id of orderIds) {
+      batch.update(doc(this.firestore, firestorePaths.eventTshirtOrder(editionId, id)), {
+        assignedToEmail: assignee?.email ?? null,
+        assignedToName: assignee?.name ?? null,
+      });
+    }
+    return batch.commit();
   }
 }

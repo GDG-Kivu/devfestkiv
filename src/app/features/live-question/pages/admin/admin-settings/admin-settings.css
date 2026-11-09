@@ -1,0 +1,23 @@
+:host { display: block; color: var(--kivu-ink); }
+.settings-page { background: #fff; padding: clamp(20px, 3.5vw, 40px); }
+.settings-heading { padding-bottom: 24px; border-bottom: 4px solid var(--kivu-primary); }
+.settings-heading h1 { margin: 0; font-size: clamp(1.5rem, 1.15rem + 1vw, 2rem); font-weight: 800; line-height: 1.15; }
+.settings-heading p { margin: 8px 0 0; color: #555b56; font-size: 14px; }
+.team-list > div { padding: 24px 0; border-bottom: 1px solid #d5dad6; }
+.team-list > div > div:first-child { border-bottom-color: #e1e6e1; }
+.team-list > div > div:first-child > div > div:first-child { display: none; }
+.team-list h3 { font-size: 1rem; }
+.team-list > div > div:first-child p { white-space: normal; font-size: 13px; }
+.team-list > div > div:first-child button, .transfer-section button { min-height: 42px; padding: 10px 16px; border: 1px solid #202a23; border-radius: 0; background: #fff; color: #202a23; font-size: 13px; box-shadow: none; }
+.team-list > div > div:first-child button:hover, .transfer-section button:hover { background: #202a23; color: #fff; }
+.team-list > div > div:first-child button svg, .transfer-section button svg { color: inherit; }
+.team-list > div > div:last-child { padding-top: 0; }
+.team-list > div > div:last-child > div { border: 0; border-radius: 0; }
+.team-list > div > div:last-child > div > div { padding: 14px 0; }
+.team-list > div > div:last-child p { font-size: 13px; }
+.team-list > div > div:last-child button { min-height: 42px; padding: 8px 12px; border-radius: 0; font-size: 12px; }
+.transfer-section { padding-top: 24px; }
+.transfer-section > div > div > div:first-child { display: none; }
+.transfer-section h3 { font-size: 1rem; }
+.transfer-section p { font-size: 13px; }
+.settings-page :is(button, a):focus-visible { outline: 3px solid #00458f; outline-offset: 2px; }

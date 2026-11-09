@@ -21,6 +21,7 @@ Toutes les données associées à une édition du festival sont cloisonnées sou
 | `events/{editionId}/sessions/{sessionId}` | Sessions pour les questions en direct (`LiveSession`) | Lecture publique des sessions actives (`isActive == true`) ; Écriture Admin |
 | `events/{editionId}/sessions/{sessionId}/questions/{questionId}` | Questions posées par les participants en direct (`LiveQuestion`) | Lecture pour session active ; Création authentifiée (avec UID correspondant) ; Modération Admin |
 | `events/{editionId}/questionQuotas/{uid}` | Compteur atomique de questions posées par participant | Lecture de son propre quota ; Écriture via transaction atomique lors de la création d'une question |
+| `events/{editionId}/tshirtOrders/{orderId}` | Commandes de T-shirts et suivi des remises | Création authentifiée ; lecture et mise à jour par le staff ou les admins |
 | `events/{editionId}/remote/{controllerId}` | État de la télécommande pour les présentateurs | Lecture authentifiée ; Écriture Admin/Présentateur |
 | `events/{editionId}/emojis/{reactionId}` | Réactions en temps réel par émojis flottants | Lecture/Création authentifiée ; Écriture Admin |
 | `users/{uid}` | Profils utilisateurs et rôles (`invite` ou `admin`) | Lecture par l'utilisateur connecté ou Admin ; Écriture client refusée |
@@ -41,6 +42,16 @@ Les modèles de données partagés sont situés dans [`src/app/features/event/mo
 5. **`EventPartner`** (`partner.model.ts`) : `id`, `name`, `role`, `quote`, `logo`, `link`, `isPublished`, `order`.
 6. **`NewsArticle`** (`news-article.model.ts`) : `id`, `title`, `slug`, `excerpt`, `content`, `imageUrl`, `publishedAt`, `status`.
 7. **`LiveSession`** & **`LiveQuestion`** (`live-session.model.ts`, `live-question.model.ts`) : Gestion du direct.
+
+Les commandes de T-shirts utilisent `assignedToEmail` (identifiant d'attribution normalisé)
+et `assignedToName` (libellé affiché). Ces champs facultatifs sont indépendants de
+`delivered`, `deliveredBy` et `deliveredAt` : attribuer une commande ne la marque
+pas comme remise. Les anciennes commandes sans attribution restent non attribuées.
+Les attributions groupées sont limitées à 500 commandes par opération.
+
+Le champ facultatif `contacted` et la date `contactedAt` indiquent qu'un membre
+du staff a confirmé l'ouverture de WhatsApp ; ils sont indépendants de la remise.
+L'envoi effectif d'un message ne peut pas être vérifié par l'application.
 
 ---
 

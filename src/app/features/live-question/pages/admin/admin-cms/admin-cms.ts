@@ -35,6 +35,7 @@ import { NewEditionModalComponent } from './modals/new-edition-modal.component';
     NewEditionModalComponent,
   ],
   templateUrl: "admin-cms.html",
+  styleUrl: './admin-cms.css',
   styles: `
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(4px); }

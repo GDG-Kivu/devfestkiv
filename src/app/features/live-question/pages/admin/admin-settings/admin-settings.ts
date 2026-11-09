@@ -12,6 +12,7 @@ import { UserProfile } from '../../../../../core/auth/models/user-profile.model'
   selector: 'app-admin-settings',
   imports: [CommonModule, FormsModule],
   templateUrl: "admin-settings.html",
+  styleUrl: './admin-settings.css',
   styles: `
     @keyframes fadeIn {
       from { opacity: 0; }
