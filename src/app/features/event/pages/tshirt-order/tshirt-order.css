@@ -48,6 +48,8 @@
 .order__total-copy { display: flex; flex-direction: column; gap: 4px; }
 .order__total-copy small { color: #59645f; font-size: 13px; }
 .order__total strong { color: #315d45; font-size: 24px; }
+.order__payment-notice { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; margin-bottom: 10px; font-size: 13px; line-height: 1.45; }
+.order__payment-notice-icon { width: 20px; height: 20px; flex-shrink: 0;margin-top: 1px; }
 .order__submit { display: flex; justify-content: space-between; align-items: center; gap: 24px; width: 100%; min-height: 56px; padding: 14px 18px; background: var(--order-ink); color: white; font-weight: 800; cursor: pointer; }
 .order__submit:hover { background: #315d45; }
 .order__submit:disabled { background: #aeb8b1; color: #26332b; opacity: 1; cursor: not-allowed; }

@@ -64,7 +64,12 @@ export const routes: Routes = [
       {
         path: 'tshirt-order',
         title: 'Commander un T-shirt',
-        data: { description: 'Demandez votre T-shirt officiel DevFest Kivu.' },
+        data: {
+          description:
+            'Commandez votre T-shirt officiel DevFest Kivu. Édition limitée pour porter fièrement les couleurs de notre communauté.',
+          image: '/assets/t-shirt.png',
+          imageAlt: 'T-shirt officiel DevFest Kivu',
+        },
         loadComponent: () => import('./features/event/pages/tshirt-order/tshirt-order'),
       },
       {
