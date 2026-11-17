@@ -99,7 +99,7 @@ import { ShareService } from '../../../features/event/services/share.service';
                 target="_blank"
                 rel="noopener noreferrer"
                 class="w-9 h-9 bg-amber-400 text-gray-950 hover:bg-amber-300 rounded-full flex items-center justify-center transition-colors shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                aria-label="GDG Kivu sur X (Twitter), s'ouvre dans un nouvel onglet"
+                aria-label="Devfest Kivu sur X (Twitter), s'ouvre dans un nouvel onglet"
               >
                 <svg
                   class="w-4 h-4"
@@ -118,7 +118,7 @@ import { ShareService } from '../../../features/event/services/share.service';
                 target="_blank"
                 rel="noopener noreferrer"
                 class="w-9 h-9 bg-amber-400 text-gray-950 hover:bg-amber-300 rounded-full flex items-center justify-center transition-colors shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                aria-label="GDG Kivu sur YouTube, s'ouvre dans un nouvel onglet"
+                aria-label="Devfest Kivu sur YouTube, s'ouvre dans un nouvel onglet"
               >
                 <svg
                   class="w-4 h-4"
@@ -137,7 +137,7 @@ import { ShareService } from '../../../features/event/services/share.service';
                 target="_blank"
                 rel="noopener noreferrer"
                 class="w-9 h-9 bg-amber-400 text-gray-950 hover:bg-amber-300 rounded-full flex items-center justify-center transition-colors shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                aria-label="GDG Kivu sur LinkedIn, s'ouvre dans un nouvel onglet"
+                aria-label="Devfest Kivu sur LinkedIn, s'ouvre dans un nouvel onglet"
               >
                 <svg
                   class="w-4 h-4"
