@@ -43,6 +43,8 @@ export class Generator {
     return illustrations[this.role()] ?? null;
   });
 
+  
+
   /**
    * Taille dynamique du nom dans le nouveau design.
    */

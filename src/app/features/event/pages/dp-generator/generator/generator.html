@@ -6,7 +6,7 @@
   [class.bg-yellow-50]="generatorTheme === 'white'"
 >
   @if (role() === 'attendee') {
-    <!-- Cadre de fond -->
+    <!-- Cadre de fond (inchangé) -->
     <img
       [src]="frameUrl"
       alt="Cadre de fond DevFest"
@@ -15,176 +15,72 @@
       [class.opacity-0]="uiState !== 'templateVisible'"
     />
 
-    <!-- Bloc citation -->
+    <!-- Bulles à gauche de la photo : citation (jaune) + nom (bleu) -->
     <div
-      class="absolute top-40 left-24 w-[286px] z-20 transition-all duration-500 ease-out"
+      class="absolute top-[154px] left-[70px] w-[195px] h-[292px] z-20 flex flex-col justify-center gap-4 transition-all duration-500 ease-out"
       [class.opacity-100]="uiState === 'templateVisible'"
       [class.translate-x-0]="uiState === 'templateVisible'"
       [class.opacity-0]="uiState !== 'templateVisible'"
       [class.-translate-x-full]="uiState !== 'templateVisible'"
     >
-      <div
-        class="relative bg-primary border-4 border-accent p-8 rounded-2xl shadow-lg"
-        [style.background-color]="primaryColor"
-        [style.border-color]="accentColor"
-      >
-        <p class="text-gray-800 text-3xl italic text-center leading-tight break-words">
-          "{{ quote || defaultQuote }}"
+      <!-- Citation -->
+      <div class="relative rounded-xl px-3.5 py-3 text-center" style="background-color: #fbbc04">
+        <p
+          class="font-medium leading-snug break-words"
+          style="color: #202124"
+          [style.font-size.px]="attendeeQuoteFontSize"
+        >
+          {{ quoteText }}
         </p>
-
         <div
-          class="absolute left-full top-1/2 -translate-y-1/2 w-0 h-0 border-t-[15px] border-t-transparent border-b-[15px] border-b-transparent border-l-[20px] border-l-accent"
-          [style.border-left-color]="accentColor"
+          class="absolute right-0 -bottom-[11px] w-0 h-0 border-t-[12px] border-l-[14px] border-l-transparent"
+          style="border-top-color: #fbbc04"
+        ></div>
+      </div>
+
+      <!-- Nom -->
+      <div class="relative rounded-xl px-3.5 py-2.5 text-center" style="background-color: #4285f4">
+        <p
+          class="font-bold uppercase leading-tight break-words"
+          style="color: #ffffff"
+          [style.font-size.px]="attendeeNameFontSize"
+        >
+          {{ fullName }} sera au
+        </p>
+        <div
+          class="absolute right-0 -bottom-[11px] w-0 h-0 border-t-[12px] border-l-[14px] border-l-transparent"
+          style="border-top-color: #4285f4"
         ></div>
       </div>
     </div>
 
-    <!-- Nom + flèche -->
-
-<div
-  class="absolute top-80 left-24 w-[286px] z-20 mt-4 ml-4 space-y-2 transition-all duration-500 ease-out delay-100"
-  [class.opacity-100]="uiState === 'templateVisible'"
-  [class.translate-x-0]="uiState === 'templateVisible'"
-  [class.opacity-0]="uiState !== 'templateVisible'"
-  [class.-translate-x-full]="uiState !== 'templateVisible'"
->
-  <!-- flex-wrap : chaque pastille est une boîte unique, jamais coupée sur deux lignes -->
-  <div class="flex flex-wrap items-center gap-1.5">
-    <span
-      class="inline-block max-w-full whitespace-normal break-words bg-secondary text-white px-3 py-1 rounded-md leading-tight font-semibold"
-      [ngClass]="fullName.length > 35 ? 'text-lg' : fullName.length > 20 ? 'text-xl' : 'text-2xl'"
-      [style.background-color]="secondaryColor"
-      >&#64;{{ fullName }}</span
-    >
-
-    <span
-      class="inline-block whitespace-nowrap text-2xl font-light text-text px-3 py-1 rounded-md leading-tight"
-      [ngClass]="{
-        'bg-white': generatorTheme === 'default',
-        'bg-gray-100': generatorTheme === 'white',
-      }"
-      >sera au :</span
-    >
-  </div>
-
-  <img
-    src="assets/arrow.png"
-    alt="Flèche"
-    class="w-32 h-48 object-contain -rotate-23 ml-10 block"
-  />
-</div>
-
-    <!-- Bloc d'informations DevFest -->
+    <!-- Repères d'angle autour de la photo -->
     <div
-      class="absolute bottom-20 left-0 w-full flex flex-col items-center gap-4 z-10 transition-all duration-500 ease-out delay-150"
+      class="absolute top-[139px] left-[276px] w-[290px] h-[323px] z-10 transition-opacity duration-500 ease-out"
       [class.opacity-100]="uiState === 'templateVisible'"
-      [class.translate-y-0]="uiState === 'templateVisible'"
       [class.opacity-0]="uiState !== 'templateVisible'"
-      [class.translate-y-full]="uiState !== 'templateVisible'"
     >
-      <div class="flex flex-col items-center justify-center h-24">
-        <img
-          [src]="logoUrl"
-          alt="Logo DevFest"
-          class="w-64 h-auto max-h-full object-contain block"
-        />
-      </div>
-
-      <div
-        class="flex py-4 rounded-2xl px-4 shadow-md border-2 border-accent h-20 w-[460px] items-center overflow-hidden"
-        [style.border-color]="accentColor"
-        [ngClass]="{
-          'bg-background': generatorTheme === 'default',
-          'bg-primary': generatorTheme === 'white',
-        }"
-      >
-        <!-- Date -->
-        <div class="flex-1 flex items-center gap-2 min-w-0">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6 flex-shrink-0"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
-            />
-          </svg>
-
-          <div class="flex flex-col min-w-0">
-            <p class="text-sm font-bold tracking-wider truncate">
-              {{ dateText }}
-            </p>
-            <p class="text-sm font-light truncate">10:30</p>
-          </div>
-        </div>
-
-        <div class="border-l border-text h-10 mx-2 flex-shrink-0"></div>
-
-        <!-- Lieu -->
-        <div class="flex-1 flex items-center gap-2 min-w-0">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6 flex-shrink-0"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
-            />
-          </svg>
-
-          <div class="flex flex-col min-w-0">
-            <p class="text-sm font-bold tracking-wider truncate">
-              {{ venueName }}
-            </p>
-            <p class="text-sm font-light truncate">
-              {{ locationText }}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Hashtag -->
-      <div>
-        <p
-          class="text-sm font-semibold"
-          [ngClass]="{
-            'text-accent/90': generatorTheme !== 'white',
-            'text-text': generatorTheme === 'white',
-          }"
-        >
-          {{ hashtag }}
-        </p>
-      </div>
-    </div>
-
-    <!-- Logo circulaire -->
-    <div
-      class="absolute bottom-27 bg-text left-15 w-28 h-28 rounded-full flex items-center justify-center shadow-lg z-30 transition-transform duration-300 ease-out delay-200"
-      [class.scale-100]="uiState === 'templateVisible'"
-      [class.scale-0]="uiState !== 'templateVisible'"
-    >
-      <img [src]="circularLogoUrl" alt="Logo DevFest" class="w-24 object-contain m-0 block" />
+      <span
+        class="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2"
+        style="border-color: #202124"
+      ></span>
+      <span
+        class="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2"
+        style="border-color: #202124"
+      ></span>
+      <span
+        class="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2"
+        style="border-color: #202124"
+      ></span>
+      <span
+        class="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2"
+        style="border-color: #202124"
+      ></span>
     </div>
 
     <!-- Photo de l'utilisateur -->
     <div
-      class="absolute top-24 left-[425px] w-[286px] h-[392px] bg-gray-300 rounded-3xl shadow-2xl overflow-hidden flex items-center justify-center z-10 border-4 border-accent transition-transform duration-300 ease-in-out"
-      [style.border-color]="accentColor"
+      class="absolute top-[154px] left-[292px] w-[258px] h-[292px] bg-gray-200 overflow-hidden z-10 transition-transform duration-300 ease-in-out"
       [class.scale-100]="uiState === 'imageVisible' || uiState === 'templateVisible'"
       [class.scale-0]="!(uiState === 'imageVisible' || uiState === 'templateVisible')"
     >
@@ -193,6 +89,79 @@
         alt="Aperçu de l'utilisateur"
         class="w-full h-full object-cover block"
       />
+    </div>
+
+    <!-- Logo DevFest + date + lieu -->
+    <div
+      class="absolute top-[492px] left-0 w-full flex flex-col items-center z-10 transition-all duration-500 ease-out delay-150"
+      [class.opacity-100]="uiState === 'templateVisible'"
+      [class.translate-y-0]="uiState === 'templateVisible'"
+      [class.opacity-0]="uiState !== 'templateVisible'"
+      [class.translate-y-full]="uiState !== 'templateVisible'"
+    >
+      <img [src]="logoUrl" alt="Logo DevFest" class="w-[270px] h-auto object-contain block" />
+
+      <div class="mt-5 w-full px-[200px] flex flex-col items-center text-center">
+        <p class="text-[22px] leading-[28px] font-semibold" style="color: #202124">
+          {{ dateText }} • 10:30
+        </p>
+
+        <!-- Ligne pointillée -->
+        <div class="flex items-center gap-[7px] my-2.5">
+          @for (dot of dots; track $index) {
+            <span
+              class="block w-[4px] h-[4px] rounded-full"
+              style="background-color: #4285f4"
+            ></span>
+          }
+        </div>
+
+        <!-- Lieu entre deux chevrons -->
+        <div class="flex items-center justify-center gap-3 max-w-full">
+          <svg
+            class="w-5 h-5 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="#4285f4"
+            stroke-width="3"
+            aria-hidden="true"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          <p class="text-[18px] leading-[24px] font-medium" style="color: #202124">
+            {{ venueName }}
+          </p>
+          <svg
+            class="w-5 h-5 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="#4285f4"
+            stroke-width="3"
+            aria-hidden="true"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+        <p class="text-[15px] leading-[20px] mt-0.5" style="color: #5f6368">{{ locationText }}</p>
+      </div>
+    </div>
+
+    <!-- Hashtag -->
+    <div
+      class="absolute top-[738px] left-0 w-full text-center z-10 transition-all duration-500 ease-out delay-200"
+      [class.opacity-100]="uiState === 'templateVisible'"
+      [class.opacity-0]="uiState !== 'templateVisible'"
+    >
+      <p class="text-[17px] leading-[24px] font-bold" style="color: #4285f4">{{ hashtag }}</p>
+    </div>
+
+    <!-- Logo circulaire -->
+    <div
+      class="absolute top-[650px] left-[62px] w-[122px] h-[122px] bg-text rounded-full flex items-center justify-center z-30 transition-transform duration-300 ease-out delay-200"
+      [class.scale-100]="uiState === 'templateVisible'"
+      [class.scale-0]="uiState !== 'templateVisible'"
+    >
+      <img [src]="circularLogoUrl" alt="Logo DevFest" class="w-[106px] object-contain m-0 block" />
     </div>
   } @else {
     <!-- Cadre décoratif -->
